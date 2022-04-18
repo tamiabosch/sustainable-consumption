@@ -1,37 +1,54 @@
-import {IonItem, IonIcon, IonLabel} from "@ionic/react";
-import { warning, chatbox } from 'ionicons/icons';
+import {IonItem, IonIcon, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent} from "@ionic/react";
+import { createOutline, enterOutline, exitOutline, checkmark } from 'ionicons/icons';
+import Label  from './Label';
 
-interface ContainerProps {
-    details: string;
-    link: string;
-    peerReview: boolean;
+interface PurchaseProps {
+    title: string;
+    date: string;
+    link?: string;
+    reviewed: boolean;
+    peerReviewed: boolean;
+    otherReview?: boolean;
   }
   
-  const Purchase: React.FC<ContainerProps> = ({ details, link, peerReview}) => {
-    const PeerReview = () => {
+  const Purchase: React.FC<PurchaseProps> = ({ title, link, date, reviewed, peerReviewed, otherReview, ...props}) => {
+    //add status of purchase review, conditional rendering of labels
+    const Purchase = () => {
         return (
+          <IonCard>
+            <IonCardHeader>
+                  <IonIcon className="float-right" icon={createOutline} />
+                  <IonCardTitle>{title}</IonCardTitle>
+                  <IonCardSubtitle>{date}</IonCardSubtitle>
+            </IonCardHeader>
             <IonItem>
-            <IonIcon icon={warning} slot="start" />
-            <IonLabel>
-                <h2>Peer Review</h2>
-                <p>{details}</p>
-            </IonLabel>
+                { 
+                  reviewed && 
+                  <Label text="bewertet" link={link ? link : '#'} > 
+                    <IonIcon slot="start" icon={checkmark} /> 
+                  </Label> 
+                  }
+                { 
+                  peerReviewed && 
+                  <Label text="Feedback erhalten" link={link ? link : '#'} icon="enterOutline">
+                    <IonIcon slot="start" icon={enterOutline} /> 
+                  </Label> 
+                }
+                { 
+                  otherReview && 
+                  <Label text="Feedback gegeben" link={link ? link : '#'} icon="enterOutline">
+                    <IonIcon slot="start" icon={exitOutline} /> 
+                  </Label>
+                }
             </IonItem>
+            <IonCardContent>
+                This is content, without any paragraph or header tags,
+                within an ion-cardContent element.
+            </IonCardContent>
+          </IonCard>
         );
     }
-
-    const Review = () => {
-        return (
-            <IonItem href={link} className="ion-activated">
-                <IonIcon icon={chatbox} slot="start" />
-                <IonLabel>New Peer Review available {details}</IonLabel>
-            </IonItem>
-        );
-    }
-    if (peerReview) {
-        return <PeerReview />;
-    }
-    return <Review />;
+    return <Purchase />;
 
   };
   

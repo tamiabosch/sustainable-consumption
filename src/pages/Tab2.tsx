@@ -1,14 +1,13 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonFabButton, IonFab } from '@ionic/react';
-import { pin, checkmark, cart, addCircleOutline } from 'ionicons/icons';
-import Notification from '../components/Notification';import './Tab2.css';
+import { checkmark, cart, addCircleOutline } from 'ionicons/icons';
+import Notification from '../components/NotificationItem';
 
 const Tab2: React.FC = () => {
   return (
     <IonPage>
     <IonHeader>
       <IonToolbar>
-      <IonIcon icon={cart} slot="end" class="ion-margin-end" />
-        <IonTitle>Shopping</IonTitle>
+        <IonTitle>Feedback</IonTitle>
       </IonToolbar>
     </IonHeader>
     <IonContent fullscreen>
@@ -20,11 +19,10 @@ const Tab2: React.FC = () => {
 
       {/* Notifications */}
       <IonCard>
-        <IonCardHeader color="tertiary">
+        <IonCardHeader color="warning">
           <IonCardSubtitle>Notifications</IonCardSubtitle>
         </IonCardHeader>
-        <Notification details="12.04" link='#' peerReview={true} />
-        <Notification details="12.04" link='#'peerReview={false} />
+        <Notification details="12.04" link='#' reviewType={'review'} />
       </IonCard>
 
       {/* Example Cart */}
