@@ -1,15 +1,12 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonFabButton, IonFab } from '@ionic/react';
 import { checkmark, cart, addCircleOutline } from 'ionicons/icons';
 import Notification from '../components/NotificationItem';
+import Header from '../components/Header';
 
 const Tab2: React.FC = () => {
   return (
     <IonPage>
-    <IonHeader>
-      <IonToolbar>
-        <IonTitle>Feedback</IonTitle>
-      </IonToolbar>
-    </IonHeader>
+    <Header title="Feedback" />
     <IonContent fullscreen>
       <IonHeader collapse="condense">
         <IonToolbar>

@@ -2,17 +2,13 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardH
 import { addCircleOutline, enterOutline } from 'ionicons/icons';
 import Notification from '../components/NotificationItem';
 import Purchase from '../components/Purchase';
+import Header from '../components/Header';
 
 
 const Tab1: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-        {/* <IonIcon icon={cart} slot="end" class="ion-margin-end" /> */}
-          <IonTitle>Einkäufe</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title='Einläufe' />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

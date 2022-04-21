@@ -1,13 +1,10 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import Header from '../components/Header';
 
 const Tab3: React.FC = () => {
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Wöchentliche Aufgabe</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title="Wöchentliche Aufgabe" />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
