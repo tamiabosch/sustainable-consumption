@@ -11,7 +11,7 @@ import {
   IonPage,
   IonContent,
 } from "@ionic/react";
-import { loginUser, getCurrentUser } from "../firebaseConfig";
+import { loginUser, getCurrentUser } from "../service/auth";
 
 
 const Login: React.FC = () => {
@@ -26,6 +26,13 @@ const Login: React.FC = () => {
   async function login() {
     try {
       const res = await loginUser(mail, password);
+      if (res) {
+        console.log("login success");
+        //TODO
+        // redirect to home
+      } else {
+        console.log("login failed");
+      }
       console.log(res + " logged in");
       console.log(getCurrentUser())
     } catch (error) {

@@ -16,7 +16,8 @@ import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Login from './pages/Login';
 
-import { getCurrentUser } from './firebaseConfig';
+import { auth } from "./service/firebaseConfig";
+import { getCurrentUser } from './service/auth';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -109,7 +110,8 @@ const SingleReview = () => {
   );
 };
 const App: React.FC = () => {
-  if (getCurrentUser() == null) {
+
+  if (getCurrentUser() !== null) {
     return <Login />;
   } else {
     return <PeerReview />;

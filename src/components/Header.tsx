@@ -1,6 +1,6 @@
 import { IonButton, IonHeader, IonIcon, IonTitle, IonToolbar } from "@ionic/react";
 import { logOutOutline } from "ionicons/icons";
-import { logout } from "../firebaseConfig";
+import { logout } from "../service/auth";
 
 interface HeaderProps {
     title: string;
