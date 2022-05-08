@@ -16,8 +16,9 @@ import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Login from './pages/Login';
 
+import { useAuth, getCurrentUser } from './service/auth';
 import { auth } from "./service/firebaseConfig";
-import { getCurrentUser } from './service/auth';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -37,6 +38,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import { useEffect } from 'react';
 
 setupIonicReact();
 const PeerReview = () => {
@@ -110,12 +112,27 @@ const SingleReview = () => {
   );
 };
 const App: React.FC = () => {
+  // const { loggedIn } = useAuth();
 
-  if (getCurrentUser() !== null) {
+  const user = auth.currentUser;
+  console.log(getCurrentUser());
+  console.log('authed user?' + user);
+  if (!user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/firebase.User
+    // ...
+
     return <Login />;
   } else {
+    // No user is signed in.
     return <PeerReview />;
   }
+  
+  // if (!loggedIn) {
+  //   return <Login />;
+  // } else {
+  //   return <PeerReview />;
+  // }
 }
 
 export default App;

@@ -8,7 +8,7 @@ import Header from '../components/Header';
 const Tab1: React.FC = () => {
   return (
     <IonPage>
-      <Header title='Einläufe' />
+      <Header title='Einkäufe' />
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>

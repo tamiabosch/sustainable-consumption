@@ -42,8 +42,7 @@ interface PurchaseProps {
                 }
             </IonItem>
             <IonCardContent>
-                This is content, without any paragraph or header tags,
-                within an ion-cardContent element.
+                Comment on this purchase
             </IonCardContent>
           </IonCard>
         );
