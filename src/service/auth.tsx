@@ -1,6 +1,5 @@
-import { auth, db, provider } from "./firebaseConfig";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { auth } from "./firebaseConfig";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 
 import {
   useState,
@@ -10,7 +9,8 @@ import {
   useEffect,
   useCallback,
 } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
+
 
 type AuthContextType = {
   loading:boolean
@@ -26,9 +26,13 @@ const AuthContext =  createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState('');
-  const loggedIn = useMemo(() => ( user ? true : false), [user]);
-  const navigate = useNavigate();
+  //'FirebaseAuthTypes'-> User
+
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState(localStorage.getItem(`token`) || null);
+
+  const loggedIn = useMemo(() => ( user ? true : false), [ user]);
+  const history = useHistory();
 
   //add UserData to DB
   // const addData = async (
@@ -47,38 +51,54 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   async function loginUser(email: string, password: string) {
     try {
       const data = (await signInWithEmailAndPassword(auth, email, password)).user;
-      const { uid } = data;
+      const { refreshToken } = data;
+      console.log("refreshToken: " + refreshToken);
+      console.log("data: " + data);
       return data;
     } catch (e) {
       console.error("Error in Registering customer ", e);
+      return {error: e, message: "Error in Registering customer"};
     }
   }
-  const signIn = (user: any) => {
+  const signIn = (user: User) => {
     setUser(user);
-    console.log("Signed in:", user.email);
+    const { refreshToken } = user;
+    setToken(refreshToken);
+    localStorage.setItem(`token`, refreshToken);
+    console.log("signIn User:", user);
   };
   //logout User
-  const logoutUser = useCallback(() => {
-    signOut(auth);
-    setUser('');
-    navigate('/login');
-  }, [navigate]);
+    const logoutUser = useCallback(() => {
+      signOut(auth);
+    },[]);
+  // const logoutUser = useCallback(() => {
+  //   signOut(auth);
+  //   setUser(null);
+  //   setToken(null);
+  // },[]);
 
   useEffect(() => {
-    async function loadUser() {
-      const data = auth.currentUser
-      if (data) {
-        console.log(data.uid);
-        setUser(data.uid);
+    function loadUser() {
+      onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        console.log("userrrr"+user)
+        const { refreshToken } = user;
+        setUser(user);
+        setToken(refreshToken);
       } else {
+        // User is signed out
         logoutUser();
       }
+    });
+
     }
-    if (user) {
+    if (token) {
+      console.log('loadUser: ' + token);
       loadUser();
     }
-
-  }, [user,  logoutUser]);
+  }, [token, logoutUser]);
 
   //unsubscribe from auth state changes
   // useEffect(() => {
@@ -133,24 +153,3 @@ export const authCheck = async (_handleAuthedUser: any) => {
   });
 };
 
-// export async function authListener() {
-//   auth.onAuthStateChanged((user) => {
-//     if (user) {
-//       clearInputs();
-//       setUser(user);
-//     } else {
-//       setUser("");
-//     }
-//   });
-// };
-
-export async function logout() {
-  try {
-    await signOut(auth);
-    console.log("logged out");
-    console.log(auth.currentUser);
-    console.log(getCurrentUser());
-  } catch (err) {
-    console.error(err);
-  }
-}

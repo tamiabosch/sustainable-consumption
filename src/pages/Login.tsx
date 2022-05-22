@@ -9,8 +9,7 @@ import {
   IonContent,
 } from "@ionic/react";
 import { useAuth } from "../service/auth";
-import { db, createGroceryList, auth } from "../service/firebaseConfig";
-import { signInWithEmailAndPassword  } from "firebase/auth";
+import { createGroceryList, auth } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
 
 
@@ -25,26 +24,35 @@ const Login: React.FC = () => {
   // add error toast message, if input is wrong
   // invalid mail
   //add Toast on success
-  const { signIn, loginUser, loggedIn } = useAuth();
-
-  function loginSubmit(event: any) {
+  const { signIn, loginUser, logoutUser, loggedIn } = useAuth();
+  //make async call to firebase and save userdata for session
+  async function loginSubmit(event: any) {
     event.preventDefault();
-    console.log('test: ' + loggedIn)
-    const userData = loginUser(mail, password);
-    if (userData) {
-      signIn(userData.uid);
-      console.log('test: ' + loggedIn)
-      console.log("Login Success");
+    //https://firebase.google.com/docs/reference/js/v8/firebase.User
+    const userData = await loginUser(mail, password);
+    console.log("userData: " +  userData)
+    if (userData.error) {
+      console.log("error: " + userData.error);
+    } else {
+      signIn(userData);
+      console.log("loginSubmit success!");
+      console.log("loggedIn: " + loggedIn);
+      return <Redirect to={"/login"} />
     }
   }
 
   function logoutSubmit(event: any) {
-    console.log('logout')
+    event.preventDefault();
+    logoutUser();
+    console.log('logout: loggedIn?' + loggedIn)
   }
 
-  async function test() {
-    createGroceryList("LIDL");
-    console.log("test");
+  function test() {
+    const data = auth.currentUser
+    console.log("data: " + data?.uid);
+    console.log("loggedIn: " + loggedIn);
+    // createGroceryList("LIDL");
+    // console.log("test");
   }
 
   return (
