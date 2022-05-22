@@ -8,24 +8,27 @@ import {
   createContext,
   useMemo,
   useEffect,
-  SetStateAction,
+  useCallback,
 } from 'react';
+import { useNavigate } from "react-router-dom";
+
 type AuthContextType = {
   loading:boolean
   loggedIn:boolean
-  loginUser:(email:string, password:string)=>{}
-  logout:()=>{}
+  loginUser:(email:string, password:string)=> any
+  logoutUser:()=>void
   signIn: (user:any)=>void
   // resetPassword:(email:any)=>{}
   // updateEmail:(email:any)=>{}
   // updatePassword:(password:any)=>{}
-
 }
 const AuthContext =  createContext<AuthContextType>({} as AuthContextType);
 export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState('');
+  const loggedIn = useMemo(() => ( user ? true : false), [user]);
+  const navigate = useNavigate();
 
   //add UserData to DB
   // const addData = async (
@@ -43,47 +46,56 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   //login User
   async function loginUser(email: string, password: string) {
     try {
-      const data = (await signInWithEmailAndPassword(auth, email, password))
-        .user;
+      const data = (await signInWithEmailAndPassword(auth, email, password)).user;
       const { uid } = data;
-      //localStorage.setItem("LoggedIn", JSON.stringify(uid));
-      setUser(uid);
       return data;
     } catch (e) {
       console.error("Error in Registering customer ", e);
     }
   }
-
-  //safe login data
-  // const signInData = (user: any) => {
-  //   setUser(user);
-  //   localStorage.setItem(`userid`, user);
-  //   //history.push(`/`);
-  //   //lets to a redirect
-  // };
-  function signIn (user: any){
+  const signIn = (user: any) => {
     setUser(user);
-    // localStorage.setItem(`userid`, user.id);
     console.log("Signed in:", user.email);
   };
   //logout User
-  function logout() {
-    localStorage.removeItem("LoggedIn");
-    return signOut(auth);
-  }
+  const logoutUser = useCallback(() => {
+    signOut(auth);
+    setUser('');
+    navigate('/login');
+  }, [navigate]);
 
-  const loggedIn = useMemo(() => ( user ? true : false), [user]);
-
-  
-  //unsubscribe from auth state changes
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user: any) => {
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, []);
+    async function loadUser() {
+      const data = auth.currentUser
+      if (data) {
+        console.log(data.uid);
+        setUser(data.uid);
+      } else {
+        logoutUser();
+      }
+    }
+    if (user) {
+      loadUser();
+    }
+
+  }, [user,  logoutUser]);
+
+  //unsubscribe from auth state changes
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged((user: any) => {
+  //     setLoading(false);
+  //   });
+  //   return unsubscribe;
+  // }, []);
+
   //values that AuthContext provides
-  const value = { loading, loggedIn, loginUser, logout, signIn };
+  const value = { 
+    loading, 
+    loggedIn, 
+    loginUser,
+    logoutUser, 
+    signIn 
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
@@ -92,27 +104,6 @@ export default AuthProvider;
 export function useAuth() {
   return useContext<AuthContextType>(AuthContext);
 }
-
-
-  
-export async function loginUserMail(mail: string, password: string) {
-  try {
-    await signInWithEmailAndPassword(auth, mail, password)
-    .then((userCredential) => {
-      // Signed in     
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-    });
-    return true
-  } catch (err) {
-    console.log("sign in error", err);
-    console.error(err);
-    return false
-  }
-}
-
 
 
 export async function getCurrentUser() {

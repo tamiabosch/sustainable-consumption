@@ -1,4 +1,3 @@
-import { Redirect, Route } from 'react-router-dom';
 import {
   IonApp,
   IonIcon,
@@ -16,7 +15,7 @@ import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Login from './pages/Login';
 
-import { useAuth, getCurrentUser } from './service/auth';
+import { AuthProvider, useAuth } from './service/auth';
 import { auth } from "./service/firebaseConfig";
 
 
@@ -39,6 +38,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import { useEffect } from 'react';
+import { Redirect, Route } from 'react-router';
 
 setupIonicReact();
 const PeerReview = () => {
@@ -111,28 +111,33 @@ const SingleReview = () => {
     </IonApp>
   );
 };
+
+ const LoginView = () => {
+  return (
+    <IonApp>
+      <IonReactRouter>
+        <Login />
+        </IonReactRouter>
+    </IonApp>
+  );
+};
 const App: React.FC = () => {
-  // const { loggedIn } = useAuth();
+  const { loggedIn } = useAuth();
+  console.log(loggedIn);
 
-  const user = auth.currentUser;
-  console.log(getCurrentUser());
-  console.log('authed user?' + user);
-  if (!user) {
-    // User is signed in, see docs for a list of available properties
-    // https://firebase.google.com/docs/reference/js/firebase.User
-    // ...
-
-    return <Login />;
+  if (!loggedIn) {
+    return (
+      <AuthProvider>
+        <LoginView />
+      </AuthProvider>
+    )
   } else {
-    // No user is signed in.
-    return <PeerReview />;
+    return (
+      <AuthProvider>
+        <PeerReview />
+      </AuthProvider>
+      )
   }
-  
-  // if (!loggedIn) {
-  //   return <Login />;
-  // } else {
-  //   return <PeerReview />;
-  // }
 }
 
 export default App;

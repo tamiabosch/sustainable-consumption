@@ -4,14 +4,11 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonItem,
-  IonLabel,
   IonInput,
-  IonToast,
   IonPage,
   IonContent,
 } from "@ionic/react";
-import { useAuth, getCurrentUser } from "../service/auth";
+import { useAuth } from "../service/auth";
 import { db, createGroceryList, auth } from "../service/firebaseConfig";
 import { signInWithEmailAndPassword  } from "firebase/auth";
 import { Redirect } from "react-router";
@@ -28,36 +25,21 @@ const Login: React.FC = () => {
   // add error toast message, if input is wrong
   // invalid mail
   //add Toast on success
-  const { signIn } = useAuth();
-  async function loginSubmit() {
-    //loginUser(mail, password);
-    try {
-      const data = (await signInWithEmailAndPassword(auth, mail, password))
-        .user;
-      const { uid } = data;
-      console.log("uid", uid);
-      const user = auth.currentUser;
-      console.log(getCurrentUser());
-      if (data && user) {
-        console.log("data", data);
-        console.log("data.uid", data.uid);
-        console.log('loginClick: ' + getCurrentUser);
-        //signIn(data.uid);
+  const { signIn, loginUser, loggedIn } = useAuth();
 
-        console.log('authed user????' + user['uid']);
-        if (user) {
-          <Redirect to="/Tab1" />;
-        } else {    
-          console.log('not authed user');
-        }
-      } else {
-        alert(`Please check your username and password`);
-      }
-      //localStorage.setItem("LoggedIn", JSON.stringify(uid));
-      return data;
-    } catch (e) {
-      console.error("Error in Registering customer ", e);
+  function loginSubmit(event: any) {
+    event.preventDefault();
+    console.log('test: ' + loggedIn)
+    const userData = loginUser(mail, password);
+    if (userData) {
+      signIn(userData.uid);
+      console.log('test: ' + loggedIn)
+      console.log("Login Success");
     }
+  }
+
+  function logoutSubmit(event: any) {
+    console.log('logout')
   }
 
   async function test() {
@@ -84,6 +66,7 @@ const Login: React.FC = () => {
         onIonChange={(e: any) => setPassword(e.target.value)}
       />
       <IonButton onClick={loginSubmit}>Login</IonButton>
+      <IonButton onClick={logoutSubmit}>Logout</IonButton>
       <IonButton onClick={test}>aaa</IonButton>
       
     </IonContent>
