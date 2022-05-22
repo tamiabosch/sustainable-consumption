@@ -2,6 +2,7 @@ import {
   IonApp,
   IonIcon,
   IonLabel,
+  IonLoading,
   IonRouterOutlet,
   IonTabBar,
   IonTabButton,
@@ -120,12 +121,17 @@ const SingleReview = () => {
 
 
 const LoginView = () => {
+  console.log("LoginView");
   return (
-    <IonApp>
-      <IonReactRouter>
-        <Login />
-      </IonReactRouter>
-    </IonApp>
+    <AuthProvider>
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/login" component={Login} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </AuthProvider>
   );
 };
 
@@ -144,20 +150,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = (
   );
 };
 
-const App: React.FC = () => {
-  const { loggedIn } = useAuth();
-  console.log("App: " + loggedIn);
-  const [firebaseLoggedIn, setFirebaseLoggedIn] = useState(false);
-  auth.onAuthStateChanged(function (user) {
-    if (user) {
-      // User is signed in.
-      setFirebaseLoggedIn(true);
-    } else {
-      setFirebaseLoggedIn(false);
-    }
-  });
-  console.log("App FB: " + firebaseLoggedIn);
-
+const AuthView = () => {
+  console.log("AuthView");
+  const firebaseLoggedIn = true
   return (
     <AuthProvider>
       <IonApp>
@@ -179,11 +174,6 @@ const App: React.FC = () => {
               component={Tab3}
               isAuth={firebaseLoggedIn}
             />
-             <Route
-                            path="/login"
-                            component={Login}
-                            exact={true}
-                        />
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
@@ -201,9 +191,37 @@ const App: React.FC = () => {
           </IonTabBar>
         </IonTabs>
       </IonReactRouter>
-    </IonApp>
-      </AuthProvider >
+      </IonApp>
+    </AuthProvider >
     );  
+}
+
+const App: React.FC = () => {
+  const { loggedIn, loading } = useAuth();
+  console.log("App: " + loggedIn);
+  const [firebaseLoggedIn, setFirebaseLoggedIn] = useState(false);
+  const [gr, setGr] = useState(true);
+  auth.onAuthStateChanged(function (user) {
+    if (user) {
+      // User is signed in.
+      setFirebaseLoggedIn(true);
+    } else {
+      setFirebaseLoggedIn(false);
+    }
+    setGr((loads) => loads = false);
+  });
+  console.log("App FB: " + firebaseLoggedIn);
+  console.log("loading: " + loading);
+  return (!gr || undefined ) ? (
+    <IonApp>
+      <IonLoading message="Starting App..." isOpen={false} />
+    </IonApp>
+  ) : (
+  <>
+   {firebaseLoggedIn ? <AuthView /> : <LoginView />}
+  </>
+  );
+
 }
 
 export default App;

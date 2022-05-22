@@ -79,6 +79,7 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   useEffect(() => {
     function loadUser() {
+      setLoading((loading) => loading = true);
       onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in, see docs for a list of available properties
@@ -92,12 +93,12 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
         logoutUser();
       }
     });
-
-    }
-    if (token) {
-      console.log('loadUser: ' + token);
-      loadUser();
-    }
+  }
+  if (token) {
+    console.log('loadUser: ' + token);
+    loadUser();
+  }
+  setLoading((loading) => loading = false);
   }, [token, logoutUser]);
 
   //unsubscribe from auth state changes
@@ -114,7 +115,7 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
     loggedIn, 
     loginUser,
     logoutUser, 
-    signIn 
+    signIn,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
