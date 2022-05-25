@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState(localStorage.getItem(`token`) || null);
 
-  const loggedIn = useMemo(() => ( user ? true : false), [ user]);
+  const loggedIn = useMemo(() => (token? true : false), [token]);
   const history = useHistory();
 
   //add UserData to DB
@@ -78,28 +78,43 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   // },[]);
 
   useEffect(() => {
-    function loadUser() {
+    let isMounted = true
+    async function loadUser() {
       setLoading((loading) => loading = true);
-      onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        console.log("userrrr"+user)
-        const { refreshToken } = user;
-        setUser(user);
-        setToken(refreshToken);
-      } else {
-        // User is signed out
-        logoutUser();
-      }
+      // onAuthStateChanged(auth, (user) => {
+        // if (user) {
+          //   // User is signed in, see docs for a list of available properties
+          //   // https://firebase.google.com/docs/reference/js/firebase.User
+          //   console.log("userrrr"+user)
+          //   const { refreshToken } = user;
+          //   setUser(user);
+          //   setToken(refreshToken);
+          // } else {
+            //   // User is signed out
+            //   logoutUser();
+            // }
+            auth.onAuthStateChanged(function (user) {
+       
+        if (user) {
+          // User is signed in.
+          if (isMounted) setUser(user);
+          console.log("Auth useEffect: " + user.refreshToken)
+          if (isMounted) setToken(user.refreshToken);
+          if (isMounted)  setLoading((loading) => loading = false);
+        } else {
+          if (isMounted) setLoading((loading) => loading = false)
+          logoutUser();
+        }
     });
   }
   if (token) {
-    console.log('loadUser: ' + token);
+    console.log('Auth loadUser: ' + token);
     loadUser();
   }
-  setLoading((loading) => loading = false);
-  }, [token, logoutUser]);
+  if (isMounted) setLoading((loading) => loading = false);
+  console.log("Auth useEffect: " + loggedIn)
+  return () => { isMounted = false };
+  }, [token, logoutUser, loggedIn]);
 
   //unsubscribe from auth state changes
   // useEffect(() => {

@@ -197,10 +197,8 @@ const AuthView = () => {
 }
 
 const App: React.FC = () => {
-  const { loggedIn, loading } = useAuth();
-  console.log("App: " + loggedIn);
+  const { loading, loggedIn } = useAuth();
   const [firebaseLoggedIn, setFirebaseLoggedIn] = useState(false);
-  const [gr, setGr] = useState(true);
   auth.onAuthStateChanged(function (user) {
     if (user) {
       // User is signed in.
@@ -208,19 +206,10 @@ const App: React.FC = () => {
     } else {
       setFirebaseLoggedIn(false);
     }
-    setGr((loads) => loads = false);
   });
-  console.log("App FB: " + firebaseLoggedIn);
-  console.log("loading: " + loading);
-  return (!gr || undefined ) ? (
-    <IonApp>
-      <IonLoading message="Starting App..." isOpen={false} />
-    </IonApp>
-  ) : (
-  <>
-   {firebaseLoggedIn ? <AuthView /> : <LoginView />}
-  </>
-  );
+  console.log("App FB logged in: " + firebaseLoggedIn);
+  console.log("App loading: " + loading);
+  return loggedIn ? <AuthView /> : <LoginView />
 
 }
 
