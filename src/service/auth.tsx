@@ -18,18 +18,20 @@ type AuthContextType = {
   loginUser:(email:string, password:string)=> any
   logoutUser:()=>void
   signIn: (user:any)=>void
+  token: string 
   // resetPassword:(email:any)=>{}
   // updateEmail:(email:any)=>{}
   // updatePassword:(password:any)=>{}
 }
 const AuthContext =  createContext<AuthContextType>({} as AuthContextType);
+
 export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
   //'FirebaseAuthTypes'-> User
 
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState(localStorage.getItem(`token`) || null);
+  const [token, setToken] = useState(localStorage.getItem(`token`) || '');
 
   const loggedIn = useMemo(() => (token? true : false), [token]);
   const history = useHistory();
@@ -70,12 +72,9 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   //logout User
     const logoutUser = useCallback(() => {
       signOut(auth);
+      setToken('');
+      setUser(null);
     },[]);
-  // const logoutUser = useCallback(() => {
-  //   signOut(auth);
-  //   setUser(null);
-  //   setToken(null);
-  // },[]);
 
   useEffect(() => {
     let isMounted = true
@@ -131,6 +130,7 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
     loginUser,
     logoutUser, 
     signIn,
+    token
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

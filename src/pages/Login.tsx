@@ -11,6 +11,7 @@ import {
 import { useAuth } from "../service/auth";
 import { createGroceryList, auth } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
+import { signOut } from "firebase/auth";
 
 
 //Use one which works fine for you 
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
   // add error toast message, if input is wrong
   // invalid mail
   //add Toast on success
-  const { signIn, loginUser, logoutUser, loggedIn } = useAuth();
+  const { signIn, loginUser, logoutUser, loggedIn, loading } = useAuth();
   //make async call to firebase and save userdata for session
   async function loginSubmit(event: any) {
     event.preventDefault();
@@ -43,14 +44,24 @@ const Login: React.FC = () => {
 
   function logoutSubmit(event: any) {
     event.preventDefault();
+    
+    signOut(auth).then(() => {
+      // Sign-out successful.
+      console.log('logout: ' + auth?.currentUser);
+    }).catch((error) => {
+      // An error happened.
+    });
+    
     logoutUser();
-    console.log('logout: loggedIn?' + loggedIn)
+    console.log('logout: loggedIn ?' + loggedIn)
   }
 
   function test() {
     const data = auth.currentUser
     console.log("data: " + data?.uid);
     console.log("loggedIn: " + loggedIn);
+    console.log('loading: ' + loading);
+    console.log('currentUser: ' + auth?.currentUser);
     // createGroceryList("LIDL");
     // console.log("test");
   }

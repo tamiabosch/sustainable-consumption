@@ -15,6 +15,7 @@ import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
 import Login from './pages/Login';
+import Authenticated from './routes/Authenticated';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -44,6 +45,7 @@ import React from 'react';
 /* Custom Stuff */
 import { AuthProvider, useAuth } from './service/auth';
 import { auth } from "./service/firebaseConfig";
+import { userInfo } from 'os';
 
 
 
@@ -87,114 +89,71 @@ const PeerReview = () => {
   );
 };
 
-const SingleReview = () => {
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <IonTabs>
-          <IonRouterOutlet>
-            <Route exact path="/tab1">
-              <Tab1 />
-            </Route>
-            <Route path="/tab3">
-              <Tab3 />
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/tab1" />
-            </Route>
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="tab1" href="/tab1">
-              <IonIcon icon={cart} />
-              <IonLabel>Einkäufe</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="tab3" href="/tab3">
-              <IonIcon icon={information} />
-              <IonLabel>Aufgabe</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
-      </IonReactRouter>
-    </IonApp>
-  );
-};
 
+
+
+
+
+// interface RouteProps extends RouteProps {
+//   isAuth: boolean;
+//   component: any;
+//   path: string;
+// }
+// const Route: React.FC<RouteProps> = (
+//   props: RouteProps
+// ) => {
+//   return props.isAuth ? (
+//       <Route {...props} component={props.component} path={props.path} />
+//   ) : (
+//       <Redirect to={"/login"} />
+//   );
+// };
+
+const AuthView = () => {
+  return (
+        <IonReactRouter>
+          <IonTabs>
+            <IonRouterOutlet>
+              <Route
+                path="/tab1"
+                component={Tab1}
+              />
+              <Route
+                path="/tab2"
+                component={Tab2}
+              />
+              <Route
+                path="/tab3"
+                component={Tab3}
+              />
+            </IonRouterOutlet>
+            <IonTabBar slot="bottom">
+              <IonTabButton tab="tab1" href="/tab1">
+                <IonIcon icon={cart} />
+                <IonLabel>Einkäufe</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab2" href="/tab2">
+                <IonIcon icon={people} />
+                <IonLabel>Feedback</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/tab3">
+                <IonIcon icon={information} />
+                <IonLabel>Aufgabe</IonLabel>
+              </IonTabButton>
+            </IonTabBar>
+          </IonTabs>
+        </IonReactRouter>
+
+  );
+}
 
 const LoginView = () => {
   console.log("LoginView");
   return (
-    <AuthProvider>
-      <IonApp>
-        <IonReactRouter>
-          <IonRouterOutlet>
-            <Route exact path="/login" component={Login} />
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </IonApp>
-    </AuthProvider>
+  <Route exact path="/login" component={Login} />
+
   );
 };
-
-interface ProtectedRouteProps extends RouteProps {
-  isAuth: boolean;
-  component: any;
-  path: string;
-}
-const ProtectedRoute: React.FC<ProtectedRouteProps> = (
-  props: ProtectedRouteProps
-) => {
-  return props.isAuth ? (
-      <Route {...props} component={props.component} path={props.path} />
-  ) : (
-      <Redirect to={"/login"} />
-  );
-};
-
-const AuthView = () => {
-  console.log("AuthView");
-  const firebaseLoggedIn = true
-  return (
-    <AuthProvider>
-      <IonApp>
-        <IonReactRouter>
-          <IonTabs>
-          <IonRouterOutlet>
-            <ProtectedRoute
-              path="/tab1"
-              component={Tab1}
-              isAuth={firebaseLoggedIn}
-            />
-            <ProtectedRoute
-              path="/tab2"
-              component={Tab2}
-              isAuth={firebaseLoggedIn}
-            />
-            <ProtectedRoute
-              path="/tab3"
-              component={Tab3}
-              isAuth={firebaseLoggedIn}
-            />
-          </IonRouterOutlet>
-          <IonTabBar slot="bottom">
-            <IonTabButton tab="tab1" href="/tab1">
-              <IonIcon icon={cart} />
-              <IonLabel>Einkäufe</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="tab2" href="/tab2">
-              <IonIcon icon={people} />
-              <IonLabel>Feedback</IonLabel>
-            </IonTabButton>
-            <IonTabButton tab="tab3" href="/tab3">
-              <IonIcon icon={information} />
-              <IonLabel>Aufgabe</IonLabel>
-            </IonTabButton>
-          </IonTabBar>
-        </IonTabs>
-      </IonReactRouter>
-      </IonApp>
-    </AuthProvider >
-    );  
-}
 
 const App: React.FC = () => {
   const { loading, loggedIn } = useAuth();
@@ -209,8 +168,19 @@ const App: React.FC = () => {
   });
   console.log("App FB logged in: " + firebaseLoggedIn);
   console.log("App loading: " + loading);
-  return loggedIn ? <AuthView /> : <LoginView />
-
+  return (
+    <AuthProvider>
+      <IonApp>
+        <IonReactRouter>
+          <Route
+            path="/"
+            render={(props) => {
+              return loggedIn ? <p>hi</p> : <Login />
+            }} />
+        </IonReactRouter>
+      </IonApp>
+    </AuthProvider>
+  )
 }
 
 export default App;
