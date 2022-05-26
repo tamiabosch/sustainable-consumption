@@ -156,7 +156,7 @@ const LoginView = () => {
 };
 
 const App: React.FC = () => {
-  const { loading, loggedIn } = useAuth();
+  const { loading } = useAuth();
   const [firebaseLoggedIn, setFirebaseLoggedIn] = useState(false);
   auth.onAuthStateChanged(function (user) {
     if (user) {
@@ -172,11 +172,8 @@ const App: React.FC = () => {
     <AuthProvider>
       <IonApp>
         <IonReactRouter>
-          <Route
-            path="/"
-            render={(props) => {
-              return loggedIn ? <p>hi</p> : <Login />
-            }} />
+            <Route path="/login" component={Login} exact={true} />
+            <Route path="/" component={firebaseLoggedIn ? Tab1 : Login} />
         </IonReactRouter>
       </IonApp>
     </AuthProvider>
