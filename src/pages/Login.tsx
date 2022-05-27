@@ -10,8 +10,7 @@ import {
 } from "@ionic/react";
 import { useAuth } from "../service/auth";
 import { createGroceryList, auth } from "../service/firebaseConfig";
-import { Redirect } from "react-router";
-import { signOut } from "firebase/auth";
+import { useHistory } from "react-router-dom";
 
 
 //Use one which works fine for you 
@@ -20,12 +19,16 @@ import { signOut } from "firebase/auth";
 const Login: React.FC = () => {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory()
+
   //TODO 
   // add Logic if empty 
   // add error toast message, if input is wrong
   // invalid mail
   //add Toast on success
+
   const { signIn, loginUser, logoutUser, loggedIn, loading } = useAuth();
+  
   //make async call to firebase and save userdata for session
   async function loginSubmit(event: any) {
     event.preventDefault();
@@ -36,25 +39,17 @@ const Login: React.FC = () => {
       console.log("error: " + userData.error);
     } else {
       signIn(userData);
+      // history.push('/tab1')
       console.log("loginSubmit success!");
-      console.log("loggedIn: " + loggedIn);
-      return <Redirect to={"/login"} />
     }
   }
 
   function logoutSubmit(event: any) {
     event.preventDefault();
-    
-    signOut(auth).then(() => {
-      // Sign-out successful.
-      console.log('logout: ' + auth?.currentUser);
-    }).catch((error) => {
-      // An error happened.
-    });
-    
     logoutUser();
-    console.log('logout: loggedIn ?' + loggedIn)
+    console.log("logoutSubmit success!");
   }
+  // history.push('/login');
 
   function test() {
     const data = auth.currentUser
@@ -86,7 +81,7 @@ const Login: React.FC = () => {
       />
       <IonButton onClick={loginSubmit}>Login</IonButton>
       <IonButton onClick={logoutSubmit}>Logout</IonButton>
-      <IonButton onClick={test}>aaa</IonButton>
+      <IonButton onClick={test}>test vars</IonButton>
       
     </IonContent>
   </IonPage>
