@@ -7,10 +7,13 @@ import {
   IonInput,
   IonPage,
   IonContent,
+  IonText,
+  IonLoading,
 } from "@ionic/react";
-import { useAuth } from "../service/auth";
-import { createGroceryList, auth } from "../service/firebaseConfig";
-import { useHistory } from "react-router-dom";
+import { useAuth } from "../service/authFirebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../service/firebaseConfig";
+import { Redirect } from "react-router";
 
 
 //Use one which works fine for you 
@@ -19,7 +22,8 @@ import { useHistory } from "react-router-dom";
 const Login: React.FC = () => {
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
-  const history = useHistory()
+  const [status, setStatus] = useState({ loading: false, error: false });
+
 
   //TODO 
   // add Logic if empty 
@@ -27,64 +31,57 @@ const Login: React.FC = () => {
   // invalid mail
   //add Toast on success
 
-  const { signIn, loginUser, logoutUser, loggedIn, loading } = useAuth();
-  
-  //make async call to firebase and save userdata for session
-  async function loginSubmit(event: any) {
-    event.preventDefault();
-    //https://firebase.google.com/docs/reference/js/v8/firebase.User
-    const userData = await loginUser(mail, password);
-    console.log("userData: " +  userData)
-    if (userData.error) {
-      console.log("error: " + userData.error);
-    } else {
-      signIn(userData);
-      // history.push('/tab1')
-      console.log("loginSubmit success!");
-    }
-  }
+  const { loggedIn } = useAuth();
 
-  function logoutSubmit(event: any) {
-    event.preventDefault();
-    logoutUser();
-    console.log("logoutSubmit success!");
-  }
-  // history.push('/login');
+  //make async call to firebase and save userdata for session
+  const handleLogin = async () => {
+    try {
+      setStatus({ loading: true, error: false });
+      const data = (await signInWithEmailAndPassword(auth, mail, password)).user;
+      console.log('handleLogin user:', data);
+    } catch (error) {
+      setStatus({ loading: false, error: true });
+      console.log('error:', error);
+    }
+  };
 
   function test() {
     const data = auth.currentUser
     console.log("data: " + data?.uid);
     console.log("loggedIn: " + loggedIn);
-    console.log('loading: ' + loading);
     console.log('currentUser: ' + auth?.currentUser);
     // createGroceryList("LIDL");
     // console.log("test");
   }
-
+  if (loggedIn) {
+    return <Redirect to="/user/tab1" />;
+  }
   return (
     <IonPage>
-    <IonHeader>
-      <IonToolbar>
-        <IonTitle>Login</IonTitle>
-      </IonToolbar>
-    </IonHeader>
-    <IonContent fullscreen className="ion-padding">
-      <IonInput 
-        placeholder="E-Mail" 
-        type="text" 
-        onIonChange={(e: any) => setMail(e.target.value)}
-      />
-      <IonInput 
-        placeholder="Password" 
-        type="password" 
-        onIonChange={(e: any) => setPassword(e.target.value)}
-      />
-      <IonButton onClick={loginSubmit}>Login</IonButton>
-      <IonButton onClick={logoutSubmit}>Logout</IonButton>
-      <IonButton onClick={test}>test vars</IonButton>
-      
-    </IonContent>
-  </IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Login</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen className="ion-padding">
+        <IonInput
+          placeholder="E-Mail"
+          type="text"
+          onIonChange={(e: any) => setMail(e.target.value)}
+        />
+        <IonInput
+          placeholder="Password"
+          type="password"
+          onIonChange={(e: any) => setPassword(e.target.value)}
+        />
+        <IonButton onClick={handleLogin}>Login</IonButton>
+        <IonButton onClick={test}>test vars</IonButton>
+        {status.error &&
+          <IonText color="danger">Ungültige Eingabe</IonText>
+        }
+        <IonLoading isOpen={status.loading} />
+      </IonContent>
+    </IonPage>
   );
 };
 

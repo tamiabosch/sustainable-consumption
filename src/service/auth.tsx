@@ -13,17 +13,17 @@ import { useHistory } from 'react-router-dom';
 
 
 type AuthContextType = {
-  loading:boolean
-  loggedIn:boolean
-  loginUser:(email:string, password:string)=> any
-  logoutUser:()=>void
-  signIn: (user:any)=>void
-  token: string 
+  loading: boolean
+  loggedIn: boolean
+  loginUser: (email: string, password: string) => any
+  logoutUser: () => void
+  signIn: (user: any) => void
+  token: string
   // resetPassword:(email:any)=>{}
   // updateEmail:(email:any)=>{}
   // updatePassword:(password:any)=>{}
 }
-const AuthContext =  createContext<AuthContextType>({} as AuthContextType);
+const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
 
@@ -33,8 +33,90 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState(localStorage.getItem(`token`) || '');
 
-  const loggedIn = useMemo(() => (token? true : false), [token]);
+  const loggedIn = useMemo(() => (token ? true : false), [token]);
   const history = useHistory();
+
+
+
+  //login User
+  async function loginUser(email: string, password: string) {
+    try {
+      const data = (await signInWithEmailAndPassword(auth, email, password)).user;
+      const { refreshToken } = data;
+      console.log("refreshToken: " + refreshToken);
+      console.log("data: " + data);
+      return data;
+    } catch (e) {
+      console.error("Error in Registering customer ", e);
+      return { error: e, message: "Error in Registering customer" };
+    }
+  }
+  const signIn = (user: User) => {
+    setUser(user);
+    const { refreshToken } = user;
+    setToken(refreshToken);
+    localStorage.setItem(`token`, refreshToken);
+    console.log("signIn User:", user);
+  };
+  //logout User
+  const logoutUser = useCallback(() => {
+    signOut(auth);
+    setToken('');
+    setUser(null);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadUser() {
+      setLoading((loading) => loading = true);
+      auth.onAuthStateChanged(function (user) {
+
+        if (user) {
+          // User is signed in.
+          if (isMounted) setUser(user);
+          console.log("Auth useEffect: " + user.refreshToken)
+          if (isMounted) setToken(user.refreshToken);
+          if (isMounted) setLoading((loading) => loading = false);
+        } else {
+          if (isMounted) setLoading((loading) => loading = false)
+          logoutUser();
+        }
+      });
+    }
+    if (token) {
+      console.log('Auth loadUser: ' + token);
+      loadUser();
+    }
+    if (isMounted) setLoading((loading) => loading = false);
+    console.log("Auth useEffect: " + loggedIn)
+    return () => { isMounted = false };
+  }, [token, logoutUser, loggedIn]);
+
+  //unsubscribe from auth state changes
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
+      setLoading(false);
+    });
+    return unsubscribe;
+  }, []);
+
+  //values that AuthContext provides
+  const value = {
+    loading,
+    loggedIn,
+    loginUser,
+    logoutUser,
+    signIn,
+    token
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+export default AuthProvider;
+
+export function useAuth() {
+  return useContext<AuthContextType>(AuthContext);
+}
 
   //add UserData to DB
   // const addData = async (
@@ -48,103 +130,6 @@ export const AuthProvider: React.FC<React.ReactNode> = ({ children }) => {
   //     console.error("Error adding document: ", e);
   //   }
   // };
-
-  //login User
-  async function loginUser(email: string, password: string) {
-    try {
-      const data = (await signInWithEmailAndPassword(auth, email, password)).user;
-      const { refreshToken } = data;
-      console.log("refreshToken: " + refreshToken);
-      console.log("data: " + data);
-      return data;
-    } catch (e) {
-      console.error("Error in Registering customer ", e);
-      return {error: e, message: "Error in Registering customer"};
-    }
-  }
-  const signIn = (user: User) => {
-    setUser(user);
-    const { refreshToken } = user;
-    setToken(refreshToken);
-    localStorage.setItem(`token`, refreshToken);
-    console.log("signIn User:", user);
-  };
-  //logout User
-    const logoutUser = useCallback(() => {
-      signOut(auth);
-      setToken('');
-      setUser(null);
-    },[]);
-
-  useEffect(() => {
-    let isMounted = true
-    async function loadUser() {
-      setLoading((loading) => loading = true);
-      // onAuthStateChanged(auth, (user) => {
-        // if (user) {
-          //   // User is signed in, see docs for a list of available properties
-          //   // https://firebase.google.com/docs/reference/js/firebase.User
-          //   console.log("userrrr"+user)
-          //   const { refreshToken } = user;
-          //   setUser(user);
-          //   setToken(refreshToken);
-          // } else {
-            //   // User is signed out
-            //   logoutUser();
-            // }
-            auth.onAuthStateChanged(function (user) {
-       
-        if (user) {
-          // User is signed in.
-          if (isMounted) setUser(user);
-          console.log("Auth useEffect: " + user.refreshToken)
-          if (isMounted) setToken(user.refreshToken);
-          if (isMounted)  setLoading((loading) => loading = false);
-        } else {
-          if (isMounted) setLoading((loading) => loading = false)
-          logoutUser();
-        }
-    });
-  }
-  if (token) {
-    console.log('Auth loadUser: ' + token);
-    loadUser();
-  }
-  if (isMounted) setLoading((loading) => loading = false);
-  console.log("Auth useEffect: " + loggedIn)
-  return () => { isMounted = false };
-  }, [token, logoutUser, loggedIn]);
-
-  //unsubscribe from auth state changes
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged((user: any) => {
-  //     setLoading(false);
-  //   });
-  //   return unsubscribe;
-  // }, []);
-
-  //values that AuthContext provides
-  const value = { 
-    loading, 
-    loggedIn, 
-    loginUser,
-    logoutUser, 
-    signIn,
-    token
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-export default AuthProvider;
-
-export function useAuth() {
-  return useContext<AuthContextType>(AuthContext);
-}
-
-
-export async function getCurrentUser() {
-  return auth.currentUser; 
-}
 
 /**
  * so this function is called when the authentication state changes

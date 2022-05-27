@@ -10,12 +10,6 @@ const Tab1: React.FC = () => {
     <IonPage>
       <Header title='Einkäufe' />
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 1</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-
         {/* Notifications */}      
         <IonCard>
           <IonCardHeader color="warning">
