@@ -1,11 +1,14 @@
 import { IonApp, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { cart, information } from "ionicons/icons";
+import { cart, information, people } from "ionicons/icons";
 import { Route, Redirect } from "react-router";
-import Tab1 from "../pages/Tab1";
-import Tab3 from "../pages/Tab3";
+import Tab1 from '../pages/Tab1';
+import Tab2 from '../pages/Tab2';
+import Tab3 from '../pages/Tab3';
+import AddPurchase from '../pages/AddPurchase';
+import { useAuth } from './../service/authFirebase';
 
-const SingleReview = () => {
+export const SingleReview = () => {
     return (
       <IonApp>
         <IonReactRouter>
@@ -36,5 +39,47 @@ const SingleReview = () => {
       </IonApp>
     );
   };
+ 
 
-  export default SingleReview;  
+  export const PeerReview = () => {
+    console.log("PeerReview called");
+    const { loggedIn } = useAuth();
+    if (!loggedIn) {
+      return <Redirect to="/login" />;
+    }
+    return (
+      <IonTabs>
+        <IonRouterOutlet>
+          <Route exact path="/user/tab1">
+            <Tab1 />
+          </Route>
+          <Route exact path="/user/tab1/add">
+            <AddPurchase />
+          </Route>
+          <Route exact path="/user/tab2">
+            <Tab2 />
+          </Route>
+          <Route path="/user/tab3">
+            <Tab3 />
+          </Route>
+          <Route exact path="/user">
+            <Redirect to="/user/tab1" />
+          </Route>
+        </IonRouterOutlet>
+        <IonTabBar slot="bottom">
+          <IonTabButton tab="tab1" href="/user/tab1">
+            <IonIcon icon={cart} />
+            <IonLabel>Einkäufe</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="tab2" href="/user/tab2">
+            <IonIcon icon={people} />
+            <IonLabel>Feedback</IonLabel>
+          </IonTabButton>
+          <IonTabButton tab="tab3" href="/user/tab3">
+            <IonIcon icon={information} />
+            <IonLabel>Aufgabe</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      </IonTabs>
+    );
+  };

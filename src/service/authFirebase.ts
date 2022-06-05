@@ -8,7 +8,7 @@ interface Auth {
 
 interface AuthInit {
   loading: boolean;
-  auth?: Auth | undefined;
+  auth?: Auth;
 }
 
 export const AuthContext = React.createContext<Auth>({ loggedIn: false });

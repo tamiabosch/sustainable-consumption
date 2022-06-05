@@ -2,7 +2,6 @@
 import { initializeApp } from "firebase/app";
 import { addDoc, collection, getFirestore, serverTimestamp } from "firebase/firestore";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import * as firebase from 'firebase/app';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -21,16 +20,18 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
+
 
 // Import Admin SDK
 const { getDatabase } = require('firebase/database');
 
 // Get a database reference to our blog
 export const realtimeDB = getDatabase();
-export const db = getFirestore(app);
+export const db = getFirestore();
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
+
 
 export const createGroceryList = (userName: string) => {
   const groceriesColRef = collection(db, 'groceryLists')
