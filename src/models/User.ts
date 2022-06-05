@@ -4,7 +4,7 @@ export interface User {
     id: number;
     alias: string;  
     name: string;
-    completed: false;
+    completed: boolean;
     lastLogin: Date;
     loginCount: number;
     label: ReviewType;

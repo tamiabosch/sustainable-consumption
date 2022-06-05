@@ -4,26 +4,26 @@ import Notification from '../components/NotificationItem';
 import Purchase from '../components/Purchase';
 import Header from '../components/Header';
 /* Firestore */
-import { db } from "../service/firebaseConfig";
+import { db, auth } from "../service/firebaseConfig";
 import { collection, doc, getDocs } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Purchase as PurchaseModel } from '../models/Purchase';
 
 
 const Tab1: React.FC = () => {
   const { userId } = useAuth();
-  const usersCollectionRef = collection(db, "users");
-
-  const userDocumentRef = doc(db, "users", userId ? userId : "6sKG5B9fzRdJfJ3SmvPtiX6h4A83");
+  const [purchases, setPurchases] = useState<any>([]);
+  const entiresDocumentRef = collection(db, "users", "6sKG5B9fzRdJfJ3SmvPtiX6h4A83", 'entries');
 
   useEffect(() => {
-    const getUser = async () => {
-      // const userData = await getDocs(usersCollectionRef);
-      console.log("userData: ", userDocumentRef);
-
+    const getPurchases = async () => {
+      const data = await getDocs(entiresDocumentRef);
+      console.log('data:', data.docs);
+      setPurchases(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
 
-    getUser();
+    getPurchases();
   }, []);
   return (
     <IonPage>
@@ -38,9 +38,16 @@ const Tab1: React.FC = () => {
         </IonCard>
 
          {/* Example Cart */}
-        <Purchase title="Kaffee" date="20.05.2020" link="#" reviewed={true} peerReviewed={true} />
-
-
+         {purchases.map((purchase: PurchaseModel) => {
+        return (
+          <Purchase 
+            title={purchase.title} 
+            date={purchase.date} 
+            link={"/user/tab1/" + purchase.id} 
+            reviewed={purchase.reviewed} 
+            peerReviewed={purchase.peerReviewed} />
+        );
+      })}
         {/*-- fab placed to the bottom end --*/}
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
           <IonFabButton routerLink="/user/tab1/add">

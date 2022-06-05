@@ -6,6 +6,7 @@ import Tab1 from '../pages/Tab1';
 import Tab2 from '../pages/Tab2';
 import Tab3 from '../pages/Tab3';
 import AddPurchase from '../pages/AddPurchase';
+import Purchase from '../pages/Purchase';
 import { useAuth } from './../service/authFirebase';
 
 export const SingleReview = () => {
@@ -55,6 +56,9 @@ export const SingleReview = () => {
           </Route>
           <Route exact path="/user/tab1/add">
             <AddPurchase />
+          </Route>
+          <Route exact path="/user/tab1/:id">
+            <Purchase />
           </Route>
           <Route exact path="/user/tab2">
             <Tab2 />
