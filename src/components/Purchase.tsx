@@ -1,6 +1,7 @@
 import {IonItem, IonIcon, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent} from "@ionic/react";
 import { createOutline, enterOutline, exitOutline, checkmark } from 'ionicons/icons';
 import Label  from './Label';
+import { format, parseISO } from 'date-fns';
 
 interface PurchaseProps {
     title: string;
@@ -18,8 +19,8 @@ interface PurchaseProps {
           <IonCard>
             <IonCardHeader>
                   <IonIcon className="float-right" icon={createOutline} />
-                  <IonCardTitle>{title}</IonCardTitle>
-                  <IonCardSubtitle>{date}</IonCardSubtitle>
+                  <IonCardTitle className="text-base" >{title}</IonCardTitle>
+                  <IonCardSubtitle>{format(parseISO(date), 'd MMM, yyyy')}</IonCardSubtitle>
             </IonCardHeader>
             <IonItem>
                 { 
@@ -41,9 +42,6 @@ interface PurchaseProps {
                   </Label>
                 }
             </IonItem>
-            <IonCardContent>
-                Comment on this purchase
-            </IonCardContent>
           </IonCard>
         );
     }

@@ -57,9 +57,6 @@ export const SingleReview = () => {
           <Route exact path="/user/tab1/add">
             <AddPurchase />
           </Route>
-          <Route exact path="/user/tab1/:id">
-            <Purchase />
-          </Route>
           <Route exact path="/user/tab2">
             <Tab2 />
           </Route>
