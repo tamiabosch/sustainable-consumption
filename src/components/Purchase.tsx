@@ -4,6 +4,7 @@ import Label  from './Label';
 import { format, parseISO } from 'date-fns';
 
 interface PurchaseProps {
+    key: number;
     title: string;
     date: string;
     link?: string;
@@ -12,11 +13,11 @@ interface PurchaseProps {
     otherReview?: boolean;
   }
   
-  const Purchase: React.FC<PurchaseProps> = ({ title, link, date, reviewed, peerReviewed, otherReview, ...props}) => {
+  const Purchase: React.FC<PurchaseProps> = ({ key, title, link, date, reviewed, peerReviewed, otherReview, ...props}) => {
     //add status of purchase review, conditional rendering of labels
     const Purchase = () => {
         return (
-          <IonCard>
+          <IonCard key={key}>
             <IonCardHeader>
                   <IonIcon className="float-right" icon={createOutline} />
                   <IonCardTitle className="text-base" >{title}</IonCardTitle>

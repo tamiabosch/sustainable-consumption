@@ -1,4 +1,4 @@
-import { IonButton, IonHeader, IonIcon, IonTitle, IonToolbar } from "@ionic/react";
+import { IonButton, IonButtons, IonHeader, IonIcon, IonTitle, IonToolbar } from "@ionic/react";
 import { signOut } from "firebase/auth";
 import { logOutOutline } from "ionicons/icons";
 import { auth } from "../service/firebaseConfig";
@@ -6,6 +6,7 @@ import { auth } from "../service/firebaseConfig";
 
 interface HeaderProps {
   title: string;
+  slot?: React.ReactNode | string ; 
 }
 
 const Header: React.FC<HeaderProps> = (props) => {
@@ -17,9 +18,14 @@ const Header: React.FC<HeaderProps> = (props) => {
     <IonHeader>
         <IonToolbar>
             <IonTitle>{props.title}</IonTitle>
+            {!props.slot ? 
             <IonButton slot="end" fill="clear" onClick={logoutSubmit}>
                 <IonIcon slot="icon-only" icon={logOutOutline} />
-            </IonButton>
+            </IonButton> :             
+            <IonButtons slot="end">
+                {props.slot}
+            </IonButtons>}
+            
         </IonToolbar>
     </IonHeader>
   );
