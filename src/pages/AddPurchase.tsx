@@ -1,14 +1,7 @@
 import {
-  IonBackButton,
   IonButton,
-  IonButtons,
-  IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
   IonContent,
   IonDatetime,
-  IonHeader,
   IonIcon,
   IonInput,
   IonItem,
@@ -16,14 +9,13 @@ import {
   IonList,
   IonListHeader,
   IonModal,
+  IonNote,
   IonPage,
   IonPopover,
   IonSelect,
   IonSelectOption,
   IonTextarea,
-  IonTitle,
   IonToast,
-  IonToolbar,
 } from '@ionic/react';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
@@ -31,11 +23,11 @@ import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { format, parseISO } from 'date-fns';
-import { addOutline, checkmark, saveOutline } from 'ionicons/icons';
+import { addOutline, saveOutline } from 'ionicons/icons';
 import { Task } from '../models/Task';
 import { Item } from '../models/Item';
-import Label from '../components/Label';
 import Header from '../components/Header';
+import PurchaseItem from '../components/PurchaseItem';
 
 
 const AddEntryPage: React.FC = () => {
@@ -46,12 +38,12 @@ const AddEntryPage: React.FC = () => {
   const [task, setTask] = useState<Task>(Task.CERTIFICATE);
   const [description, setDescription] = useState<string | null | undefined>('');
   const [showToast, setShowToast] = useState(false);
+  //const [items, setItems] = useState<Item[]>([]);
+  const [currentItem, setCurrentItem] = useState<Item>({ title: '', certificate: '', origin: '' });
   const [items, setItems] = useState<Item[]>([
     { title: 'Milch', certificate: "Bio", origin: "Bayern" },
     { title: 'Ei', certificate: "Bio", origin: "Bayern" },
   ]);
-  const [currentItem, setCurrentItem] = useState<Item>({ title: '', certificate: '', origin: '' });
-
   const [showModal, setShowModal] = useState(false);
 
 
@@ -66,14 +58,19 @@ const AddEntryPage: React.FC = () => {
       setShowToast(true);
     }
   }
+  const handleItemDelete = async (itemToDelete: Item) => {
+    setItems(items.filter(item => item.title !== itemToDelete.title));
+  }
 
   const handleSave = async () => {
     if (date && title && task) {
       const entriesRef = collection(db, 'users', userId ? userId : '0', 'purchases');
+      //Purchase Data
       const entryData = {
         date,
         title,
         description,
+        task,
         reviewed: false,
         peerReviewed: false,
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
@@ -83,26 +80,18 @@ const AddEntryPage: React.FC = () => {
       const entryRef = await setDoc(doc(entriesRef), entryData);
       console.log('saved:', entryRef);
       history.goBack();
-      //history.replace('user/tab1')
     } else {
       setShowToast(true);
-      console.log('missing data');
+      console.log('missing data at handleSave method');
     }
   };
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="start">
-            <IonBackButton />
-          </IonButtons>
-          <IonTitle>Neuer Einkauf</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+      <Header title='Neuer Einkauf' showBackBtn={true} />
       <IonContent fullscreen>
         <IonList>
-          <IonListHeader>Einkauf Details</IonListHeader>
+          <IonListHeader className='uppercase'>Einkauf Details</IonListHeader>
           <IonItem>
             <IonLabel position="stacked">Titel</IonLabel>
             <IonInput value={title} onIonChange={(event) => setTitle(event.detail.value)} placeholder="Einkaufsort" />
@@ -112,7 +101,7 @@ const AddEntryPage: React.FC = () => {
             <IonInput id="datetimeValue" value={date ? format(parseISO(date), 'd MMM, yyyy') : date} ></IonInput>
           </IonItem>
           <IonItem id="open-modal">
-            <IonLabel position="stacked" >Wöchentliches Thema</IonLabel>
+            <IonLabel className='text-lg' position="stacked" >Wöchentliches Thema</IonLabel>
             <IonSelect value={task} onIonChange={(event) => setTask(event.detail.value)}>
               <IonSelectOption value={Task.CERTIFICATE}>Zertifikate</IonSelectOption>
               <IonSelectOption value={Task.SEASONALITY}>Saisonalität</IonSelectOption>
@@ -121,36 +110,25 @@ const AddEntryPage: React.FC = () => {
           </IonItem>
           <IonItem>
             <IonLabel position="stacked">Kommentar</IonLabel>
-            <IonTextarea placeholder="Informationen zur Auswahl der Artikel oder zusätzliche Hinweise" value={description} onIonChange={(event) => setDescription(event.detail.value)} />
+            <IonTextarea placeholder="Informationen zur Auswahl der Artikel oder andere Hinweise" value={description} onIonChange={(event) => setDescription(event.detail.value)} />
           </IonItem>
         </IonList>
         <IonList className='ion-margin-top ion-margin-bottom'>
           <div className='flex flex-row content-between items-center p-5'>
-            <IonListHeader className='p-0'>Artikel eintragen</IonListHeader>
+            <IonListHeader className='p-0 uppercase'>Artikel eintragen</IonListHeader>
             <IonButton fill="outline" onClick={() => setShowModal(!showModal)}>
-              <IonIcon slot="start" icon={addOutline} />
-              Hinzufügen
+              <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </div>
+          <IonNote className='px-5 mb-5'>Notiz zur Auswahl der Artikel</IonNote><br />
           {items.map((item: Item, index: number) => {
             return (
-              <IonCard key={index}>
-                <IonCardHeader>
-                  <IonCardTitle className="text-base" >{item.title}</IonCardTitle>
-                  <IonCardSubtitle>Subtitle</IonCardSubtitle>
-                </IonCardHeader>
-                <IonItem>
-                  <Label text="bewertet" link={'#'} >
-                    <IonIcon slot="start" icon={checkmark} />
-                  </Label>
-                </IonItem>
-              </IonCard>
+              <PurchaseItem key={index} item={item} onDelete={() => handleItemDelete(item)} editable={true} />
             );
           })}
         </IonList>
-        <IonButton expand="block" onClick={handleSave}>
-          <IonIcon slot="start" icon={saveOutline} />
-          Einkauf speichern
+        <IonButton className='uppercase' expand="block" onClick={handleSave}>
+          <IonIcon slot="start" icon={saveOutline} /> Einkauf speichern
         </IonButton>
         <IonToast
           isOpen={showToast}
@@ -159,6 +137,7 @@ const AddEntryPage: React.FC = () => {
           duration={2000}
         />
       </IonContent>
+      {/* Calender Popover */}
       <IonPopover trigger="open-modal" showBackdrop={true}>
         <IonContent>
           <IonDatetime
@@ -170,9 +149,10 @@ const AddEntryPage: React.FC = () => {
           ></IonDatetime>
         </IonContent>
       </IonPopover>
+
       {/* Item Modal */}
       <IonModal isOpen={showModal}>
-        <Header title="Neuer Artikel" slot={<IonButton onClick={() => setShowModal(false)}>Abbrechen</IonButton>} />
+        <Header title="Neuer Artikel" slotRight={<IonButton onClick={() => setShowModal(false)}>Abbrechen</IonButton>} />
         <IonContent>
           <IonList>
             <IonItem>
@@ -197,9 +177,8 @@ const AddEntryPage: React.FC = () => {
                 placeholder="Bayern, Deutschland ..." />
             </IonItem>
           </IonList>
-          <IonButton expand="block" onClick={handleItemSave}>
-            <IonIcon slot="start" icon={saveOutline} />
-            Hinzufügen
+          <IonButton className='uppercase' expand="block" onClick={handleItemSave}>
+            <IonIcon slot="start" icon={addOutline} /> Hinzufügen
           </IonButton>
         </IonContent>
       </IonModal>

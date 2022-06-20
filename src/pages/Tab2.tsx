@@ -1,12 +1,12 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonFabButton, IonFab } from '@ionic/react';
-import { checkmark, cart, addCircleOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonLabel, IonButton, IonFabButton, IonFab } from '@ionic/react';
+import { checkmark } from 'ionicons/icons';
 import Notification from '../components/NotificationItem';
 import Header from '../components/Header';
 
 const Tab2: React.FC = () => {
   return (
     <IonPage>
-    <Header title="Feedback" />
+    <Header title="Feedback" showLogout={true}/>
     <IonContent fullscreen>
 
       {/* Notifications */}

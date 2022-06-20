@@ -7,45 +7,38 @@ interface PurchaseProps {
     key: number;
     title: string;
     date: string;
-    link?: string;
+    link: string;
     reviewed: boolean;
     peerReviewed: boolean;
     otherReview?: boolean;
   }
   
-  const Purchase: React.FC<PurchaseProps> = ({ key, title, link, date, reviewed, peerReviewed, otherReview, ...props}) => {
+  const Purchase: React.FC<PurchaseProps> = ({ title, link, date, reviewed, peerReviewed, otherReview, ...props}) => {
     //add status of purchase review, conditional rendering of labels
-    const Purchase = () => {
-        return (
-          <IonCard key={key}>
-            <IonCardHeader>
-                  <IonIcon className="float-right" icon={createOutline} />
-                  <IonCardTitle className="text-base" >{title}</IonCardTitle>
-                  <IonCardSubtitle>{format(parseISO(date), 'd MMM, yyyy')}</IonCardSubtitle>
-            </IonCardHeader>
-            <IonItem>
-                { 
-                  reviewed && 
-                  <Label text="bewertet" link={link ? link : '#'} > 
-                    <IonIcon slot="start" icon={checkmark} /> 
-                  </Label> 
-                  }
-                { 
-                  peerReviewed && 
-                  <Label text="Feedback erhalten" link={link ? link : '#'} icon="enterOutline">
-                    <IonIcon slot="start" icon={enterOutline} /> 
-                  </Label> 
-                }
-                { 
-                  otherReview && 
-                  <Label text="Feedback gegeben" link={link ? link : '#'} icon="enterOutline">
-                    <IonIcon slot="start" icon={exitOutline} /> 
-                  </Label>
-                }
-            </IonItem>
-          </IonCard>
-        );
-    }
+    const Purchase = () => (
+      <IonCard routerLink={link}>
+        <IonCardHeader>
+          <IonIcon className="float-right" icon={createOutline} />
+          <IonCardTitle className="text-base">{title}</IonCardTitle>
+          <IonCardSubtitle>{format(parseISO(date), 'd MMM, yyyy')}</IonCardSubtitle>
+        </IonCardHeader>
+        <IonCardContent>
+
+          {reviewed &&
+            <Label text="bewertet" link={link ? link : '#'}>
+              <IonIcon slot="start" icon={checkmark} />
+            </Label>}
+          {peerReviewed &&
+            <Label text="Feedback erhalten" link={link ? link : '#'} icon="enterOutline">
+              <IonIcon slot="start" icon={enterOutline} />
+            </Label>}
+          {otherReview &&
+            <Label text="Feedback gegeben" link={link ? link : '#'} icon="enterOutline">
+              <IonIcon slot="start" icon={exitOutline} />
+            </Label>}
+        </IonCardContent>
+      </IonCard>
+    )
     return <Purchase />;
 
   };

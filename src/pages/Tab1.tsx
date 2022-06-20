@@ -26,7 +26,7 @@ const Tab1: React.FC = () => {
   }, []);
   return (
     <IonPage>
-      <Header title='Einkäufe' />
+      <Header title='Einkäufe' showLogout={true}/>
       <IonContent fullscreen>
         {/* Notifications */}
         <IonCard>
@@ -43,7 +43,7 @@ const Tab1: React.FC = () => {
               key={purchase.id}
               title={purchase.title}
               date={purchase.date}
-              link={"/user/tab1/" + purchase.id}
+              link={"/user/tab1/view/" + purchase.id}
               reviewed={purchase.reviewed}
               peerReviewed={purchase.peerReviewed} />
           );
