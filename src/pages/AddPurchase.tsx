@@ -50,7 +50,7 @@ const AddEntryPage: React.FC = () => {
   //collection 2,4,6 
   //doc 1,3,5
   const handleItemSave = async () => {
-    if (!Object.values(currentItem).every(x => (x === null || x === ''))) {
+    if (currentItem.certificate && currentItem.title && currentItem.origin) {
       setItems(prevItems => [...prevItems, currentItem])
       setShowModal(false);
       setCurrentItem({ title: '', certificate: '', origin: '' });
@@ -120,7 +120,7 @@ const AddEntryPage: React.FC = () => {
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </div>
-          <IonNote className='px-5 mb-5'>Notiz zur Auswahl der Artikel</IonNote><br />
+          <IonNote className='px-5 mb-5'>Wählen sie passend zum Thema 3-5 Produkte aus.</IonNote><br />
           {items.map((item: Item, index: number) => {
             return (
               <PurchaseItem key={index} item={item} onDelete={() => handleItemDelete(item)} editable={true} />
@@ -150,7 +150,7 @@ const AddEntryPage: React.FC = () => {
         </IonContent>
       </IonPopover>
 
-      {/* Item Modal */}
+      {/* Purchase Item Modal */}
       <IonModal isOpen={showModal}>
         <Header title="Neuer Artikel" slotRight={<IonButton onClick={() => setShowModal(false)}>Abbrechen</IonButton>} />
         <IonContent>

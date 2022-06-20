@@ -1,7 +1,7 @@
 import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab } from '@ionic/react';
 import { addCircleOutline } from 'ionicons/icons';
 import Notification from '../components/NotificationItem';
-import Purchase from '../components/Purchase';
+import PurchaseOverview from "../components/PurchaseOverview"
 import Header from '../components/Header';
 /* Firestore */
 import { db } from "../service/firebaseConfig";
@@ -39,13 +39,14 @@ const Tab1: React.FC = () => {
         {/* Example Cart */}
         {purchases.map((purchase: PurchaseModel) => {
           return (
-            <Purchase
+            <PurchaseOverview
               key={purchase.id}
               title={purchase.title}
               date={purchase.date}
+              task={purchase.task}
               link={"/user/tab1/view/" + purchase.id}
-              reviewed={purchase.reviewed}
-              peerReviewed={purchase.peerReviewed} />
+              reviewed={true}
+              peerReviewed={true} />
           );
         })}
         {/*-- fab placed to the bottom end --*/}

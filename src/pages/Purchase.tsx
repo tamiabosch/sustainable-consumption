@@ -5,6 +5,9 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonContent,
+  IonIcon,
+  IonItem,
+  IonLabel,
   IonNote,
   IonPage,
 } from '@ionic/react';
@@ -18,6 +21,7 @@ import { Purchase as PurchaseModel } from '../models/Purchase';
 import Header from '../components/Header';
 import { Item } from '../models/Item';
 import PurchaseItem from '../components/PurchaseItem';
+import { cartOutline } from 'ionicons/icons';
 
 
 
@@ -43,9 +47,14 @@ const Purchase: React.FC = () => {
           <>
             <IonCard>
               <IonCardHeader>
-                <IonCardTitle>{purchase.title}</IonCardTitle>
-                <IonCardSubtitle>{format(parseISO(purchase.date), 'd MMM, yyyy')}</IonCardSubtitle>
-                <IonCardSubtitle>{purchase.task}</IonCardSubtitle>
+                <IonItem className="ion-activated">
+                  <IonIcon icon={cartOutline} slot="start" />
+                  <IonLabel>
+                    <IonCardTitle>{purchase.title}</IonCardTitle>
+                    <IonCardSubtitle>{format(parseISO(purchase.date), 'd MMM, yyyy')}</IonCardSubtitle>
+                    <IonCardSubtitle>{purchase.task}</IonCardSubtitle>
+                  </IonLabel>
+                </IonItem>
               </IonCardHeader>
               <IonCardContent>
                 {purchase.description}
