@@ -14,7 +14,7 @@ interface PurchaseOverviewProps {
   peerReviewed: boolean;
 }
 
-const PurchaseOverview: React.FC<PurchaseOverviewProps> = ({ title, link, date, task, reviewed, peerReviewed, ...props }) => {
+const PurchaseOverview: React.FC<PurchaseOverviewProps> = ({ title, link, date, task, reviewed, peerReviewed }) => {
   //add status of purchase review, conditional rendering of labels
   const PurchaseOverview = () => (
     <IonCard routerLink={link}>

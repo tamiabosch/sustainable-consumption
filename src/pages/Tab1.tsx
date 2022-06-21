@@ -30,7 +30,7 @@ const Tab1: React.FC = () => {
       <IonContent fullscreen>
         {/* Notifications */}
         <IonCard>
-          <IonCardHeader color="warning">
+          <IonCardHeader color="primary">
             <IonCardSubtitle>Notifications</IonCardSubtitle>
           </IonCardHeader>
           <Notification details='Lidl' link='#' reviewType='peerReview' />
@@ -51,7 +51,7 @@ const Tab1: React.FC = () => {
         })}
         {/*-- fab placed to the bottom end --*/}
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
-          <IonFabButton routerLink="/user/tab1/add">
+          <IonFabButton routerLink="/user/tab1/add/purchase">
             <IonIcon icon={addCircleOutline} />
           </IonFabButton>
         </IonFab>

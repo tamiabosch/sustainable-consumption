@@ -11,4 +11,5 @@ export interface Purchase {
     reviewed: boolean;
     peerReviewed: boolean;
     task: Task
+    owner: string;
 }
