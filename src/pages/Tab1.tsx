@@ -9,6 +9,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 import { useEffect, useState } from 'react';
 import { Purchase as PurchaseModel } from '../models/Purchase';
+import PurchaseHeader from '../components/PurchaseHeader';
 
 
 const Tab1: React.FC = () => {
@@ -39,14 +40,17 @@ const Tab1: React.FC = () => {
         {/* Example Cart */}
         {purchases.map((purchase: PurchaseModel) => {
           return (
-            <PurchaseOverview
+            <PurchaseHeader
               key={purchase.id}
               title={purchase.title}
               date={purchase.date}
               task={purchase.task}
               link={"/user/tab1/view/" + purchase.id}
-              reviewed={true}
-              peerReviewed={true} />
+              overview={{
+                reviewed: purchase.reviewed,
+                peerReviewed: true
+              }}
+              />
           );
         })}
         {/*-- fab placed to the bottom end --*/}

@@ -82,14 +82,12 @@ const AddEntryPage: React.FC = () => {
       const docRef = doc(entriesRef);
       //all good, save doc to db
       await setDoc(docRef, entryData)
-      //how to get ID from new doc?
-      console.log(docRef.id);
-      history.goBack();
-      // const location = {
-      //   pathname: '/user/tab1/add/review',
-      //   state: { purchaseId: 0 }
-      // }
-      // history.replace(location)
+      //send purchaseId to next view
+      const location = {
+        pathname: '/user/tab1/add/review',
+        state: { purchaseId: docRef.id }
+      }
+      history.replace(location)
     } else {
       setShowToast(true);
       console.log('missing data at handleSave method');

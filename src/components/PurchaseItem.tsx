@@ -7,7 +7,7 @@ interface PurchaseItemProps {
     onDelete?: (item: Item) => void;
     editable?: boolean;
 }
-// add options, disable delete, add review
+// add o ptions, disable delete, add review
 const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, ...props }) => {
     return (
         <IonCard>

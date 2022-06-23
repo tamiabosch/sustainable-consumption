@@ -16,12 +16,11 @@ import { getDoc, doc } from 'firebase/firestore';
 import { useParams } from 'react-router';
 import { useAuth } from '../service/authFirebase';
 import { db } from "../service/firebaseConfig";
-import { format, parseISO } from 'date-fns';
 import { Purchase as PurchaseModel } from '../models/Purchase';
 import Header from '../components/Header';
 import { Item } from '../models/Item';
 import PurchaseItem from '../components/PurchaseItem';
-import { cartOutline } from 'ionicons/icons';
+import PurchaseHeader from '../components/PurchaseHeader';
 
 
 
@@ -45,22 +44,7 @@ const Purchase: React.FC = () => {
       <IonContent className="ion-padding">
         {purchase ? (
           <>
-            <IonCard>
-              <IonCardHeader>
-                <IonItem className="ion-activated">
-                  <IonIcon icon={cartOutline} slot="start" />
-                  <IonLabel>
-                    <IonCardTitle>{purchase.title}</IonCardTitle>
-                    <IonCardSubtitle>{format(parseISO(purchase.date), 'd MMM, yyyy')}</IonCardSubtitle>
-                    <IonCardSubtitle>{purchase.task}</IonCardSubtitle>
-                  </IonLabel>
-                </IonItem>
-              </IonCardHeader>
-              <IonCardContent>
-                {purchase.description}
-              </IonCardContent>
-            </IonCard>
-
+          <PurchaseHeader title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} />
             {purchase.items.map((item: Item, index: number) => {
               return (
                 <PurchaseItem key={index} item={item} editable={false} />

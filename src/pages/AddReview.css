@@ -1,0 +1,12 @@
+fieldset.likertStyles .likertText {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+}
+
+fieldset.likertStyles .likertResponse {
+    min-width: 0px !important;
+}
+
+fieldset.likertStyles .likertLegend {
+    margin-left: 12px;
+}
