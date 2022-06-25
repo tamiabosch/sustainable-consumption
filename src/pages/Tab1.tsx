@@ -48,7 +48,7 @@ const Tab1: React.FC = () => {
               link={"/user/tab1/view/" + purchase.id}
               overview={{
                 reviewed: purchase.reviewed,
-                peerReviewed: true
+                peerReviewed: purchase.peerReviewed,
               }}
               />
           );

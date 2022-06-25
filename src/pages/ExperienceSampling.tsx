@@ -2,7 +2,7 @@ import {
     IonContent,
     IonPage,
   } from '@ionic/react';
-  import React, { useEffect, useState, useMemo } from 'react';
+  import React, { useMemo } from 'react';
   import { useLocation } from 'react-router';
   
   const ExperienceSampling: React.FC = () => {
