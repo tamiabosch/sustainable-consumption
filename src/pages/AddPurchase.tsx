@@ -22,7 +22,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
-import { collection, doc, setDoc, serverTimestamp, getDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { format, parseISO } from 'date-fns';
 import { addOutline, saveOutline } from 'ionicons/icons';
 import { Task } from '../models/Task';
@@ -79,15 +79,21 @@ const AddEntryPage: React.FC = () => {
         created_at: serverTimestamp(),
         owner: userId,
       };
+
       const docRef = doc(entriesRef);
-      //all good, save doc to db
-      await setDoc(docRef, entryData)
-      //send purchaseId to next view
-      const location = {
-        pathname: '/user/tab1/add/review',
-        state: { purchaseId: docRef.id }
+      const setPurchaseToFB = async () => {
+        await setDoc(docRef, entryData)
+        return true
       }
-      history.replace(location)
+      const result = await setPurchaseToFB();
+      if (result) {
+        const location = {
+          pathname: '/user/tab1/add/review',
+          state: { purchaseId: docRef.id }
+        }
+        history.replace(location)
+      }
+      //send purchaseId to next view
     } else {
       setShowToast(true);
       console.log('missing data at handleSave method');
