@@ -5,7 +5,7 @@ fieldset.likertStyles .likertText {
 }
 
 fieldset.likertStyles .likertResponse {
-    min-width: 0px !important;
+    min-width: 12px !important;
 }
 
 fieldset.likertStyles .likertLegend {

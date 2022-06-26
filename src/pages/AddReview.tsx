@@ -11,7 +11,7 @@ import { Item } from '../models/Item';
 import PurchaseItem from '../components/PurchaseItem';
 import Likert from 'react-likert-scale';
 import { saveOutline } from 'ionicons/icons';
-import './AddReview.css'
+import './Likert.css'
 import { ReviewType } from '../models/ReviewType';
 
 type Review = {
@@ -144,7 +144,7 @@ const AddReview: React.FC = () => {
                   </IonLabel>
                 </IonItemDivider>
                 <PurchaseItem item={item} editable={false} />
-                <Likert id={index + '-' + item.title} className="likertStyles mx-3 my-5" {...likertOptions} question={"Erfüllt dieses Produkt das Thema " + purchase.task + '?'} onChange={(e: any) => handleLikertChange(index, e)} />
+                <Likert id={index + '-' + item.title} className="likertStyles mx-3 my-5" {...likertOptions} question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema" + purchase.task + '?'} onChange={(e: any) => handleLikertChange(index, e)} />
                 <IonItem>
                   <IonLabel position="stacked">Kommentar</IonLabel>
                   <IonTextarea placeholder="Bewertung genauer beschreiben..." value={review[index]?.comment ? review[index].comment : ""} onIonChange={(e) => handleCommentChange(e, index)} />
