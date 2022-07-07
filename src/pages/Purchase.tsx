@@ -1,13 +1,5 @@
 import {
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardTitle,
   IonContent,
-  IonIcon,
-  IonItem,
-  IonLabel,
   IonNote,
   IonPage,
 } from '@ionic/react';
@@ -33,7 +25,7 @@ const Purchase: React.FC = () => {
     const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', id);
     const getPurchase = async () => {
       const purchaseSnap = await getDoc(purchaseDocRef);
-      setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: +purchaseSnap.id });
+      setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
     }
     getPurchase();
   }, [userId, id]);
@@ -44,8 +36,18 @@ const Purchase: React.FC = () => {
       <IonContent className="ion-padding">
         {purchase ? (
           <>
-          <PurchaseHeader title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} />
-            {purchase.items.map((item: Item, index: number) => {
+            <PurchaseHeader
+              id={"" + purchase.id}
+              title={purchase.title}
+              date={purchase.date}
+              task={purchase.task}
+              description={purchase.description}
+              overview={true}
+              reviewed={purchase.reviewed}
+              peerReviewed={purchase.peerReviewed}
+              owner={purchase.owner}
+            />
+            {purchase.items?.map((item: Item, index: number) => {
               return (
                 <PurchaseItem key={index} item={item} editable={false} />
               );

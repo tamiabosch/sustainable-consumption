@@ -1,15 +1,15 @@
 import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab } from '@ionic/react';
 import { addCircleOutline } from 'ionicons/icons';
+import { Purchase as PurchaseModel } from '../models/Purchase';
+import { useEffect, useState } from 'react';
+/*Components*/
 import Notification from '../components/NotificationItem';
-import PurchaseOverview from "../components/PurchaseOverview"
 import Header from '../components/Header';
+import PurchaseHeader from '../components/PurchaseHeader';
 /* Firestore */
 import { db } from "../service/firebaseConfig";
 import { collection, getDocs } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
-import { useEffect, useState } from 'react';
-import { Purchase as PurchaseModel } from '../models/Purchase';
-import PurchaseHeader from '../components/PurchaseHeader';
 
 
 const Tab1: React.FC = () => {
@@ -25,9 +25,10 @@ const Tab1: React.FC = () => {
 
     getPurchases();
   }, []);
+
   return (
     <IonPage>
-      <Header title='Einkäufe' showLogout={true}/>
+      <Header title='Einkäufe' showLogout={true} />
       <IonContent fullscreen>
         {/* Notifications */}
         <IonCard>
@@ -41,16 +42,17 @@ const Tab1: React.FC = () => {
         {purchases.map((purchase: PurchaseModel) => {
           return (
             <PurchaseHeader
+              id={purchase.id}
               key={purchase.id}
               title={purchase.title}
               date={purchase.date}
               task={purchase.task}
               link={"/user/tab1/view/" + purchase.id}
-              overview={{
-                reviewed: purchase.reviewed,
-                peerReviewed: purchase.peerReviewed,
-              }}
-              />
+              overview={true}
+              reviewed={purchase.reviewed}
+              peerReviewed={purchase.peerReviewed}
+              owner={purchase.owner}
+            />
           );
         })}
         {/*-- fab placed to the bottom end --*/}

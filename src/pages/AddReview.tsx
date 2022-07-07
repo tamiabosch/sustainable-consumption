@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonHeader, IonIcon, IonItem, IonItemDivider, IonLabel, IonLoading, IonNote, IonPage, IonText, IonTextarea, IonTitle, IonToolbar, SelectChangeEventDetail, SelectCustomEvent } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonItem, IonItemDivider, IonLabel, IonLoading, IonNote, IonPage, IonText, IonTextarea } from '@ionic/react';
 import { collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -22,7 +22,8 @@ type Review = {
 const AddReview: React.FC = () => {
   const location = useLocation<{ purchaseId: string }>();
   const history = useHistory();
-  const purchaseId = useMemo(() => location.state.purchaseId, [location]);
+  //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
+  const purchaseId = location.state.purchaseId;
   console.log("id: " + purchaseId);
   const { userId } = useAuth();
   const [purchase, setPurchase] = useState<PurchaseModel>();
@@ -32,7 +33,7 @@ const AddReview: React.FC = () => {
     const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', purchaseId);
     const getPurchase = async () => {
       const purchaseSnap = await getDoc(purchaseDocRef);
-      setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: +purchaseSnap.id });
+      setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
     }
     getPurchase();
 
@@ -40,7 +41,7 @@ const AddReview: React.FC = () => {
 
   useEffect(() => {
     const rev: Review[] = []
-    purchase?.items.forEach(item => {
+    purchase?.items?.forEach(item => {
       rev.push({ rating: -1, comment: "" })
     });
     setReview(rev);
@@ -108,7 +109,12 @@ const AddReview: React.FC = () => {
       saveReviewtoFB().then(() => {
         const location = {
           pathname: '/user/tab1/add/experienceSampling',
-          state: { purchaseId: purchaseId, reviewId: reviewDocRef.id, }
+          state: {
+            purchaseId: purchaseId,
+            reviewId: reviewDocRef.id,
+            task: purchase?.task,
+            reviewType: ReviewType.SelfReview
+          }
         }
         history.replace(location)
       })
@@ -135,8 +141,8 @@ const AddReview: React.FC = () => {
         </IonItemDivider>
         {purchase ? (
           <>
-            <PurchaseHeader title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} />
-            {purchase.items.map((item: Item, index: number) => (
+            <PurchaseHeader id={"" + purchase.id} title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} owner={purchase.owner} />
+            {purchase.items?.map((item: Item, index: number) => (
               <React.Fragment key={index}>
                 <IonItemDivider className='mt-10 mb-5' color='primary'>
                   <IonLabel>
@@ -144,7 +150,7 @@ const AddReview: React.FC = () => {
                   </IonLabel>
                 </IonItemDivider>
                 <PurchaseItem item={item} editable={false} />
-                <Likert id={index + '-' + item.title} className="likertStyles mx-3 my-5" {...likertOptions} question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema" + purchase.task + '?'} onChange={(e: any) => handleLikertChange(index, e)} />
+                <Likert id={index + '-' + item.title} className="likertStyles mx-3 my-5" {...likertOptions} question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '.'} onChange={(e: any) => handleLikertChange(index, e)} />
                 <IonItem>
                   <IonLabel position="stacked">Kommentar</IonLabel>
                   <IonTextarea placeholder="Bewertung genauer beschreiben..." value={review[index]?.comment ? review[index].comment : ""} onIonChange={(e) => handleCommentChange(e, index)} />
