@@ -19,7 +19,7 @@ import {
   IonToast,
 } from '@ionic/react';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -34,6 +34,8 @@ import PurchaseItem from '../components/PurchaseItem';
 const AddEntryPage: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
+  const location = useLocation<{ purchaseId: string }>();
+
   const [date, setDate] = useState<string | undefined | null>('');
   const [title, setTitle] = useState<string>('');
   const [task, setTask] = useState<Task>(Task.CERTIFICATE);
@@ -81,19 +83,20 @@ const AddEntryPage: React.FC = () => {
       };
 
       const docRef = doc(entriesRef);
+
       const setPurchaseToFB = async () => {
-        await setDoc(docRef, entryData)
-        return true
+        await setDoc(docRef, entryData) //set purchase to db
       }
-      const result = await setPurchaseToFB();
-      if (result) {
+      setPurchaseToFB().then(() => {
         const location = {
           pathname: '/user/tab1/add/review',
-          state: { purchaseId: docRef.id }
+          state: { purchaseId: docRef.id, task: task } //send purchaseId to next view
         }
         history.replace(location)
-      }
-      //send purchaseId to next view
+      }, error => {
+        console.log("oh noes, an validation error?? " + error);
+        //console.log(errors.all()); // prints the errors array just like you're used to in v2
+      })
     } else {
       setShowToast(true);
       console.log('missing data at handleSave method');
@@ -153,22 +156,22 @@ const AddEntryPage: React.FC = () => {
       </IonContent>
       {/* Alert before save */}
       <IonAlert
-          isOpen={showAlert}
-          onDidDismiss={() => setShowAlert(false)}
-          cssClass='my-custom-class'
-          header={'Wirklich fertig?'}
-          message={'Der Einkauf kann nach dem Speichern nicht mehr geändert werden.'}
-          buttons={[
-            'Abbrechen',
-            {
-              text: 'Speichern',
-              id: 'confirm-button',
-              handler: () => {
-                handleSave();
-              }
+        isOpen={showAlert}
+        onDidDismiss={() => setShowAlert(false)}
+        cssClass='my-custom-class'
+        header={'Wirklich fertig?'}
+        message={'Der Einkauf kann nach dem Speichern nicht mehr geändert werden.'}
+        buttons={[
+          'Abbrechen',
+          {
+            text: 'Speichern',
+            id: 'confirm-button',
+            handler: () => {
+              handleSave();
             }
-          ]}
-        />
+          }
+        ]}
+      />
       {/* Calender Popover */}
       <IonPopover trigger="open-modal" showBackdrop={true}>
         <IonContent>

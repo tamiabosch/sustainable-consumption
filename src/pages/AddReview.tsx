@@ -20,12 +20,13 @@ type Review = {
 }
 
 const AddReview: React.FC = () => {
-  const location = useLocation<{ purchaseId: string }>();
-  const history = useHistory();
-  //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
-  const purchaseId = location.state.purchaseId;
-  console.log("id: " + purchaseId);
   const { userId } = useAuth();
+  const history = useHistory();
+
+  const location = useLocation<{ purchaseId: string }>();
+  //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
+  console.log("location: " + location, location);
+  const purchaseId = location.state.purchaseId;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<Review[]>([]);
 
@@ -36,7 +37,6 @@ const AddReview: React.FC = () => {
       setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
     }
     getPurchase();
-
   }, [userId, purchaseId]);
 
   useEffect(() => {

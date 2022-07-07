@@ -38,11 +38,11 @@ const AddExperienceSampling: React.FC = () => {
 
   const [selected_1, setSelected_1] = useState<string>('');
   const [selected_2, setSelected_2] = useState<string>('');
-  const [selected_3, setSelected_3] = useState<string>('');
-  const [selected_4, setSelected_4] = useState<string>('');
-  const [selected_5, setSelected_5] = useState<string>('');
+  const [selected_3, setSelected_3] = useState<string>('-1');
+  const [selected_4, setSelected_4] = useState<string>('-1');
+  const [selected_5, setSelected_5] = useState<string>('-1');
 
-  const [freeText_1, setFreeText_1] = useState<string>('');
+  const [freeText_1, setFreeText_1] = useState<string>();
   const [showToast, setShowToast] = useState(false);
 
 
@@ -73,7 +73,7 @@ const AddExperienceSampling: React.FC = () => {
     }
   };
   const handleSubmit = async () => {
-    if (selected_1 && selected_2 && selected_3 && selected_4 && selected_5) {
+    if (selected_1 && selected_2 && ((selected_3 && selected_4 && selected_5) !== '-1')) {
       const entryData = {
         created_at: serverTimestamp(),
         q1: { question: questions.q1.question, answer: (selected_1 === 'Sonstiges') ? freeText_1 : selected_1 },
@@ -84,8 +84,9 @@ const AddExperienceSampling: React.FC = () => {
         purchase: purchaseId,
         review: reviewId,
         author: userId,
-        // task,
-        // reviewType,
+        task,
+        reviewType,
+        //TODO add timer
         timeUsed: 0,
       }
       const entriesRef = collection(db, 'experienceSamples');
@@ -106,7 +107,12 @@ const AddExperienceSampling: React.FC = () => {
 
     } else {
       setShowToast(true);
-      console.log('missing data at handelSubmit ExperienceSample method', selected_1, selected_2, selected_3, selected_4, selected_5);
+      console.log('missing data at handelSubmit ExperienceSample:');
+      console.log('1: ', selected_1)
+      console.log('2: ', selected_2)
+      console.log('3: ', selected_3)
+      console.log('4: ', selected_4)
+      console.log('5: ', selected_5)
     }
 
   }
