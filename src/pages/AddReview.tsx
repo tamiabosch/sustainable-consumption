@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonIcon, IonItem, IonItemDivider, IonLabel, IonLoading, IonNote, IonPage, IonText, IonTextarea } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonItem, IonItemDivider, IonLabel, IonLoading, IonNote, IonPage, IonText, IonTextarea, IonToast } from '@ionic/react';
 import { collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useHistory, useLocation } from 'react-router';
@@ -15,7 +15,7 @@ import './Likert.css'
 import { ReviewType } from '../models/ReviewType';
 
 type Review = {
-  rating: number;
+  rating: number | null;
   comment?: string;
 }
 
@@ -25,10 +25,10 @@ const AddReview: React.FC = () => {
 
   const location = useLocation<{ purchaseId: string }>();
   //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
-  console.log("location: " + location, location);
   const purchaseId = location.state.purchaseId;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<Review[]>([]);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', purchaseId);
@@ -42,7 +42,7 @@ const AddReview: React.FC = () => {
   useEffect(() => {
     const rev: Review[] = []
     purchase?.items?.forEach(item => {
-      rev.push({ rating: -1, comment: "" })
+      rev.push({ rating: null, comment: "" })
     });
     setReview(rev);
   }, [purchase]);
@@ -81,9 +81,16 @@ const AddReview: React.FC = () => {
     }
   }
 
+  //if one value of the review arry field rating is null, the review is not complete
+  function nullExists(rating: Review['rating']) {
+    return review?.some(function (el) {
+      return el.rating === rating;
+    });
+  }
   const handleReviewSubmit = async () => {
     console.log("Review: " + review,);
-    if (purchase) {
+    //Check if all fields are filled
+    if (!nullExists(null)) {
       //TODO add timer??
       const entryData = {
         created_at: serverTimestamp(),
@@ -119,9 +126,9 @@ const AddReview: React.FC = () => {
         history.replace(location)
       })
 
-
     } else {
-      console.log("can't access purchase");
+      setShowToast(true);
+      console.log('missing data at handleSave method');
     }
   }
 
@@ -133,10 +140,8 @@ const AddReview: React.FC = () => {
       <Header title='Review' />
       <IonContent>
         <IonItemDivider color='primary'>
-          <IonText className='text-left text-base my-4'>Die ausgewählten Produkte sollen jetzt bezüglich des Nachhaltigkeitsthemas <b>{purchase?.task ? purchase.task : "dieser Woche "}</b> bewertet werden!
-            <br />
-            Ein Kommentar hilft das ausgewählte Rating besser nachvollziehen zu können.
-            Vor allem wenn der Einkauf zu einem späteren Zeitpunkt angeschaut wird.
+          <IonText className='text-left text-base my-4'>Deine Aufgabe ist es die ausgewählten Produkte bezüglich des Nachhaltigkeitsthemas <b>{purchase?.task ? purchase.task : "dieser Woche "}</b> zu  bewertet werden!
+            <br /> Schreibe einen Kommentar, um das Rating auch zu einem späteren Zeitpunkt noch nachvollziehen zu können.
           </IonText>
         </IonItemDivider>
         {purchase ? (
@@ -164,6 +169,12 @@ const AddReview: React.FC = () => {
         <IonButton className='uppercase mt-10' onClick={handleReviewSubmit} expand="block">
           <IonIcon slot="start" icon={saveOutline} /> Einkauf speichern
         </IonButton>
+        <IonToast
+          isOpen={showToast}
+          onDidDismiss={() => setShowToast(false)}
+          message="Alle Ratings müssen vergeben werden"
+          duration={2000}
+        />
       </IonContent>
     </IonPage>
   )

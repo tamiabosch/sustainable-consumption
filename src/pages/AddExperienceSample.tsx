@@ -158,33 +158,33 @@ const AddExperienceSampling: React.FC = () => {
         <IonList className='ion-margin'>
           <IonRadioGroup value={selected_2} onIonChange={e => setSelected_2(e.detail.value)}>
             <IonListHeader>
-              <IonLabel className='text-base'>War das wöchentliche Nachhaltigkeitsthema beim Einkauf bekannt?</IonLabel>
+              <IonLabel className='text-base'>{questions.q2.question}</IonLabel>
             </IonListHeader>
             <IonItem>
-              <IonText className='py-2 text-sm'>Ja, ich habe mich davor genauer über das Thema informiert.</IonText>
-              <IonRadio slot="start" value="Ja, ich habe mich davor genauer über das Thema informiert." />
+              <IonText className='py-2 text-sm'>{questions.q2.answers.a1}</IonText>
+              <IonRadio slot="start" value={questions.q2.answers.a1} />
             </IonItem>
             <IonItem>
-              <IonText className='py-2 text-sm'>Ja, ich habe mit meinem vorhandenen Wissen darauf geachtet.</IonText>
-              <IonRadio slot="start" value="Ja, ich habe mit meinem vorhandenen Wissen darauf geachtet." />
+              <IonText className='py-2 text-sm'>{questions.q2.answers.a2}</IonText>
+              <IonRadio slot="start" value={questions.q2.answers.a2} />
             </IonItem>
             <IonItem>
-              <IonText className='py-2 text-sm'>Ja, aber ich habe nicht darauf geachtet.</IonText>
-              <IonRadio slot="start" value="Ja, aber ich habe nicht darauf geachtet." />
+              <IonText className='py-2 text-sm'>{questions.q2.answers.a3}</IonText>
+              <IonRadio slot="start" value={questions.q2.answers.a3} />
             </IonItem>
             <IonItem>
-              <IonText className='py-2 text-sm'>Nein</IonText>
-              <IonRadio slot="start" value="Nein" />
+              <IonText className='py-2 text-sm'>{questions.q2.answers.a4}</IonText>
+              <IonRadio slot="start" value={questions.q2.answers.a4} />
             </IonItem>
           </IonRadioGroup>
         </IonList>
         {/* Frage 3 */}
 
-        <Likert id="likert-3" className="likertStyles mx-3 my-8" {...likertOptions} question="Ich habe fundiertes Wissen in dem aktuellen wöchentlichen Thema." onChange={(e: any) => setSelected_3(e.value)} />
+        <Likert id="likert-3" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q3.question} onChange={(e: any) => setSelected_3(e.value)} />
         {/* Frage 4 */}
-        <Likert id="likert-4" className="likertStyles mx-3 my-8" {...likertOptions} question="Es fiel mir leicht, die Produkte entsprechend der wöchentlichen Aufgabe zu bewerten." onChange={(e: any) => setSelected_4(e.value)} />
+        <Likert id="likert-4" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q4.question} onChange={(e: any) => setSelected_4(e.value)} />
         {/* Frage 5 */}
-        <Likert id="likert-5" className="likertStyles mx-3 my-8" {...likertOptions} question="Ich habe mir bei der Produktbewertung Mühe gegeben." onChange={(e: any) => setSelected_5(e.value)} />
+        <Likert id="likert-5" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q5.question} onChange={(e: any) => setSelected_5(e.value)} />
         <IonButton className='uppercase mt-10' onClick={handleSubmit} expand="block">
           <IonIcon slot="start" icon={sendOutline} /> Fragebogen abschicken
         </IonButton>
