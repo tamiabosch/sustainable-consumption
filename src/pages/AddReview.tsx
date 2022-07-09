@@ -13,7 +13,7 @@ import Likert from 'react-likert-scale';
 import { saveOutline } from 'ionicons/icons';
 import './Likert.css'
 import { ReviewType } from '../models/ReviewType';
-import { Review } from '../models/Review';
+import { ReviewItem } from '../models/Review';
 
 
 const AddReview: React.FC = () => {
@@ -24,7 +24,7 @@ const AddReview: React.FC = () => {
   //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
   const purchaseId = location.state.purchaseId;
   const [purchase, setPurchase] = useState<PurchaseModel>();
-  const [review, setReview] = useState<Review[]>([]);
+  const [review, setReview] = useState<ReviewItem[]>([]);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const AddReview: React.FC = () => {
   }, [userId, purchaseId]);
 
   useEffect(() => {
-    const rev: Review[] = []
+    const rev: ReviewItem[] = []
     purchase?.items?.forEach(item => {
       rev.push({ rating: null, comment: "" })
     });
@@ -79,7 +79,7 @@ const AddReview: React.FC = () => {
   }
 
   //if one value of the review arry field rating is null, the review is not complete
-  function nullExists(rating: Review['rating']) {
+  function nullExists(rating: ReviewItem['rating']) {
     return review?.some(function (el) {
       return el.rating === rating;
     });

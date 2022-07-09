@@ -10,10 +10,10 @@ interface PurchaseItemProps {
 // add o ptions, disable delete, add review
 const PurchaseItem: React.FC<PurchaseItemProps> = ({ item, ...props }) => {
     return (
-        <IonCard>
+        <IonCard color="primary">
             <IonCardHeader>
                 <IonCardTitle className='text-lg' >{item.title}
-                    { props.editable && <IonIcon icon={trashOutline} className="float-right" onClick={() => props.onDelete?.(item)} /> }
+                    {props.editable && <IonIcon icon={trashOutline} className="float-right" onClick={() => props.onDelete?.(item)} />}
                 </IonCardTitle>
             </IonCardHeader>
             <IonCardContent>

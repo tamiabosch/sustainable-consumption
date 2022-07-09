@@ -1,5 +1,9 @@
 import {
+  IonCard,
   IonContent,
+  IonIcon,
+  IonItem,
+  IonLabel,
   IonNote,
   IonPage,
 } from '@ionic/react';
@@ -13,10 +17,12 @@ import Header from '../components/Header';
 import { Item } from '../models/Item';
 import PurchaseItem from '../components/PurchaseItem';
 import PurchaseHeader from '../components/PurchaseHeader';
-import { Review } from '../models/Review';
+import { Review, ReviewItem } from '../models/Review';
 import { ReviewType } from '../models/ReviewType';
 import Likert from 'react-likert-scale';
 import './Likert.css'
+import { peopleOutline, personOutline, wine } from 'ionicons/icons';
+import { profile } from 'console';
 
 
 
@@ -24,7 +30,9 @@ const Purchase: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { userId } = useAuth();
   const [purchase, setPurchase] = useState<PurchaseModel>();
-  const [review, setReview] = useState<Review[]>([]);
+  const [review, setReview] = useState<ReviewItem[]>([]);
+  const [reviewData, setReviewData] = useState<Review[]>([]);
+  const [peerReview, setPeerReview] = useState<ReviewItem[]>([]);
 
   useEffect(() => {
     const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', id);
@@ -36,6 +44,7 @@ const Purchase: React.FC = () => {
   }, [userId, id]);
 
   useEffect(() => {
+    //get Review and PeerReview if bool is set to true
     if (purchase?.reviewed) {
       const q = query(collection(db, "reviews"), where("purchase", "==", purchase.id), where("reviewType", "==", ReviewType.SelfReview));
       const getReview = async () => {
@@ -43,11 +52,23 @@ const Purchase: React.FC = () => {
         querySnapshot.forEach((doc) => {
           // doc.data() is never undefined for query doc snapshots
           console.log(doc.id, " => ", doc.data());
-          setReview(doc.data().review as Review[]);
-          console.log(review);
+          //hier wird nur Array aus review und comment gespeichert
+          setReview(doc.data().review as ReviewItem[]);
+          //hier ganze Review mit author und ReviewType 
+          setReviewData(doc.data() as Review[]);
         });
       }
       getReview();
+    } else if (purchase?.peerReviewed) {
+      const q = query(collection(db, "reviews"), where("purchase", "==", purchase.id), where("reviewType", "==", ReviewType.PeerReview));
+      const getPeerReview = async () => {
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          //hier wird nur Array aus review und comment gespeichert
+          setPeerReview(doc.data().review as ReviewItem[]);
+        });
+      }
+      getPeerReview();
     }
   }, [purchase]);
 
@@ -69,27 +90,66 @@ const Purchase: React.FC = () => {
               peerReviewed={purchase.peerReviewed}
               owner={purchase.owner}
             />
+            <p className='px-5 mb-5'>Die Skala von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zut"), gibt die Bewertung des Produkts zum jeweiligen Nachhaltigkeitsthema wieder.</p>
             {purchase.items?.map((item: Item, index: number) => {
               return (
                 <>
                   <PurchaseItem key={index} item={item} editable={false} />
-                  {(review[index]?.rating) ?
-                    <Likert id={index + '-' + item.title}
-                      className="likertStyles mx-3 my-5"
-                      question={"Erfüllt das Thema " + purchase.task + '?'}
-                      responses={[
-                        { value: 0, text: "stimme gar nicht zu", checked: review[index]?.rating == 0 },
-                        { value: 1, text: "", checked: review[index]?.rating == 1 },
-                        { value: 2, text: "", checked: review[index]?.rating == 2 },
-                        { value: 3, text: "", checked: review[index]?.rating == 3 },
-                        { value: 4, text: "", checked: review[index]?.rating == 4 },
-                        { value: 5, text: "", checked: review[index]?.rating == 5 },
-                        { value: 6, text: "stimme voll und ganz zu", checked: review[index]?.rating == 6 }
-                      ]}
-                      onClick={(e: { preventDefault: any; }) => e.preventDefault}
-                    />
-                    : (<p className='ml-4'>Likert Scala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
+                  {purchase.reviewed &&
+                    <IonCard>
+                      <IonItem >
+                        <IonIcon icon={personOutline} slot="start" />
+                        <IonLabel>Deine Bewertung </IonLabel>
+                      </IonItem>
+                      {(review[index]?.rating) ?
+                        <Likert id={index + '-' + item.title}
+                          className="likertStyles disable mx-3 my-5"
+                          layout="stacked"
+                          question={"Deine Bewertung des Produkts zum " + purchase.task + '?'}
+                          responses={[
+                            { value: 0, text: "0", checked: review[index]?.rating == 0 },
+                            { value: 1, text: "1", checked: review[index]?.rating == 1 },
+                            { value: 2, text: "2", checked: review[index]?.rating == 2 },
+                            { value: 3, text: "3", checked: review[index]?.rating == 3 },
+                            { value: 4, text: "4", checked: review[index]?.rating == 4 },
+                            { value: 5, text: "5", checked: review[index]?.rating == 5 },
+                            { value: 6, text: "6", checked: review[index]?.rating == 6 }
+                          ]}
+                        />
+                        : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
+                      }
+                      {(review[index]?.comment) && <p className='ml-4 my-4'><b>Kommentar:</b> <br />{review[index]?.comment}</p>}
+                    </IonCard>
                   }
+                  {purchase.peerReviewed && (
+                    <>
+                      <IonCard>
+                        <IonItem >
+                          <IonIcon icon={peopleOutline} slot="start" />
+                          <IonLabel>Feedback</IonLabel>
+                        </IonItem>
+                        {(peerReview[index]?.rating) ?
+                          <Likert id={index + '-' + item.title}
+                            className="likertStyles disable mx-3 my-5"
+                            layout="stacked"
+                            question={"Feedback des Produkts zum " + purchase.task + '?'}
+                            responses={[
+                              { value: 0, text: "0", checked: peerReview[index]?.rating == 0 },
+                              { value: 1, text: "1", checked: peerReview[index]?.rating == 1 },
+                              { value: 2, text: "2", checked: peerReview[index]?.rating == 2 },
+                              { value: 3, text: "3", checked: peerReview[index]?.rating == 3 },
+                              { value: 4, text: "4", checked: peerReview[index]?.rating == 4 },
+                              { value: 5, text: "5", checked: peerReview[index]?.rating == 5 },
+                              { value: 6, text: "6", checked: peerReview[index]?.rating == 6 }
+                            ]}
+                          />
+                          : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br />Rating: {peerReview[index]?.rating}/7 Punkten</p>)
+                        }
+                        {(peerReview[index]?.comment) && <p className='ml-4 my-4'><b>Kommentar:</b> <br />{peerReview[index]?.comment}</p>}
+
+                      </IonCard>
+                    </>
+                  )}
                 </>
               );
             })}
@@ -98,7 +158,7 @@ const Purchase: React.FC = () => {
           (<IonNote>Einkauf konnte nicht geladen werden.</IonNote>)
         }
       </IonContent>
-    </IonPage>
+    </IonPage >
   );
 };
 

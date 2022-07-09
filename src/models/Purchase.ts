@@ -15,3 +15,4 @@ export interface Purchase {
     owner: string;
     link?: string;
 }
+

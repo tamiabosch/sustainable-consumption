@@ -32,7 +32,7 @@ const Tab1: React.FC = () => {
       <IonContent fullscreen>
         {/* Notifications */}
         <IonCard>
-          <IonCardHeader color="primary">
+          <IonCardHeader color="warning">
             <IonCardSubtitle>Notifications</IonCardSubtitle>
           </IonCardHeader>
           <Notification details='Lidl' link='#' reviewType='peerReview' />

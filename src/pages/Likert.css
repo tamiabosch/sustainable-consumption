@@ -11,3 +11,7 @@ fieldset.likertStyles .likertResponse {
 fieldset.likertStyles .likertLegend {
     margin-left: 12px;
 }
+
+fieldset.disable .likertBand {
+    pointer-events: none;  
+}
