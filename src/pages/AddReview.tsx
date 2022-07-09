@@ -13,11 +13,8 @@ import Likert from 'react-likert-scale';
 import { saveOutline } from 'ionicons/icons';
 import './Likert.css'
 import { ReviewType } from '../models/ReviewType';
+import { Review } from '../models/Review';
 
-type Review = {
-  rating: number | null;
-  comment?: string;
-}
 
 const AddReview: React.FC = () => {
   const { userId } = useAuth();
