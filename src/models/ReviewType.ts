@@ -1,5 +1,5 @@
 export enum ReviewType {
-    PeerReview,
-    SingleReview,
-    SelfReview,
+  SingleReview = "SingleReview",
+  PeerReview = "PeerReview",
+    SelfReview = "SelfReview",
   }

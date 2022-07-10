@@ -1,12 +1,15 @@
 import { ReviewType } from "./ReviewType";
-import { Purchase } from "./Purchase";
+import { Task } from "./Task";
 export interface User {
     id: number;
     alias: string;  
-    name: string;
+    email: string;
+    name?: string;
     completed: boolean;
-    lastLogin: Date;
     loginCount: number;
-    label: ReviewType;
-    purchases: Purchase[];
+    reviewType: ReviewType;
+    reviewsWritten: number;
+    peerReviewsWritten: number;
+    week: Task[];
+
 }

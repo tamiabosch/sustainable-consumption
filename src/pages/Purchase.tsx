@@ -80,7 +80,7 @@ const Purchase: React.FC = () => {
         {purchase ? (
           <>
             <PurchaseHeader
-              id={"" + purchase.id}
+              id={purchase.id}
               title={purchase.title}
               date={purchase.date}
               task={purchase.task}
