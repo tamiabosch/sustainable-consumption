@@ -34,7 +34,6 @@ import PurchaseItem from '../components/PurchaseItem';
 const AddEntryPage: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
-  const location = useLocation<{ purchaseId: string }>();
 
   const [date, setDate] = useState<string | undefined | null>('');
   const [title, setTitle] = useState<string>('');

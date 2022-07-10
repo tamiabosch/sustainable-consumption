@@ -1,7 +1,6 @@
 import { IonCard, IonCardHeader, IonItem, IonIcon, IonLabel, IonCardTitle, IonCardSubtitle, IonCardContent, IonChip } from "@ionic/react";
 import { format, parseISO } from "date-fns";
 import { cartOutline, checkmark, personOutline, warningOutline } from "ionicons/icons";
-import { Task } from "../models/Task";
 import { useHistory } from 'react-router';
 import { Purchase } from "../models/Purchase";
 

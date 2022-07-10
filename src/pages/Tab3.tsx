@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
+import { IonContent, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
 import { useState } from 'react';
 import Header from '../components/Header';
 import { Task } from '../models/Task';

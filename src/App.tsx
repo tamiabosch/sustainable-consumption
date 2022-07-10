@@ -1,12 +1,6 @@
 import {
   IonApp,
-  IonIcon,
-  IonLabel,
   IonLoading,
-  IonRouterOutlet,
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
   setupIonicReact
 } from '@ionic/react';
 
@@ -41,7 +35,7 @@ import React from 'react';
 // import { AuthProvider } from './service/auth';
 import { AuthContext, useAuthInit } from './service/authFirebase';
 import NotFoundPage from './pages/NotFoundPage';
-import { PeerReview}  from './routes/Authenticated'
+import { PeerReview } from './routes/Authenticated'
 
 setupIonicReact();
 
@@ -70,7 +64,7 @@ const App: React.FC = () => {
     <IonApp>
       <AuthContext.Provider value={auth ? auth : { loggedIn: false }}>
         <IonReactRouter>
-          <Switch> 
+          <Switch>
             <Route exact path="/login">
               <Login />
             </Route>
@@ -82,7 +76,7 @@ const App: React.FC = () => {
               <NotFoundPage />
               <PeerReview />
             </Route>
-            </Switch>
+          </Switch>
         </IonReactRouter>
       </AuthContext.Provider>
     </IonApp>

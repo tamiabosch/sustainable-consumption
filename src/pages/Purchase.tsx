@@ -21,8 +21,7 @@ import { Review, ReviewItem } from '../models/Review';
 import { ReviewType } from '../models/ReviewType';
 import Likert from 'react-likert-scale';
 import './Likert.css'
-import { peopleOutline, personOutline, wine } from 'ionicons/icons';
-import { profile } from 'console';
+import { peopleOutline, personOutline } from 'ionicons/icons';
 
 
 
@@ -56,6 +55,7 @@ const Purchase: React.FC = () => {
           setReview(doc.data().review as ReviewItem[]);
           //hier ganze Review mit author und ReviewType 
           setReviewData(doc.data() as Review[]);
+          console.log(reviewData);
         });
       }
       getReview();
@@ -107,13 +107,13 @@ const Purchase: React.FC = () => {
                           layout="stacked"
                           question={"Deine Bewertung des Produkts zum " + purchase.task + '?'}
                           responses={[
-                            { value: 0, text: "0", checked: review[index]?.rating == 0 },
-                            { value: 1, text: "1", checked: review[index]?.rating == 1 },
-                            { value: 2, text: "2", checked: review[index]?.rating == 2 },
-                            { value: 3, text: "3", checked: review[index]?.rating == 3 },
-                            { value: 4, text: "4", checked: review[index]?.rating == 4 },
-                            { value: 5, text: "5", checked: review[index]?.rating == 5 },
-                            { value: 6, text: "6", checked: review[index]?.rating == 6 }
+                            { value: 0, text: "0", checked: review[index].rating === 0 },
+                            { value: 1, text: "1", checked: review[index].rating === 1 },
+                            { value: 2, text: "2", checked: review[index].rating === 2 },
+                            { value: 3, text: "3", checked: review[index].rating === 3 },
+                            { value: 4, text: "4", checked: review[index].rating === 4 },
+                            { value: 5, text: "5", checked: review[index].rating === 5 },
+                            { value: 6, text: "6", checked: review[index].rating === 6 }
                           ]}
                         />
                         : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
@@ -134,16 +134,16 @@ const Purchase: React.FC = () => {
                             layout="stacked"
                             question={"Feedback des Produkts zum " + purchase.task + '?'}
                             responses={[
-                              { value: 0, text: "0", checked: peerReview[index]?.rating == 0 },
-                              { value: 1, text: "1", checked: peerReview[index]?.rating == 1 },
-                              { value: 2, text: "2", checked: peerReview[index]?.rating == 2 },
-                              { value: 3, text: "3", checked: peerReview[index]?.rating == 3 },
-                              { value: 4, text: "4", checked: peerReview[index]?.rating == 4 },
-                              { value: 5, text: "5", checked: peerReview[index]?.rating == 5 },
-                              { value: 6, text: "6", checked: peerReview[index]?.rating == 6 }
+                              { value: 0, text: "0", checked: peerReview[index].rating === 0 },
+                              { value: 1, text: "1", checked: peerReview[index].rating === 1 },
+                              { value: 2, text: "2", checked: peerReview[index].rating === 2 },
+                              { value: 3, text: "3", checked: peerReview[index].rating === 3 },
+                              { value: 4, text: "4", checked: peerReview[index].rating === 4 },
+                              { value: 5, text: "5", checked: peerReview[index].rating === 5 },
+                              { value: 6, text: "6", checked: peerReview[index].rating === 6 }
                             ]}
                           />
-                          : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br />Rating: {peerReview[index]?.rating}/7 Punkten</p>)
+                          : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br /><b>Rating: {peerReview[index]?.rating}/7 Punkten</b></p>)
                         }
                         {(peerReview[index]?.comment) && <p className='ml-4 my-4'><b>Kommentar:</b> <br />{peerReview[index]?.comment}</p>}
 
