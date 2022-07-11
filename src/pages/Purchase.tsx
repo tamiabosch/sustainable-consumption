@@ -1,5 +1,6 @@
 import {
   IonCard,
+  IonCardTitle,
   IonContent,
   IonIcon,
   IonItem,
@@ -96,14 +97,14 @@ const Purchase: React.FC = () => {
                 <React.Fragment key={index}>
                   <PurchaseItem item={item} editable={false} />
                   {purchase.reviewed &&
-                    <IonCard>
-                      <IonItem >
-                        <IonIcon icon={personOutline} slot="start" />
-                        <IonLabel>Deine Bewertung </IonLabel>
-                      </IonItem>
+                    <IonCard className='ion-padding'>
+                      <div className='flex flex-row items-center mb-2'>
+                        <IonIcon icon={personOutline} slot="start" className='w-5 h-5 mr-2' />
+                        <IonCardTitle className='text-lg'>Deine Bewertung </IonCardTitle>
+                      </div>
                       {(review[index]?.rating) ?
                         <Likert id={index + '-' + item.title}
-                          className="likertStyles disable mx-3 my-5"
+                          className="likertStyles disable"
                           layout="stacked"
                           question={"Deine Bewertung des Produkts zum " + purchase.task + '?'}
                           responses={[
@@ -116,9 +117,9 @@ const Purchase: React.FC = () => {
                             { value: 6, text: "6", checked: review[index].rating === 6 }
                           ]}
                         />
-                        : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
+                        : (<p>Likert Scala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
                       }
-                      {(review[index]?.comment) && <p className='ml-4 my-4'><b>Kommentar:</b> <br />{review[index]?.comment}</p>}
+                      {(review[index]?.comment) && <p><b>Kommentar:</b> <br />{review[index]?.comment}</p>}
                     </IonCard>
                   }
                   {purchase.peerReviewed && (

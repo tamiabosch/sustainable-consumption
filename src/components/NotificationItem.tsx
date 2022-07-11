@@ -1,20 +1,20 @@
-import {IonItem, IonIcon, IonLabel} from "@ionic/react";
+import { IonItem, IonIcon, IonLabel } from "@ionic/react";
 import { warning, chatbox } from 'ionicons/icons';
 
 interface NotificationItemProps {
     details: string;
     link: string;
     reviewType: string;
-  }
-  
-  const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, reviewType}) => {
+}
+
+const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, reviewType }) => {
     //Review of own Purchase
     const Review = () => {
         return (
-            <IonItem href={link} className="ion-activated">
+            <IonItem href={link}>
                 <IonIcon icon={chatbox} slot="start" />
                 <IonLabel>
-                    <h2>New Peer Review</h2>                
+                    <h2>New Peer Review</h2>
                     <p>{details}</p>
                 </IonLabel>
             </IonItem>
@@ -23,7 +23,7 @@ interface NotificationItemProps {
     //Received a Peer Review of own Purchase
     const PeerReview = () => {
         return (
-            <IonItem href={link} className="ion-activated">
+            <IonItem href={link}>
                 <IonIcon icon={warning} slot="start" />
                 <IonLabel>
                     <h2>Neues Feedback erhalten</h2>
@@ -35,10 +35,10 @@ interface NotificationItemProps {
     //Give a Peer Review to a Purchase
     const GivePeerReview = () => {
         return (
-            <IonItem href={link} className="ion-activated">
+            <IonItem href={link}>
                 <IonIcon icon={chatbox} slot="start" />
                 <IonLabel>
-                    <h2>New Peer Review</h2>                
+                    <h2>New Peer Review</h2>
                     <p>{details}</p>
                 </IonLabel>
             </IonItem>
@@ -50,11 +50,10 @@ interface NotificationItemProps {
         return <Review />;
     } else if (reviewType === 'peerReview') {
         return <PeerReview />;
-    } else if (reviewType === 'givePeerReview') {   
+    } else if (reviewType === 'givePeerReview') {
         return <GivePeerReview />;
     } else {
         return <Review />;
     };
 };
 export default NotificationItem;
-  

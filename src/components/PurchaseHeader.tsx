@@ -20,14 +20,14 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
     return (
         <IonCard routerLink={link}>
             <IonCardHeader>
-                <IonItem className="ion-activated">
-                    <IonIcon icon={cartOutline} slot="start" />
+                <div className="flex flex-row justify-between">
                     <IonLabel>
                         <IonCardTitle>{title}</IonCardTitle>
                         <IonCardSubtitle>{format(parseISO(date), 'd MMM, yyyy')}</IonCardSubtitle>
                         <IonCardSubtitle>{task}</IonCardSubtitle>
                     </IonLabel>
-                </IonItem>
+                    <IonIcon icon={cartOutline} slot="start" className="w-8 h-8" />
+                </div>
             </IonCardHeader>
             {description && <IonCardContent>{description}</IonCardContent>}
             {overview &&

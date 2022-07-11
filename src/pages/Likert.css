@@ -8,10 +8,6 @@ fieldset.likertStyles .likertResponse {
     min-width: 12px !important;
 }
 
-fieldset.likertStyles .likertLegend {
-    margin-left: 12px;
-}
-
 fieldset.disable .likertBand {
     pointer-events: none;  
 }
