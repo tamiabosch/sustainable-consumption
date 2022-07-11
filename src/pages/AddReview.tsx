@@ -22,18 +22,20 @@ const AddReview: React.FC = () => {
 
   const location = useLocation<{ purchaseId: string }>();
   //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
-  const purchaseId = location.state.purchaseId;
+  const purchaseId = location.state?.purchaseId;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    const purchaseDocRef = doc(db, 'purchases', purchaseId);
-    const getPurchase = async () => {
-      const purchaseSnap = await getDoc(purchaseDocRef);
-      setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
+    if (purchaseId) {
+      const purchaseDocRef = doc(db, 'purchases', purchaseId);
+      const getPurchase = async () => {
+        const purchaseSnap = await getDoc(purchaseDocRef);
+        setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
+      }
+      getPurchase();
     }
-    getPurchase();
   }, [userId, purchaseId]);
 
   useEffect(() => {

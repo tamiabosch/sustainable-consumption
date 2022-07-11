@@ -31,10 +31,10 @@ const AddExperienceSampling: React.FC = () => {
   const history = useHistory();
 
   const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: string }>();
-  const purchaseId = useMemo(() => location.state.purchaseId, [location]);
-  const reviewId = useMemo(() => location.state.reviewId, [location]);
-  const task = useMemo(() => location.state.task, [location]);
-  const reviewType = useMemo(() => location.state.reviewType, [location]);
+  const purchaseId = location.state?.purchaseId;
+  const reviewId = useMemo(() => location.state?.reviewId, [location]);
+  const task = useMemo(() => location.state?.task, [location]);
+  const reviewType = useMemo(() => location.state?.reviewType, [location]);
 
   const [selected_1, setSelected_1] = useState<string>('');
   const [selected_2, setSelected_2] = useState<string>('');

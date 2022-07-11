@@ -50,7 +50,7 @@ const TabProfile: React.FC = () => {
                             }
                         </IonList>
                         <IonCardSubtitle className='my-4' >Welche Nachhaltigkeitsthemen stehen bevor? </IonCardSubtitle>
-                        {userData?.week.map((topic, index) => {
+                        {userData?.week?.map((topic, index) => {
                             return (
                                 <IonItem key={index}>
                                     <IonLabel>Woche {index + 1}:</IonLabel>
