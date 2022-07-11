@@ -21,13 +21,13 @@ const AddReview: React.FC = () => {
   const history = useHistory();
 
   const location = useLocation<{ purchaseId: string, reviewType: ReviewType }>();
-  //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
   const purchaseId = location.state?.purchaseId;
   const reviewType = location.state?.reviewType;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [showToast, setShowToast] = useState(false);
 
+  console.log(reviewType)
   useEffect(() => {
     if (purchaseId) {
       const purchaseDocRef = doc(db, 'purchases', purchaseId);

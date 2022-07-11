@@ -10,7 +10,6 @@ import PurchaseHeader from '../components/PurchaseHeader';
 import { db } from "../service/firebaseConfig";
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
-import { ReviewType } from '../models/ReviewType';
 
 
 const Tab1: React.FC = () => {
@@ -20,7 +19,7 @@ const Tab1: React.FC = () => {
 
   useEffect(() => {
     const getPurchases = async () => {
-      const q = query(purchaseRef, where("owner", "==", userId));
+      const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "asc"));
       const data = await getDocs(q);
       setPurchases(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
@@ -55,7 +54,6 @@ const Tab1: React.FC = () => {
               peerReviewed={purchase.peerReviewed}
               owner={purchase.owner}
               peerReviewer={purchase.peerReviewer}
-
             />
           );
         })}

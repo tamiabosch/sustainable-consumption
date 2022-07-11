@@ -1,23 +1,34 @@
-import { IonCard, IonCardHeader, IonItem, IonIcon, IonLabel, IonCardTitle, IonCardSubtitle, IonCardContent, IonChip } from "@ionic/react";
+import { IonCard, IonCardHeader, IonIcon, IonLabel, IonCardTitle, IonCardSubtitle, IonCardContent, IonChip } from "@ionic/react";
 import { format, parseISO } from "date-fns";
 import { cartOutline, checkmark, warningOutline } from "ionicons/icons";
 import { useHistory } from 'react-router';
 import { Purchase } from "../models/Purchase";
 import { ReviewType } from "../models/ReviewType";
-
+import '../pages/Likert.css'
 
 const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description, link, overview, peerReviewed, reviewed, peerReviewer }) => {
     const history = useHistory();
-    console.log('purchaseID:', id)
+    console.log('location window: ', id, window.location.href == '/user/tab2/view/' + id);
+    const hrefFeedback = '/user/tab2/view/'
+    const hrefSelf = '/user/tab1/view/'
+    const currentLocation = window.location.href;
+    console.log(currentLocation.includes(hrefFeedback))
 
     const handleFeedbackClick = (reviewType: ReviewType) => {
-        const location = {
-            pathname: '/user/tab1/add/review',
-            //todo umstände irgenwie mitgeben
-            state: { purchaseId: id, reviewType: reviewType }
+        if (currentLocation.includes(hrefFeedback) && reviewType === ReviewType.SelfReview) {
+            return true
+        } else if (currentLocation.includes(hrefSelf) && reviewType === ReviewType.PeerReview) {
+            return true
+        } else {
+            const path = reviewType === ReviewType.PeerReview ? '/user/tab2/add/review' : '/user/tab1/add/review';
+            const location = {
+                pathname: path,
+                //todo umstände irgenwie mitgeben
+                state: { purchaseId: id, reviewType: reviewType }
+            }
+            history.replace(location)
         }
-        history.replace(location)
-        console.log("Feedback" + id);
+
     }
 
     const LabelStatus = ({ open, task, taskFinished, reviewType }: { open: boolean | undefined, task: string, taskFinished: string, reviewType: ReviewType }) => {

@@ -29,6 +29,7 @@ import { Task } from '../models/Task';
 import { Item } from '../models/Item';
 import Header from '../components/Header';
 import PurchaseItem from '../components/PurchaseItem';
+import { ReviewType } from '../models/ReviewType';
 
 
 const AddEntryPage: React.FC = () => {
@@ -47,7 +48,6 @@ const AddEntryPage: React.FC = () => {
   ]);
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-
 
 
   //collection 2,4,6 

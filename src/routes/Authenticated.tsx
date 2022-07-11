@@ -75,6 +75,12 @@ export const PeerReview = () => {
         <Route exact path="/user/tab2/view/:id">
           <Purchase />
         </Route>
+        <Route exact path="/user/tab2/add/review">
+          <AddReview />
+        </Route>
+        <Route exact path="/user/tab2/add/experienceSampling">
+          <AddExperienceSampling />
+        </Route>
         <Route path="/user/tab3">
           <Tab3 />
         </Route>
