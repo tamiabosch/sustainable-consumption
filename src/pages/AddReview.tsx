@@ -20,9 +20,10 @@ const AddReview: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
 
-  const location = useLocation<{ purchaseId: string }>();
+  const location = useLocation<{ purchaseId: string, reviewType: ReviewType }>();
   //const purchaseId = useMemo(() => location.state.purchaseId, [location]);
   const purchaseId = location.state?.purchaseId;
+  const reviewType = location.state?.reviewType;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [showToast, setShowToast] = useState(false);
@@ -98,7 +99,7 @@ const AddReview: React.FC = () => {
         purchase: purchaseId,
         items: purchase?.items,
         review: review,
-        reviewType: ReviewType.SelfReview
+        reviewType: ReviewType
       }
       const reviewCol = collection(db, 'reviews');
       const reviewDocRef = doc(reviewCol);
