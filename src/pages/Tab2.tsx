@@ -50,6 +50,8 @@ const Tab2: React.FC = () => {
               reviewed={purchase.reviewed}
               peerReviewed={purchase.peerReviewed}
               owner={purchase.owner}
+              peerReviewer={purchase.peerReviewer}
+
             />
           );
         })}

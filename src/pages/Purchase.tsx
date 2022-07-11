@@ -90,6 +90,7 @@ const Purchase: React.FC = () => {
               reviewed={purchase.reviewed}
               peerReviewed={purchase.peerReviewed}
               owner={purchase.owner}
+              peerReviewer={purchase.peerReviewer}
             />
             <p className='px-5 mb-5'>Die Skala von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zut"), gibt die Bewertung des Produkts zum jeweiligen Nachhaltigkeitsthema wieder.</p>
             {purchase.items?.map((item: Item, index: number) => {

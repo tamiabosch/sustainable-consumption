@@ -10,6 +10,7 @@ import PurchaseHeader from '../components/PurchaseHeader';
 import { db } from "../service/firebaseConfig";
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
+import { ReviewType } from '../models/ReviewType';
 
 
 const Tab1: React.FC = () => {
@@ -53,6 +54,8 @@ const Tab1: React.FC = () => {
               reviewed={purchase.reviewed}
               peerReviewed={purchase.peerReviewed}
               owner={purchase.owner}
+              peerReviewer={purchase.peerReviewer}
+
             />
           );
         })}

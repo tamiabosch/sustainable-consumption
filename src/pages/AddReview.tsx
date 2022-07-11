@@ -99,7 +99,7 @@ const AddReview: React.FC = () => {
         purchase: purchaseId,
         items: purchase?.items,
         review: review,
-        reviewType: ReviewType
+        reviewType: reviewType
       }
       const reviewCol = collection(db, 'reviews');
       const reviewDocRef = doc(reviewCol);
@@ -109,9 +109,15 @@ const AddReview: React.FC = () => {
         await setDoc(reviewDocRef, entryData);
         //update purchase reviewed to true
         const purchaseDocRef = doc(db, 'purchases', purchaseId);
-        await updateDoc(purchaseDocRef, {
-          reviewed: true
-        });
+        if (reviewType === ReviewType.PeerReview) {
+          await updateDoc(purchaseDocRef, {
+            peerReviewed: true
+          });
+        } else {
+          await updateDoc(purchaseDocRef, {
+            reviewed: true
+          });
+        }
       }
       saveReviewtoFB().then(() => {
         const location = {
@@ -146,7 +152,7 @@ const AddReview: React.FC = () => {
         </IonItemDivider>
         {purchase ? (
           <>
-            <PurchaseHeader id={"" + purchase.id} title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} owner={purchase.owner} />
+            <PurchaseHeader id={purchase.id} title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} owner={purchase.owner} />
             {purchase.items?.map((item: Item, index: number) => (
               <React.Fragment key={index}>
                 <IonItemDivider className='mt-10 mb-5' color='primary'>
