@@ -1,4 +1,5 @@
 
+import { FieldValue } from 'firebase/firestore';
 import { Item } from './Item';
 import { Task } from './Task';
 export interface Purchase {
@@ -13,6 +14,8 @@ export interface Purchase {
     peerReviewed?: boolean;
     overview?: boolean
     owner: string;
+    peerReviewer?: string;
     link?: string;
+    createdAt?: FieldValue;
 }
 

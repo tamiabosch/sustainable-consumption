@@ -28,7 +28,7 @@ const AddReview: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', purchaseId);
+    const purchaseDocRef = doc(db, 'purchases', purchaseId);
     const getPurchase = async () => {
       const purchaseSnap = await getDoc(purchaseDocRef);
       setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
@@ -105,7 +105,7 @@ const AddReview: React.FC = () => {
         //set review to db
         await setDoc(reviewDocRef, entryData);
         //update purchase reviewed to true
-        const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', purchaseId);
+        const purchaseDocRef = doc(db, 'purchases', purchaseId);
         await updateDoc(purchaseDocRef, {
           reviewed: true
         });

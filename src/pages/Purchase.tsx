@@ -34,7 +34,7 @@ const Purchase: React.FC = () => {
   const [peerReview, setPeerReview] = useState<ReviewItem[]>([]);
 
   useEffect(() => {
-    const purchaseDocRef = doc(db, "users", userId ? userId : '0', 'purchases', id);
+    const purchaseDocRef = doc(db, 'purchases', id);
     const getPurchase = async () => {
       const purchaseSnap = await getDoc(purchaseDocRef);
       setPurchase({ ...purchaseSnap.data() as PurchaseModel, id: purchaseSnap.id });
@@ -93,8 +93,8 @@ const Purchase: React.FC = () => {
             <p className='px-5 mb-5'>Die Skala von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zut"), gibt die Bewertung des Produkts zum jeweiligen Nachhaltigkeitsthema wieder.</p>
             {purchase.items?.map((item: Item, index: number) => {
               return (
-                <>
-                  <PurchaseItem key={index} item={item} editable={false} />
+                <React.Fragment key={index}>
+                  <PurchaseItem item={item} editable={false} />
                   {purchase.reviewed &&
                     <IonCard>
                       <IonItem >
@@ -150,7 +150,7 @@ const Purchase: React.FC = () => {
                       </IonCard>
                     </>
                   )}
-                </>
+                </React.Fragment>
               );
             })}
           </>

@@ -67,8 +67,14 @@ const AddEntryPage: React.FC = () => {
 
   const handleSave = async () => {
     if (date && title && task) {
-      const entriesRef = collection(db, 'users', userId ? userId : '0', 'purchases');
+      const entriesRef = collection(db, 'purchases');
       //Purchase Data
+      //if currentUser is in group peerReviews 
+      //look for other peerReview User
+      // with min peerreviewsWritten 
+      //has to be in the same week in same group of task this week
+      //check if week array matches
+      const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2"
       const entryData = {
         date,
         title,
@@ -77,8 +83,9 @@ const AddEntryPage: React.FC = () => {
         reviewed: false,
         peerReviewed: false,
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
-        created_at: serverTimestamp(),
+        createdAt: serverTimestamp(),
         owner: userId,
+        peerReviewer: peerId
       };
 
       const docRef = doc(entriesRef);

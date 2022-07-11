@@ -2,7 +2,7 @@ import { IonCard, IonCardContent, IonCardSubtitle, IonContent, IonIcon, IonItem,
 import { User } from '../models/User';
 import { doc, getDoc } from 'firebase/firestore';
 import { personOutline } from 'ionicons/icons';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { useAuth } from '../service/authFirebase';
 import { auth, db } from '../service/firebaseConfig';

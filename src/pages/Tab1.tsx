@@ -8,18 +8,18 @@ import Header from '../components/Header';
 import PurchaseHeader from '../components/PurchaseHeader';
 /* Firestore */
 import { db } from "../service/firebaseConfig";
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 
 
 const Tab1: React.FC = () => {
   const { userId } = useAuth();
   const [purchases, setPurchases] = useState<any>([]);
-  const entiresDocumentRef = collection(db, "users", userId ? userId : '0', 'purchases');
+  const purchaseRef = collection(db, 'purchases');
 
   useEffect(() => {
     const getPurchases = async () => {
-      const q = query(entiresDocumentRef, orderBy("date", "desc"));
+      const q = query(purchaseRef, where("owner", "==", userId));
       const data = await getDocs(q);
       setPurchases(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
