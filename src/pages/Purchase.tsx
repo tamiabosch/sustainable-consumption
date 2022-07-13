@@ -31,8 +31,8 @@ const Purchase: React.FC = () => {
   const { userId } = useAuth();
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<ReviewItem[]>([]);
-  const [reviewData, setReviewData] = useState<Review[]>([]);
   const [peerReview, setPeerReview] = useState<ReviewItem[]>([]);
+  const [reviewData, setReviewData] = useState<Review[]>([]);
 
   useEffect(() => {
     const purchaseDocRef = doc(db, 'purchases', id);
@@ -43,8 +43,9 @@ const Purchase: React.FC = () => {
     getPurchase();
   }, [userId, id]);
 
+  //get Review and PeerReview if bool is set to true
   useEffect(() => {
-    //get Review and PeerReview if bool is set to true
+    //get own review data
     if (purchase?.reviewed) {
       const q = query(collection(db, "reviews"), where("purchase", "==", purchase.id), where("reviewType", "==", ReviewType.SelfReview));
       const getReview = async () => {
@@ -60,7 +61,10 @@ const Purchase: React.FC = () => {
         });
       }
       getReview();
-    } else if (purchase?.peerReviewed) {
+    }
+
+    //if Purchase was peer reviewed query data
+    if (purchase?.peerReviewed) {
       const q = query(collection(db, "reviews"), where("purchase", "==", purchase.id), where("reviewType", "==", ReviewType.PeerReview));
       const getPeerReview = async () => {
         const querySnapshot = await getDocs(q);
@@ -72,7 +76,6 @@ const Purchase: React.FC = () => {
       getPeerReview();
     }
   }, [purchase]);
-
 
   return (
     <IonPage>
@@ -101,13 +104,13 @@ const Purchase: React.FC = () => {
                     <IonCard className='ion-padding'>
                       <div className='flex flex-row items-center mb-2'>
                         <IonIcon icon={personOutline} slot="start" className='w-5 h-5 mr-2' />
-                        <IonCardTitle className='text-lg'>Deine Bewertung </IonCardTitle>
+                        <IonCardTitle className='text-base'>Deine Bewertung </IonCardTitle>
                       </div>
                       {(review[index]?.rating) ?
-                        <Likert id={index + '-' + item.title}
+                        <Likert id={index + '-self-' + item.title}
                           className="likertStyles disable"
                           layout="stacked"
-                          question={"Deine Bewertung des Produkts zum " + purchase.task + '?'}
+                          question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '.'}
                           responses={[
                             { value: 0, text: "0", checked: review[index].rating === 0 },
                             { value: 1, text: "1", checked: review[index].rating === 1 },
@@ -125,14 +128,14 @@ const Purchase: React.FC = () => {
                   }
                   {purchase.peerReviewed && (
                     <>
-                      <IonCard>
-                        <IonItem >
-                          <IonIcon icon={peopleOutline} slot="start" />
-                          <IonLabel>Feedback</IonLabel>
-                        </IonItem>
+                      <IonCard className='ion-padding'>
+                        <div className='flex flex-row items-center mb-2'>
+                          <IonIcon icon={peopleOutline} slot="start" className='w-6 h-6 mr-2' />
+                          <IonCardTitle className='text-base'>Feedback</IonCardTitle>
+                        </div>
                         {(peerReview[index]?.rating) ?
-                          <Likert id={index + '-' + item.title}
-                            className="likertStyles disable mx-3 my-5"
+                          <Likert id={index + '-peer-' + item.title}
+                            className="likertStyles disable"
                             layout="stacked"
                             question={"Feedback des Produkts zum " + purchase.task + '?'}
                             responses={[
@@ -145,9 +148,9 @@ const Purchase: React.FC = () => {
                               { value: 6, text: "6", checked: peerReview[index].rating === 6 }
                             ]}
                           />
-                          : (<p className='ml-4 mx-2'>Likert Scala konnte nicht geladen werden. <br /><b>Rating: {peerReview[index]?.rating}/7 Punkten</b></p>)
+                          : (<p>Likert Scala konnte nicht geladen werden. <br /><b>Rating: {peerReview[index]?.rating}/6 Punkten</b></p>)
                         }
-                        {(peerReview[index]?.comment) && <p className='ml-4 my-4'><b>Kommentar:</b> <br />{peerReview[index]?.comment}</p>}
+                        {(peerReview[index]?.comment) && <p><b>Kommentar:</b> <br />{peerReview[index]?.comment}</p>}
 
                       </IonCard>
                     </>
