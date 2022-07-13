@@ -29,7 +29,7 @@ const Tab1: React.FC = () => {
 
   return (
     <IonPage>
-      <Header title='Einkäufe' showLogout={true} />
+      <Header title='Meine Einkäufe' showLogout={true} />
       <IonContent fullscreen>
         {/* Notifications */}
         <IonCard>

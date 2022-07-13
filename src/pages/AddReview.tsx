@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonItem, IonItemDivider, IonLabel, IonLoading, IonNote, IonPage, IonText, IonTextarea, IonToast } from '@ionic/react';
-import { collection, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
-import React, { useEffect, useState, useMemo } from 'react';
+import { collection, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import Header from '../components/Header';
 import { db } from '../service/firebaseConfig';
@@ -88,7 +88,8 @@ const AddReview: React.FC = () => {
     });
   }
   const handleReviewSubmit = async () => {
-    console.log("Review: " + review,);
+    console.log("Review: " + review, review);
+    console.log("ReviewType" + reviewType);
     //Check if all fields are filled
     if (!nullExists(null)) {
       //TODO add timer??
@@ -109,14 +110,15 @@ const AddReview: React.FC = () => {
         await setDoc(reviewDocRef, entryData);
         //update purchase reviewed to true
         const purchaseDocRef = doc(db, 'purchases', purchaseId);
+        const userDocRef = doc(db, 'users', userId ? userId : '0');
+
         if (reviewType === ReviewType.PeerReview) {
-          await updateDoc(purchaseDocRef, {
-            peerReviewed: true
-          });
+          await updateDoc(purchaseDocRef, { peerReviewed: true });
+          await updateDoc(userDocRef, { peerReviewsWritten: increment(1) });
         } else {
-          await updateDoc(purchaseDocRef, {
-            reviewed: true
-          });
+          await updateDoc(purchaseDocRef, { reviewed: true });
+          await updateDoc(userDocRef, { peerReviewsWritten: increment(1) });
+
         }
       }
       saveReviewtoFB().then(() => {
@@ -126,7 +128,7 @@ const AddReview: React.FC = () => {
             purchaseId: purchaseId,
             reviewId: reviewDocRef.id,
             task: purchase?.task,
-            reviewType: ReviewType.SelfReview
+            reviewType: reviewType
           }
         }
         history.replace(location)

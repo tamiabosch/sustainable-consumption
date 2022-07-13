@@ -24,7 +24,7 @@ const Tab2: React.FC = () => {
   }, [])
   return (
     <IonPage>
-      <Header title="Feedback" showLogout={true} />
+      <Header title="Feedback " showLogout={true} />
       <IonContent fullscreen>
 
         {/* Notifications */}

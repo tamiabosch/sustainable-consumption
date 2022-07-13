@@ -78,19 +78,18 @@ const AddExperienceSampling: React.FC = () => {
     if (selected_1 && selected_2 && ((selected_3 && selected_4 && selected_5) !== '-1')) {
       const textBug = freeText_1 ? freeText_1 : 'Sonstiges'
       const entryData = {
+        author: userId,
         created_at: serverTimestamp(),
+        purchase: purchaseId,
         q1: { question: questions.q1.question, answer: (selected_1 === 'Sonstiges') ? textBug : selected_1 },
         q2: { question: questions.q2.question, answer: selected_2 },
         q3: { question: questions.q3.question, answer: selected_3 },
         q4: { question: questions.q4.question, answer: selected_4 },
         q5: { question: questions.q5.question, answer: selected_5 },
-        purchase: purchaseId,
         review: reviewId,
-        author: userId,
         task,
         reviewType,
         //TODO add timer
-        timeUsed: 0,
       }
       const entriesRef = collection(db, 'experienceSamples');
       const docRef = doc(entriesRef);

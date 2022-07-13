@@ -19,7 +19,7 @@ import {
   IonToast,
 } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useHistory } from 'react-router';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
 import { collection, doc, setDoc, serverTimestamp, where, query, getDoc, orderBy, getDocs } from 'firebase/firestore';
@@ -29,12 +29,12 @@ import { Task } from '../models/Task';
 import { Item } from '../models/Item';
 import Header from '../components/Header';
 import PurchaseItem from '../components/PurchaseItem';
-import { ReviewType } from '../models/ReviewType';
 import { User } from '../models/User';
+import { ReviewType } from '../models/ReviewType';
 
 
 const AddEntryPage: React.FC = () => {
-  const { userId } = useAuth();
+  const { userId, email } = useAuth();
   const history = useHistory();
 
   const [date, setDate] = useState<string | undefined | null>('');
@@ -50,6 +50,7 @@ const AddEntryPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [userData, setUserData] = useState<User>();
+  const [peerReviewer, setPeerReviewer] = useState<any[]>();
 
   useEffect(() => {
     const userRef = doc(db, "users", userId ? userId : '0');
@@ -59,6 +60,37 @@ const AddEntryPage: React.FC = () => {
     }
     getUserProfile();
   }, [userId])
+
+  //Query to find peerReviewer in same week and min peerReviewsWritten
+  useEffect(() => {
+    //Purchase Data
+    //if currentUser is in group peerReviews 
+    //look for other peerReview User
+    // with min peerreviewsWritten 
+    //has to be in the same week in same group of task this week
+    //check if week array matches
+    //const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
+    if (userData && userData?.reviewType === ReviewType.PeerReview) {
+      const usersRef = collection(db, 'users')
+      const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('week', '==', userData.week), orderBy('peerReviewsWritten', 'asc'));
+      const getPeerReviewer = async () => {
+        const userDocs = await getDocs(q);
+        setPeerReviewer(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        )
+      }
+      console.log("peerReviewer: " + peerReviewer, peerReviewer);
+      console.count("userData: " + userData.email);
+      getPeerReviewer()
+      //remove self from peerReviewer
+      const indexOfSelf = peerReviewer?.findIndex(object => {
+        return object.id === userId; //-1 if undefined
+      });
+      if (indexOfSelf && peerReviewer) {
+        peerReviewer.splice(indexOfSelf, 1)
+      }
+
+    }
+  }, [email, userData, items]) //items keine edle Lösung, weil es bei jedem hinzufügen ne neue anfrage schickt.
 
   //collection 2,4,6 
   //doc 1,3,5
@@ -78,19 +110,10 @@ const AddEntryPage: React.FC = () => {
   const handleSave = async () => {
     if (date && title && task) {
       const entriesRef = collection(db, 'purchases');
-      //Purchase Data
-      //if currentUser is in group peerReviews 
-      //look for other peerReview User
-      // with min peerreviewsWritten 
-      //has to be in the same week in same group of task this week
-      //check if week array matches
-      //const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
-      const usersRef = collection(db, 'users')
-      const q = query(usersRef, where('email', '!=', userData?.email), where('week', '==', userData?.week), orderBy('peerReviewsWritten', 'asc'));
-      const userDoc = await getDocs(q);
-      console.log("userDoc: " + userDoc + userDoc);
+
       const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
       //erwartet test, sarah
+
       const entryData = {
         date,
         title,
@@ -101,7 +124,7 @@ const AddEntryPage: React.FC = () => {
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
         createdAt: serverTimestamp(),
         owner: userId,
-        peerReviewer: userDoc.docs[0]
+        peerReviewer: peerReviewer ? peerReviewer[0].id : peerId, //check if this purchase is peerReviewed
       };
 
       const docRef = doc(entriesRef);
@@ -112,7 +135,7 @@ const AddEntryPage: React.FC = () => {
       setPurchaseToFB().then(() => {
         const location = {
           pathname: '/user/tab1/add/review',
-          state: { purchaseId: docRef.id, task: task } //send purchaseId to next view
+          state: { purchaseId: docRef.id, reviewType: ReviewType.SelfReview } //send purchaseId to next view
         }
         history.replace(location)
       }, error => {

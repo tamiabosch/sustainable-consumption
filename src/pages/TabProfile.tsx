@@ -1,11 +1,11 @@
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonText } from '@ionic/react';
+import { IonCard, IonCardContent, IonCardSubtitle, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonText } from '@ionic/react';
 import { User } from '../models/User';
 import { doc, getDoc } from 'firebase/firestore';
-import { attachOutline, helpCircleOutline, personOutline, readerOutline } from 'ionicons/icons';
+import { helpCircleOutline, personOutline, readerOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { useAuth } from '../service/authFirebase';
-import { auth, db } from '../service/firebaseConfig';
+import { db } from '../service/firebaseConfig';
 import { ReviewType } from '../models/ReviewType';
 
 const TabProfile: React.FC = () => {
