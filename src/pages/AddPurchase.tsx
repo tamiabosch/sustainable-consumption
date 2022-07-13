@@ -18,11 +18,11 @@ import {
   IonTextarea,
   IonToast,
 } from '@ionic/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
-import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, serverTimestamp, where, query, getDoc, orderBy, getDocs } from 'firebase/firestore';
 import { format, parseISO } from 'date-fns';
 import { addOutline, saveOutline } from 'ionicons/icons';
 import { Task } from '../models/Task';
@@ -30,6 +30,7 @@ import { Item } from '../models/Item';
 import Header from '../components/Header';
 import PurchaseItem from '../components/PurchaseItem';
 import { ReviewType } from '../models/ReviewType';
+import { User } from '../models/User';
 
 
 const AddEntryPage: React.FC = () => {
@@ -48,7 +49,16 @@ const AddEntryPage: React.FC = () => {
   ]);
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [userData, setUserData] = useState<User>();
 
+  useEffect(() => {
+    const userRef = doc(db, "users", userId ? userId : '0');
+    const getUserProfile = async () => {
+      const userDoc = await getDoc(userRef);
+      setUserData(userDoc.data() as User);
+    }
+    getUserProfile();
+  }, [userId])
 
   //collection 2,4,6 
   //doc 1,3,5
@@ -74,7 +84,13 @@ const AddEntryPage: React.FC = () => {
       // with min peerreviewsWritten 
       //has to be in the same week in same group of task this week
       //check if week array matches
-      const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2"
+      //const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
+      const usersRef = collection(db, 'users')
+      const q = query(usersRef, where('email', '!=', userData?.email), where('week', '==', userData?.week), orderBy('peerReviewsWritten', 'asc'));
+      const userDoc = await getDocs(q);
+      console.log("userDoc: " + userDoc + userDoc);
+      const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
+      //erwartet test, sarah
       const entryData = {
         date,
         title,
@@ -85,7 +101,7 @@ const AddEntryPage: React.FC = () => {
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
         createdAt: serverTimestamp(),
         owner: userId,
-        peerReviewer: peerId
+        peerReviewer: userDoc.docs[0]
       };
 
       const docRef = doc(entriesRef);

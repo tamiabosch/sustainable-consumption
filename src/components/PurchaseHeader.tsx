@@ -8,11 +8,10 @@ import '../pages/Likert.css'
 
 const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description, link, overview, peerReviewed, reviewed, peerReviewer }) => {
     const history = useHistory();
-    console.log('location window: ', id, window.location.href == '/user/tab2/view/' + id);
+
     const hrefFeedback = '/user/tab2/view/'
     const hrefSelf = '/user/tab1/view/'
     const currentLocation = window.location.href;
-    console.log(currentLocation.includes(hrefFeedback))
 
     const handleFeedbackClick = (reviewType: ReviewType) => {
         if (currentLocation.includes(hrefFeedback) && reviewType === ReviewType.SelfReview) {
@@ -23,7 +22,6 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
             const path = reviewType === ReviewType.PeerReview ? '/user/tab2/add/review' : '/user/tab1/add/review';
             const location = {
                 pathname: path,
-                //todo umstände irgenwie mitgeben
                 state: { purchaseId: id, reviewType: reviewType }
             }
             history.replace(location)

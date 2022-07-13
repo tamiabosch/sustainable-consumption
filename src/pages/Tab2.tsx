@@ -1,5 +1,4 @@
-import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent, IonItem, IonIcon, IonButton } from '@ionic/react';
-import { checkmark } from 'ionicons/icons';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle } from '@ionic/react';
 import Notification from '../components/NotificationItem';
 import Header from '../components/Header';
 import { useEffect, useState } from 'react';
@@ -13,7 +12,7 @@ const Tab2: React.FC = () => {
   const { userId } = useAuth();
   const [otherPurchases, setOtherPurchases] = useState<any[]>([]);
   const docRef = collection(db, 'purchases');
-  const q = query(docRef, where("peerReviewer", "==", userId));
+  const q = query(docRef, where("peerReviewer", "==", userId), orderBy("date", "desc"));
 
   //make async call FB to get purchases, which need to be reviewed
   useEffect(() => {

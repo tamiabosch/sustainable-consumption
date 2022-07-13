@@ -1,11 +1,27 @@
 import { IonContent, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
-import { useState } from 'react';
+import { User } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { Task } from '../models/Task';
+import { useAuth } from '../service/authFirebase';
+import { db } from '../service/firebaseConfig';
 
 const Tab3: React.FC = () => {
   const [segment, setSegment] = useState<Task>(Task.CERTIFICATE);
+  const { userId } = useAuth()
+  const [userData, setUserData] = useState<User>();
 
+  useEffect(() => {
+    const userRef = doc(db, "users", userId ? userId : '0');
+    const getUserProfile = async () => {
+      const userDoc = await getDoc(userRef);
+      setUserData(userDoc.data() as User);
+    }
+    getUserProfile();
+  }, [userId])
+
+  console.log(userData)
   return (
     <IonPage>
       <Header title="Wöchentliche Aufgabe" />

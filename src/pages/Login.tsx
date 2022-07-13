@@ -12,8 +12,9 @@ import {
 } from "@ionic/react";
 import { useAuth } from "../service/authFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../service/firebaseConfig";
+import { auth, db } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 
 //Use one which works fine for you 
@@ -38,6 +39,8 @@ const Login: React.FC = () => {
     try {
       setStatus({ loading: true, error: false });
       const data = (await signInWithEmailAndPassword(auth, mail, password)).user;
+      const userDoc = doc(db, 'users', data.uid);
+      data ? await setDoc(userDoc, { lastLogin: serverTimestamp(), peerReviewsWritten: 0, reviewsWritten: 0, week: ["Zertifikat", "Saisonalität", "Regionalität"], email: data.email, completed: false }) : console.log("error");
       console.log('handleLogin user:', data);
     } catch (error) {
       setStatus({ loading: false, error: true });

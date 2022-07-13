@@ -92,7 +92,7 @@ const Purchase: React.FC = () => {
               owner={purchase.owner}
               peerReviewer={purchase.peerReviewer}
             />
-            <p className='px-5 mb-5'>Die Skala von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zut"), gibt die Bewertung des Produkts zum jeweiligen Nachhaltigkeitsthema wieder.</p>
+            <p className='px-5 mb-5'>Die Skala geht von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zu")</p>
             {purchase.items?.map((item: Item, index: number) => {
               return (
                 <React.Fragment key={index}>
@@ -118,7 +118,7 @@ const Purchase: React.FC = () => {
                             { value: 6, text: "6", checked: review[index].rating === 6 }
                           ]}
                         />
-                        : (<p>Likert Scala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
+                        : (<p>Skala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
                       }
                       {(review[index]?.comment) && <p><b>Kommentar:</b> <br />{review[index]?.comment}</p>}
                     </IonCard>

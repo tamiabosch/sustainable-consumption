@@ -19,7 +19,7 @@ const Tab1: React.FC = () => {
 
   useEffect(() => {
     const getPurchases = async () => {
-      const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "asc"));
+      const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
       const data = await getDocs(q);
       setPurchases(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
