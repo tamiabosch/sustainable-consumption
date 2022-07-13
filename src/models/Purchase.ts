@@ -1,11 +1,11 @@
 
-import { FieldValue } from 'firebase/firestore';
+import { FieldValue, Timestamp } from 'firebase/firestore';
 import { Item } from './Item';
 import { Task } from './Task';
 export interface Purchase {
     id: string;
     title: string;
-    date: string;
+    date: string; //JS date
     task: Task
     description?: string;
     img?: string;

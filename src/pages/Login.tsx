@@ -40,7 +40,7 @@ const Login: React.FC = () => {
       setStatus({ loading: true, error: false });
       const data = (await signInWithEmailAndPassword(auth, mail, password)).user;
       const userDoc = doc(db, 'users', data.uid);
-      data ? await setDoc(userDoc, { lastLogin: serverTimestamp(), peerReviewsWritten: 0, reviewsWritten: 0, week: ["Zertifikat", "Saisonalität", "Regionalität"], email: data.email, completed: false }) : console.log("error");
+      data ? await setDoc(userDoc, { ...configPeerReview, email: data.email }) : console.log("error");
       console.log('handleLogin user:', data);
     } catch (error) {
       setStatus({ loading: false, error: true });
@@ -48,14 +48,26 @@ const Login: React.FC = () => {
     }
   };
 
+  const group = {
+    g1: ["Zertifikat", "Saisonalität", "Regionalität"],
+  }
+  const configPeerReview = {
+    lastLogin: serverTimestamp(),
+    startDate: new Date(2022, 6, 25),
+    peerReviewsWritten: 0,
+    reviewsWritten: 0,
+    week: group.g1,
+    completed: false
+  }
+
   function test() {
     const data = auth.currentUser
     console.log("data: " + data?.uid);
     console.log("loggedIn: " + loggedIn);
     console.log('currentUser: ' + auth?.currentUser);
     // createGroceryList("LIDL");
-    // console.log("test");
   }
+
   if (loggedIn) {
     return <Redirect to="/user/tab1" />;
   }
@@ -78,7 +90,6 @@ const Login: React.FC = () => {
           onIonChange={(e: any) => setPassword(e.target.value)}
         />
         <IonButton onClick={handleLogin}>Login</IonButton>
-        <IonButton onClick={test}>test vars</IonButton>
         {status.error &&
           <IonText color="danger">Ungültige Eingabe</IonText>
         }

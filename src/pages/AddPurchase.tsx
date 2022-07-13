@@ -223,7 +223,7 @@ const AddEntryPage: React.FC = () => {
           <IonDatetime
             id="datetime"
             presentation="date"
-            min="2022-06-13"
+            min="2022-07-18"
             value={date}
             onIonChange={(event) => setDate(event.detail.value)}
           ></IonDatetime>
