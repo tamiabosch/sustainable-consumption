@@ -15,6 +15,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { ReviewType } from "../models/ReviewType";
 
 
 //Use one which works fine for you 
@@ -53,6 +54,7 @@ const Login: React.FC = () => {
   }
   const configPeerReview = {
     lastLogin: serverTimestamp(),
+    reviewType: ReviewType.PeerReview,
     startDate: new Date(2022, 6, 25),
     peerReviewsWritten: 0,
     reviewsWritten: 0,

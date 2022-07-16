@@ -50,7 +50,8 @@ const AddEntryPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [userData, setUserData] = useState<User>();
-  const [peerReviewer, setPeerReviewer] = useState<any[]>();
+  const [peerReviewers, setPeerReviewers] = useState<any[]>();
+  const [peerReviewerId, setPeerReviewerId] = useState<string>();
 
   useEffect(() => {
     const userRef = doc(db, "users", userId ? userId : '0');
@@ -61,7 +62,7 @@ const AddEntryPage: React.FC = () => {
     getUserProfile();
   }, [userId])
 
-  //Query to find peerReviewer in same week and min peerReviewsWritten
+  //Query to find peerReviewers in same week and min peerReviewsWritten
   useEffect(() => {
     //Purchase Data
     //if currentUser is in group peerReviews 
@@ -73,22 +74,21 @@ const AddEntryPage: React.FC = () => {
     if (userData && userData?.reviewType === ReviewType.PeerReview) {
       const usersRef = collection(db, 'users')
       const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('week', '==', userData.week), orderBy('peerReviewsWritten', 'asc'));
-      const getPeerReviewer = async () => {
+      const getPeerReviewers = async () => {
         const userDocs = await getDocs(q);
-        setPeerReviewer(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        setPeerReviewers(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
         )
       }
-      console.log("peerReviewer: " + peerReviewer, peerReviewer);
-      console.count("userData: " + userData.email);
-      getPeerReviewer()
-      //remove self from peerReviewer
-      const indexOfSelf = peerReviewer?.findIndex(object => {
+      getPeerReviewers()
+      //remove self from peerReviewers
+      const indexOfSelf = peerReviewers?.findIndex(object => {
         return object.id === userId; //-1 if undefined
       });
-      if (indexOfSelf && peerReviewer) {
-        peerReviewer.splice(indexOfSelf, 1)
+      if (indexOfSelf !== -1 && indexOfSelf !== undefined) {
+        setPeerReviewers(peerReviewers?.splice(indexOfSelf, 1))
       }
-
+      setPeerReviewerId(peerReviewers?.[0].id);
+      // peerReviewers?.filter(object => { return object.email !== email; })
     }
   }, [email, userData, items]) //items keine edle Lösung, weil es bei jedem hinzufügen ne neue anfrage schickt.
 
@@ -124,7 +124,7 @@ const AddEntryPage: React.FC = () => {
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
         createdAt: serverTimestamp(),
         owner: userId,
-        peerReviewer: peerReviewer ? peerReviewer[0].id : peerId, //check if this purchase is peerReviewed
+        peerReviewer: userData?.reviewType === ReviewType.PeerReview ? peerReviewerId : peerId, //check if this purchase is peerReviewed //TODO do not set if Signle Review
       };
 
       const docRef = doc(entriesRef);

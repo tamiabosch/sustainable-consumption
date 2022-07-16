@@ -1,6 +1,6 @@
 import { IonApp, IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import { cart, information, informationCircle, people, person, personOutline } from "ionicons/icons";
+import { cart, information, informationCircle, people, person } from "ionicons/icons";
 import { Route, Redirect } from "react-router";
 import Tab1 from '../pages/Tab1';
 import Tab2 from '../pages/Tab2';
@@ -81,14 +81,14 @@ export const PeerReview = () => {
         <Route exact path="/user/tab2/add/experienceSampling">
           <AddExperienceSampling />
         </Route>
-        <Route path="/user/tab3">
+        <Route exact path="/user/tab3">
           <Tab3 />
         </Route>
-        <Route path="/user/profile">
+        <Route exact path="/user/profile">
           <TabProfile />
         </Route>
         {/* Fallback */}
-        <Route exact path="/user">
+        <Route exact path="/">
           <Redirect to="/user/tab1" />
         </Route>
       </IonRouterOutlet>

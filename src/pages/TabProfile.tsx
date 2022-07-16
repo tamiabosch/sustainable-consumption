@@ -1,12 +1,13 @@
 import { IonCard, IonCardContent, IonCardSubtitle, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonText } from '@ionic/react';
 import { User } from '../models/User';
 import { doc, getDoc } from 'firebase/firestore';
-import { helpCircleOutline, personOutline, readerOutline } from 'ionicons/icons';
+import { contrastOutline, helpCircleOutline, mapOutline, personOutline, pricetagsOutline, readerOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
 import { ReviewType } from '../models/ReviewType';
+import { Task } from '../models/Task';
 
 const TabProfile: React.FC = () => {
     const { userId, email } = useAuth()
@@ -70,7 +71,14 @@ const TabProfile: React.FC = () => {
                             return (
                                 <IonItem key={index}>
                                     <IonLabel>Woche {index + 1}:</IonLabel>
-                                    <IonText>{topic}</IonText>
+                                    <IonText className='flex items-center'>{topic}
+                                        {{
+                                            [Task.CERTIFICATE]: <IonIcon icon={pricetagsOutline} className='ml-2' />,
+                                            [Task.REGIONALITY]: <IonIcon icon={mapOutline} className='ml-2' />,
+                                            [Task.SEASONALITY]: <IonIcon icon={contrastOutline} className='ml-2' />
+                                        }[topic]}
+
+                                    </IonText>
                                 </IonItem>)
                         })}
                     </IonCardContent>

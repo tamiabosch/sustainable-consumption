@@ -14,9 +14,6 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
     const hrefSelf = '/user/tab1/view/'
     const currentLocation = window.location.href;
 
-    const taskIcon: Task = task;
-
-
     const handleFeedbackClick = (reviewType: ReviewType) => {
         if (currentLocation.includes(hrefFeedback) && reviewType === ReviewType.SelfReview) {
             return true
@@ -89,6 +86,7 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
                     {peerReviewer && //falls nicht, wird es den Single Review Leuten gar nicht erstn angezeigt
                         <LabelStatus {...peerReviewProps} taskFinished={currentLocation.includes('/user/tab2') ? "Feedback geben" : "Feedback angefordert"} />
                     }
+                    <p>{peerReviewer}</p>
                 </IonCardContent>
             }
         </IonCard>
