@@ -1,5 +1,5 @@
 import { IonItem, IonIcon, IonLabel } from "@ionic/react";
-import { warning, chatbox } from 'ionicons/icons';
+import { chatbox, pencilOutline } from 'ionicons/icons';
 
 interface NotificationItemProps {
     details: string;
@@ -12,9 +12,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, revi
     const Review = () => {
         return (
             <IonItem href={link}>
-                <IonIcon icon={chatbox} slot="start" />
+                <IonIcon icon={pencilOutline} slot="start" />
                 <IonLabel>
-                    <h2>New Peer Review</h2>
+                    <h2>Bewerte deinen Einkauf</h2>
                     <p>{details}</p>
                 </IonLabel>
             </IonItem>
@@ -24,10 +24,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, revi
     const PeerReview = () => {
         return (
             <IonItem href={link}>
-                <IonIcon icon={warning} slot="start" />
+                <IonIcon icon={chatbox} slot="start" />
                 <IonLabel>
-                    <h2>Neues Feedback erhalten</h2>
-                    <p>Zum Einkauf {details}</p>
+                    <h2>Gib dein Feedback</h2>
+                    <p>zum Einkauf {details}</p>
                 </IonLabel>
             </IonItem>
         );

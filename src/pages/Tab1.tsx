@@ -1,5 +1,5 @@
-import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle } from '@ionic/react';
-import { addCircleOutline } from 'ionicons/icons';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle, IonRefresher, IonRefresherContent, RefresherEventDetail } from '@ionic/react';
+import { addCircleOutline, chevronDownCircleOutline, contractOutline, refresh } from 'ionicons/icons';
 import { Purchase as PurchaseModel } from '../models/Purchase';
 import { useEffect, useState } from 'react';
 /*Components*/
@@ -8,7 +8,7 @@ import Header from '../components/Header';
 import PurchaseHeader from '../components/PurchaseHeader';
 /* Firestore */
 import { db } from "../service/firebaseConfig";
-import { collection, doc, getDoc, getDocs, orderBy, query, Timestamp, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 import { User } from '../models/User';
 
@@ -18,6 +18,7 @@ const Tab1: React.FC = () => {
   const [purchases, setPurchases] = useState<any>([]);
   const purchaseRef = collection(db, 'purchases');
   const [currentTask, setCurrentTask] = useState<string>();
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     const getPurchases = async () => {
@@ -27,7 +28,7 @@ const Tab1: React.FC = () => {
     };
 
     getPurchases();
-  }, []);
+  }, [refresh]);
 
   const [userData, setUserData] = useState<User>();
 
@@ -38,26 +39,45 @@ const Tab1: React.FC = () => {
       setUserData(userDoc.data() as User);
     }
     getUserProfile();
-  }, [userId])
+  }, [userId, refresh])
 
   useEffect(() => {
     setCurrentTask(getTaskOfTheWeek(userData))
   }, [userData]);
 
+  function doRefresh(event: CustomEvent<RefresherEventDetail>) {
+    setRefresh(!refresh);
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.detail.complete();
+
+    }, 1000);
+  }
+
   return (
     <IonPage>
       <Header title='Meine Einkäufe' showLogout={true} />
-      <IonContent fullscreen>
-        {/* Notifications */}
+      <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
         <IonToolbar color='primary' className='mb-4'>
-          <IonTitle className='text-base p-1'>{currentTask}</IonTitle>
+          <IonTitle className='text-base py-1 px-4'>{currentTask}</IonTitle>
         </IonToolbar>
+        {/* Notifications */}
         <IonCard>
           <IonCardHeader color="warning">
             <IonCardSubtitle>Notifications</IonCardSubtitle>
           </IonCardHeader>
-          <Notification details='Lidl' link='#' reviewType='peerReview' />
+          {purchases.map((purchase: PurchaseModel, index: number) => {
+            if (!purchase.reviewed) {
+              return <Notification key={"notification-" + purchase.id} details={purchase.title} link={"/user/tab1/view/" + purchase.id} reviewType='review' />
+            } else return true;
+          })}
+
         </IonCard>
+
         {console.log('purchases:', purchases)}
         {/* Example Cart */}
         {purchases.map((purchase: PurchaseModel) => {
@@ -77,6 +97,7 @@ const Tab1: React.FC = () => {
             />
           );
         })}
+
         {/*-- fab placed to the bottom end --*/}
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
           <IonFabButton routerLink="/user/tab1/add/purchase">

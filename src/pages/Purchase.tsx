@@ -7,6 +7,9 @@ import {
   IonLabel,
   IonNote,
   IonPage,
+  IonRefresher,
+  IonRefresherContent,
+  RefresherEventDetail,
 } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 import { getDoc, doc, where, collection, query, getDocs } from 'firebase/firestore';
@@ -22,7 +25,7 @@ import { Review, ReviewItem } from '../models/Review';
 import { ReviewType } from '../models/ReviewType';
 import Likert from 'react-likert-scale';
 import './Likert.css'
-import { peopleOutline, personOutline } from 'ionicons/icons';
+import { chevronDownCircleOutline, peopleOutline, personOutline, refresh } from 'ionicons/icons';
 
 
 
@@ -33,6 +36,8 @@ const Purchase: React.FC = () => {
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [peerReview, setPeerReview] = useState<ReviewItem[]>([]);
   const [reviewData, setReviewData] = useState<Review[]>([]);
+  const [refresh, setRefresh] = useState<boolean>(false);
+
 
   useEffect(() => {
     const purchaseDocRef = doc(db, 'purchases', id);
@@ -75,12 +80,30 @@ const Purchase: React.FC = () => {
       }
       getPeerReview();
     }
-  }, [purchase]);
+  }, [purchase, refresh]);
+
+  function doRefresh(event: CustomEvent<RefresherEventDetail>) {
+    setRefresh(!refresh);
+
+    setTimeout(() => {
+      console.log('Async operation has ended');
+      event.detail.complete();
+
+    }, 1000);
+  }
 
   return (
     <IonPage>
       <Header title="Einkauf" showBackBtn={true} />
       <IonContent className="ion-padding">
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent
+            pullingIcon={chevronDownCircleOutline}
+            pullingText="Pull to refresh"
+            refreshingSpinner="circles"
+            refreshingText="Refreshing...">
+          </IonRefresherContent>
+        </IonRefresher>
         {purchase ? (
           <>
             <PurchaseHeader

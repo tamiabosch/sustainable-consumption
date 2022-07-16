@@ -1,17 +1,21 @@
 import { IonCard, IonCardHeader, IonIcon, IonLabel, IonCardTitle, IonCardSubtitle, IonCardContent, IonChip } from "@ionic/react";
 import { format, parseISO } from "date-fns";
-import { cartOutline, checkmark, warningOutline } from "ionicons/icons";
+import { cartOutline, checkmark, contractOutline, contrastOutline, mapOutline, pricetagsOutline, warningOutline } from "ionicons/icons";
+import { useState } from "react";
 import { useHistory } from 'react-router';
 import { Purchase } from "../models/Purchase";
 import { ReviewType } from "../models/ReviewType";
+import { Task } from "../models/Task";
 import '../pages/Likert.css'
 
 const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description, link, overview, peerReviewed, reviewed, peerReviewer }) => {
     const history = useHistory();
-
     const hrefFeedback = '/user/tab2/view/'
     const hrefSelf = '/user/tab1/view/'
     const currentLocation = window.location.href;
+
+    const taskIcon: Task = task;
+
 
     const handleFeedbackClick = (reviewType: ReviewType) => {
         if (currentLocation.includes(hrefFeedback) && reviewType === ReviewType.SelfReview) {
@@ -48,7 +52,7 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
 
     const peerReviewProps = {
         task: "Feedback empfangen",
-        taskFinished: "Feedback angefordert",
+        taskFinished: "Feedback angefordert", //naming macht keinen sinn, ist eigentlich wenn der task noch offen ist
         open: peerReviewed,
         reviewType: ReviewType.PeerReview
     }
@@ -66,7 +70,14 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
                     <IonLabel>
                         <IonCardTitle>{title}</IonCardTitle>
                         <IonCardSubtitle>{format(parseISO(date), 'd MMM, yyyy')}</IonCardSubtitle>
-                        <IonCardSubtitle>{task}</IonCardSubtitle>
+                        <IonCardSubtitle className="flex items-center">
+                            {{
+                                [Task.CERTIFICATE]: <IonIcon icon={pricetagsOutline} className='mr-2' />,
+                                [Task.REGIONALITY]: <IonIcon icon={mapOutline} className='mr-2' />,
+                                [Task.SEASONALITY]: <IonIcon icon={contrastOutline} className='mr-2' />
+                            }[task]}
+
+                            {task}</IonCardSubtitle>
                     </IonLabel>
                     <IonIcon icon={cartOutline} slot="start" className="w-8 h-8" />
                 </div>
@@ -74,9 +85,9 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
             {description && <IonCardContent>{description}</IonCardContent>}
             {overview &&
                 <IonCardContent>
-                    <LabelStatus {...reviewProps} />
+                    <LabelStatus {...reviewProps} taskFinished={currentLocation.includes('/user/tab1') ? "Einkauf bewerten" : "Bewertung offen"} />
                     {peerReviewer && //falls nicht, wird es den Single Review Leuten gar nicht erstn angezeigt
-                        <LabelStatus {...peerReviewProps} />
+                        <LabelStatus {...peerReviewProps} taskFinished={currentLocation.includes('/user/tab2') ? "Feedback geben" : "Feedback angefordert"} />
                     }
                 </IonCardContent>
             }

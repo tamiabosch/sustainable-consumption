@@ -1,6 +1,7 @@
-import { IonContent, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
+import { IonContent, IonIcon, IonPage, IonSegment, IonSegmentButton, IonToolbar } from '@ionic/react';
 import { User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
+import { contrastOutline, mapOutline, pricetagsOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { Task } from '../models/Task';
@@ -48,9 +49,11 @@ export default Tab3;
 export const CertificateText = () => {
   return (
     <>
-      <div className="bg-hero-certificate h-32">
-        <h2 className="text-center text-2xl pt-8 text-blue-400 font-bold">{Task.CERTIFICATE}</h2>
+      <div className="mb-4 bg-blue-900 h-32 flex flex-row items-center justify-center">
+        <IonIcon icon={pricetagsOutline} className="text-white text-4xl mr-4" />
+        <h2 className="text-center text-2xl text-white font-bold">{Task.CERTIFICATE}</h2>
       </div>
+      <h2 className='text-lg font-bold'>Allgeimeine Infos</h2>
       <p>Ein Bio-Siegel ist ein Qualitäts- und Zertifizierungszeichen, mit dem Erzeugnisse aus ökologischem Landbau gekennzeichnet werden. Die Berechtigung zur Verwendung eines Siegels wird durch den Herausgeber geregelt und ist an die Einhaltung bestimmter Standards und Bedingungen geknüpft. In der Landwirtschaft beispielsweise umfassen die Anforderungen an die Hersteller sowohl die Tierhaltung als auch den Pflanzenschutz.
         <br />
         Die beiden größten und am häufigsten anzutreffenden Siegel sind das deutsche und das europäische Bio-Siegel.
@@ -66,6 +69,11 @@ export const CertificateText = () => {
         <br />
         Nutzen Sie diesen Link, um sich über Bio-Siegel zu informieren: <a href="https://www.bio-siegel.de/">https://www.bio-siegel.de/</a>
       </p>
+      <h2 className='text-lg font-bold'>Links</h2>
+      <li>
+        <ul><a href="google.com" className="href" target='_blank'>Test</a></ul>
+        <ul><a href="google.com" className="href">Test</a></ul>
+      </li>
     </>
   )
 }
@@ -73,9 +81,11 @@ export const CertificateText = () => {
 export const RegionalityText = () => {
   return (
     <>
-      <div className='bg-hero-regionality h-32 bg-cover'>
-        <h2 className="text-center text-2xl pt-8 text-blue-400 font-bold">{Task.REGIONALITY}</h2>
+      <div className="mb-4 bg-green-900 h-32 flex flex-row items-center justify-center">
+        <IonIcon icon={mapOutline} className="text-white text-4xl mr-4" />
+        <h2 className="text-center text-2xl text-white font-bold">{Task.REGIONALITY}</h2>
       </div>
+      <h2 className='text-lg font-bold'>Allgeimeine Infos</h2>
       <p>
         Ein regionales Produkt wird in einem bestimmten geografischen Gebiet erzeugt, verarbeitet und vermarktet. Es ist also aus der Region - für die Region. Doch wie ist der Begriff "regional" definiert? Viele Menschen verstehen unter ihrer Region das große Gebiet um ihren Wohnort, zum Beispiel ihren Landkreis, ihr Bundesland oder bestimmte Naturräume wie die Bayerischen Alpen oder die Eifel.
         <br />
@@ -84,6 +94,11 @@ export const RegionalityText = () => {
         Hier noch ein paar Tipps für regionale Produkte: - Eiercode zeigt Bundesland - "Regionalfenster"
         (mehr: <a href='http://www.regionalfenster.de' target="_blank" rel="noreferrer" className='text-blue-500'>http://www.regionalfenster.de</a>) - Angabe des Erzeugers oder einer eindeutig identifizierbaren Region - geschützte Ursprungsbezeichnung (g.U.) - Siegel der Regionalinitiativen - Qualitätszeichen der Bundesländer
       </p>
+      <h2 className='text-lg font-bold'>Links</h2>
+      <li>
+        <ul><a href="google.com" className="href" target='_blank'>Test</a></ul>
+        <ul><a href="google.com" className="href">Test</a></ul>
+      </li>
     </>
   )
 }
@@ -91,15 +106,22 @@ export const RegionalityText = () => {
 export const SeasonalityText = () => {
   return (
     <>
-      <div className='bg-hero-seasonality h-32 bg-cover'>
-        <h2 className="text-center text-2xl pt-8 text-blue-400 font-bold">{Task.SEASONALITY}</h2>
+      <div className="mb-4 bg-orange-500 h-32 flex flex-row items-center justify-center">
+        <IonIcon icon={contrastOutline} className="text-white text-4xl mr-4" />
+        <h2 className="text-center text-2xl text-white font-bold">{Task.SEASONALITY}</h2>
       </div>
+      <h2 className='text-lg font-bold'>Allgeimeine Infos</h2>
       <p>
         Saisonalität bezieht sich auf die natürlichen, saisonalen Bedingungen in der Landwirtschaft. Dazu gehören z. B. klimatische Bedingungen wie Temperaturen und Niederschläge. Diese Bedingungen bestimmen, welche Pflanzen zu welcher Zeit wachsen können. Obst und Gemüse, das aufgrund der vorherrschenden Klimabedingungen angebaut und geerntet wird, wird im Allgemeinen als saisonal bezeichnet. Das bedeutet aber auch, dass je nach Region der Welt unterschiedliche Produkte saisonal verfügbar sind. Das ist nicht nur gut für uns, sondern auch für die Umwelt. Saisonal gekaufte Produkte sind gesünder und haben mehr Geschmack. Die Transportwege sind oft kürzer und die Umwelt wird bei der Produktion weniger belastet, weil weniger Ressourcen benötigt werden. Doch nun das Wichtigste: Wie können wir unsere Kaufentscheidungen auf saisonal verfügbare Produkte ausrichten? Saisonalität steht in engem Zusammenhang mit regional verfügbaren Produkten. Zunächst einmal ist es wichtig zu wissen, wann im Jahr welche Produkte in Ihrer Region erhältlich sind.
         <br />
         Mehr dazu erfahren Sie hier: <a href='https://www.regional-saisonal.de/saisonkalender' target='_blank' rel='noreferrer' className='text-blue-500' >https://www.regional-saisonal.de/saisonkalender</a>
         Außerdem lohnt sich immer ein Besuch auf dem örtlichen Bauernmarkt, denn dort verkaufen die Bauern meist nur ihre regionale Ernte und saisonale Produkte. So bekommen Sie Erdbeeren nur im Sommer, wenn sie frisch und reif sind. Die Erdbeeren, die Sie im Winter kaufen können, sind mit einem langen Transport oder hohem Ressourceneinsatz verbunden
       </p>
+      <h2 className='text-lg font-bold'>Links</h2>
+      <li>
+        <ul><a href="https://www.regional-saisonal.de/saisonkalender" target='_blank' rel='noreferrer'>Test</a></ul>
+        <ul><a href="https://www.regional-saisonal.de/saisonkalender" target='_blank' rel='noreferrer'>Test</a></ul>
+      </li>
     </>
   )
 }
