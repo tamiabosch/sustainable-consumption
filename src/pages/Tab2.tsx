@@ -11,12 +11,11 @@ import { useAuth } from '../service/authFirebase';
 const Tab2: React.FC = () => {
   const { userId } = useAuth();
   const [otherPurchases, setOtherPurchases] = useState<any[]>([]);
-  const docRef = collection(db, 'purchases');
-  const q = query(docRef, where("peerReviewer", "==", userId), orderBy("date", "desc"));
   const [refresh, setRefresh] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<any>([]);
 
-
+  const docRef = collection(db, 'purchases');
+  const q = query(docRef, where("peerReviewer", "==", userId), orderBy("date", "desc"));
 
   //make async call FB to get purchases, which need to be reviewed
   useEffect(() => {
@@ -29,8 +28,8 @@ const Tab2: React.FC = () => {
 
   useEffect(() => {
     if (otherPurchases) {
-      var openForReviewPurchase = otherPurchases.filter(function (el: { reviewed: boolean; }) {
-        return el.reviewed === false;
+      var openForReviewPurchase = otherPurchases.filter(function (el: { peerReviewed: boolean; }) {
+        return el.peerReviewed === false;
       });
       console.log('new Notifications', openForReviewPurchase);
       setNotifications(openForReviewPurchase);
@@ -55,7 +54,7 @@ const Tab2: React.FC = () => {
         </IonRefresher>
 
         {/* Notifications */}
-        {notifications.length > 0 &&
+        {notifications?.length > 0 &&
           <IonCard>
             <IonCardHeader color="warning">
               <IonCardSubtitle>Notifications</IonCardSubtitle>
