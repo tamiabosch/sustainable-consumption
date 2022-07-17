@@ -42,6 +42,7 @@ const AddEntryPage: React.FC = () => {
   const [task, setTask] = useState<Task>(Task.CERTIFICATE);
   const [description, setDescription] = useState<string>('');
   const [showToast, setShowToast] = useState(false);
+  const [showToastItems, setShowToastItems] = useState(false);
   const [currentItem, setCurrentItem] = useState<Item>({ title: '', certificate: '', origin: '' });
   const [items, setItems] = useState<Item[]>([
     { title: 'Milch', certificate: "Bio", origin: "Bayern" },
@@ -62,33 +63,20 @@ const AddEntryPage: React.FC = () => {
     getUserProfile();
   }, [userId])
 
-  //Query to find peerReviewers in same week and min peerReviewsWritten
+  //Query to find fitting peerReviewers
   useEffect(() => {
-    //Purchase Data
-    //if currentUser is in group peerReviews 
-    //look for other peerReview User
-    // with min peerreviewsWritten 
-    //has to be in the same week in same group of task this week
-    //check if week array matches
-    //const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
     if (userData && userData?.reviewType === ReviewType.PeerReview) {
-
-
       const currentTaskOfTheWeek = getTaskOfTheWeekQuery(userData);
       if (!currentTaskOfTheWeek) {
         console.log('currentTaskOfTheWeek: ', 'userData undefined oder außerhalb des Studienzeitraums');
       } else {
-        //Individual query to find peerReviewers in same week and min peerReviewsWritten
+        //Individual query to find peerReviewers in same week, in peerReview Group and min peerReviewsWritten
         const getPeerReviewers = async () => {
           const userDocs = await getDocs(currentTaskOfTheWeek);
           setPeerReviewers(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
           )
         }
         getPeerReviewers()
-
-        console.log('before ' + peerReviewers);
-
-
         //CLEAN remove self from peerReviewers
         const indexOfSelf = peerReviewers?.findIndex(object => {
           return object.id === userId; //-1 if undefined
@@ -98,7 +86,6 @@ const AddEntryPage: React.FC = () => {
         }
         //set the first peerReviewer from the List
         setPeerReviewerId(peerReviewers?.[0]?.id);
-        console.log(peerReviewers);
       }
       // peerReviewers?.filter(object => { return object.email !== email; })
     }
@@ -120,12 +107,9 @@ const AddEntryPage: React.FC = () => {
   }
 
   const handleSave = async () => {
-    if (date && title && task) {
+    if (date && title && task && items.length < 2 && peerReviewerId) {
       const entriesRef = collection(db, 'purchases');
-
-      const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
-      //erwartet test, sarah
-
+      //const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
       const entryData = {
         date,
         title,
@@ -136,7 +120,7 @@ const AddEntryPage: React.FC = () => {
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
         createdAt: serverTimestamp(),
         owner: userId,
-        peerReviewer: userData?.reviewType === ReviewType.PeerReview ? peerReviewerId : peerId, //check if this purchase is peerReviewed //TODO do not set if Signle Review
+        peerReviewer: userData?.reviewType === ReviewType.PeerReview && peerReviewerId  //check if this purchase is peerReviewed //TODO do not set if Signle Review
       };
 
       const docRef = doc(entriesRef);
@@ -151,9 +135,11 @@ const AddEntryPage: React.FC = () => {
         }
         history.replace(location)
       }, error => {
-        console.log("oh noes, an validation error?? " + error);
-        //console.log(errors.all()); // prints the errors array just like you're used to in v2
+        console.log("oh no, an validation error?? " + error);
       })
+    } else if (items.length < 2) {
+      setShowToastItems(true);
+
     } else {
       setShowToast(true);
       console.log('missing data at handleSave method');
@@ -208,6 +194,12 @@ const AddEntryPage: React.FC = () => {
           isOpen={showToast}
           onDidDismiss={() => setShowToast(false)}
           message="Bitte alle Felder ausfüllen"
+          duration={2000}
+        />
+        <IonToast
+          isOpen={showToastItems}
+          onDidDismiss={() => setShowToastItems(false)}
+          message={"Nicht genügend Produkte (min. 3), aktuell " + items.length}
           duration={2000}
         />
       </IonContent>
@@ -283,7 +275,7 @@ export default AddEntryPage;
 
 export const getTaskOfTheWeekQuery = (userData: User) => {
   if (userData !== undefined) {
-    var startDate = new Date(2022, 6, 3); //userData?.startDate.toDate()
+    var startDate = userData?.startDate.toDate()
     const manuell = new Date(2022, 6, 27);
     startDate = startDate ? startDate : manuell
 
