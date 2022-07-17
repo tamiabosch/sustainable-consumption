@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonRefresher, IonRefresherContent, RefresherEventDetail } from '@ionic/react';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonRefresher, IonRefresherContent, RefresherEventDetail, IonText } from '@ionic/react';
 import Notification from '../components/NotificationItem';
 import Header from '../components/Header';
 import { useEffect, useState } from 'react';
@@ -7,7 +7,6 @@ import PurchaseHeader from '../components/PurchaseHeader';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../service/firebaseConfig';
 import { useAuth } from '../service/authFirebase';
-import { chevronDownCircleOutline } from 'ionicons/icons';
 
 const Tab2: React.FC = () => {
   const { userId } = useAuth();
@@ -15,6 +14,8 @@ const Tab2: React.FC = () => {
   const docRef = collection(db, 'purchases');
   const q = query(docRef, where("peerReviewer", "==", userId), orderBy("date", "desc"));
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<any>([]);
+
 
 
   //make async call FB to get purchases, which need to be reviewed
@@ -25,6 +26,16 @@ const Tab2: React.FC = () => {
     }
     getOtherPurchases();
   }, [refresh])
+
+  useEffect(() => {
+    if (otherPurchases) {
+      var openForReviewPurchase = otherPurchases.filter(function (el: { reviewed: boolean; }) {
+        return el.reviewed === false;
+      });
+      console.log('new Notifications', openForReviewPurchase);
+      setNotifications(openForReviewPurchase);
+    }
+  }, [otherPurchases]);
 
   function doRefresh(event: CustomEvent<RefresherEventDetail>) {
     setRefresh(!refresh);
@@ -44,16 +55,16 @@ const Tab2: React.FC = () => {
         </IonRefresher>
 
         {/* Notifications */}
-        <IonCard>
-          <IonCardHeader color="warning">
-            <IonCardSubtitle>Notifications</IonCardSubtitle>
-          </IonCardHeader>
-          {otherPurchases.map((purchase: PurchaseModel, index: number) => {
-            if (!purchase.peerReviewed) {
-              return <Notification key={"notification-" + purchase.id} details={purchase.title} date={purchase.date} link={"/user/tab2/view/" + purchase.id} reviewType='peerReview' />
-            } else return true;
-          })}
-        </IonCard>
+        {notifications.length > 0 &&
+          <IonCard>
+            <IonCardHeader color="warning">
+              <IonCardSubtitle>Notifications</IonCardSubtitle>
+            </IonCardHeader>
+            {notifications.map((notification: PurchaseModel) => {
+              return <Notification key={"notification-" + notification.id} details={notification.title} date={notification.date} link={"/user/tab1/view/" + notification.id} reviewType='review' />
+            })}
+          </IonCard>
+        }
 
         {/* Feedback Purchases */}
         {otherPurchases.map((purchase: PurchaseModel) => {

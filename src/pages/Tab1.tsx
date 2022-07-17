@@ -1,5 +1,5 @@
 import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle, IonRefresher, IonRefresherContent, RefresherEventDetail } from '@ionic/react';
-import { addCircleOutline, chevronDownCircleOutline, contractOutline, refresh } from 'ionicons/icons';
+import { addCircleOutline, chevronDownCircleOutline, contractOutline, notifications, refresh } from 'ionicons/icons';
 import { Purchase as PurchaseModel } from '../models/Purchase';
 import { useEffect, useState } from 'react';
 /*Components*/
@@ -16,6 +16,7 @@ import { User } from '../models/User';
 const Tab1: React.FC = () => {
   const { userId } = useAuth();
   const [purchases, setPurchases] = useState<any>([]);
+  const [notifications, setNotifications] = useState<any>([]);
   const purchaseRef = collection(db, 'purchases');
   const [currentTask, setCurrentTask] = useState<string>();
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -26,9 +27,19 @@ const Tab1: React.FC = () => {
       const data = await getDocs(q);
       setPurchases(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
-
-    getPurchases();
+    getPurchases()
   }, [refresh]);
+
+  //get all Purchases which are not complety reviewed
+  useEffect(() => {
+    if (purchases) {
+      var openForReviewPurchase = purchases.filter(function (el: { reviewed: boolean; }) {
+        return el.reviewed === false;
+      });
+      console.log('new', openForReviewPurchase);
+      setNotifications(openForReviewPurchase);
+    }
+  }, [purchases]);
 
   const [userData, setUserData] = useState<User>();
 
@@ -66,17 +77,16 @@ const Tab1: React.FC = () => {
           <IonTitle className='text-base py-1 px-4'>{currentTask}</IonTitle>
         </IonToolbar>
         {/* Notifications */}
-        <IonCard>
-          <IonCardHeader color="warning">
-            <IonCardSubtitle>Notifications</IonCardSubtitle>
-          </IonCardHeader>
-          {purchases.map((purchase: PurchaseModel, index: number) => {
-            if (!purchase.reviewed) {
-              return <Notification key={"notification-" + purchase.id} details={purchase.title} date={purchase.date} link={"/user/tab1/view/" + purchase.id} reviewType='review' />
-            } else return true;
-          })}
-
-        </IonCard>
+        {notifications.length > 0 &&
+          <IonCard>
+            <IonCardHeader color="warning">
+              <IonCardSubtitle>Notifications</IonCardSubtitle>
+            </IonCardHeader>
+            {notifications.map((notification: PurchaseModel) => {
+              return <Notification key={"notification-" + notification.id} details={notification.title} date={notification.date} link={"/user/tab1/view/" + notification.id} reviewType='review' />
+            })}
+          </IonCard>
+        }
 
         {console.log('purchases:', purchases)}
         {/* Example Cart */}

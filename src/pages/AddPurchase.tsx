@@ -29,7 +29,7 @@ import { Task } from '../models/Task';
 import { Item } from '../models/Item';
 import Header from '../components/Header';
 import PurchaseItem from '../components/PurchaseItem';
-import { User, Week } from '../models/User';
+import { User } from '../models/User';
 import { ReviewType } from '../models/ReviewType';
 
 
@@ -84,9 +84,17 @@ const AddEntryPage: React.FC = () => {
         if (indexOfSelf !== -1 && indexOfSelf !== undefined) {
           setPeerReviewers(peerReviewers?.splice(indexOfSelf, 1))
         }
-        //set the first peerReviewer from the List
-        setPeerReviewerId(peerReviewers?.[0]?.id);
+        //set the first peerReviewer from the List or use Fallback
+        if (peerReviewers?.length === 0) {
+          const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
+          setPeerReviewerId(peerId);
+          console.log('Fallback: ', peerReviewers.length);
+        } else {
+          console.log('out of list: ', peerReviewers?.[0].id ?? 'undefined');
+          setPeerReviewerId(peerReviewers?.[0]?.id);
+        }
         console.log('peerReviewers: ', peerReviewers);
+        console.log('peerReviewerId: ', peerReviewerId);
       }
       // peerReviewers?.filter(object => { return object.email !== email; })
     }
@@ -111,6 +119,7 @@ const AddEntryPage: React.FC = () => {
     if (date && title && task && items.length > 1) {
       console.log('save');
       const entriesRef = collection(db, 'purchases');
+      //vielleicht wenn man keine peer reviewer id hat, einfach tamia@test.de nehmen als reviewer?
       //const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
       const entryData = {
         date,
@@ -122,7 +131,7 @@ const AddEntryPage: React.FC = () => {
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
         createdAt: serverTimestamp(),
         owner: userId,
-        peerReviewer: userData?.reviewType === ReviewType.PeerReview && peerReviewerId  //check if this purchase is peerReviewed //TODO do not set if Signle Review
+        peerReviewer: userData?.reviewType === ReviewType.PeerReview ? peerReviewerId : '0' //check if this purchase is peerReviewed //TODO do not set if Signle Review
       };
 
       const docRef = doc(entriesRef);

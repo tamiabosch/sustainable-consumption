@@ -40,8 +40,8 @@ const Login: React.FC = () => {
     try {
       setStatus({ loading: true, error: false });
       const data = (await signInWithEmailAndPassword(auth, mail, password)).user;
-      const userDoc = doc(db, 'users', data.uid);
-      data ? await setDoc(userDoc, { ...configPeerReview, email: data.email }) : console.log("error");
+      //const userDoc = doc(db, 'users', data.uid);
+      //data ? await setDoc(userDoc, { ...configPeerReview, email: data.email }) : console.log("error");
       console.log('handleLogin user:', data);
     } catch (error) {
       setStatus({ loading: false, error: true });
@@ -57,15 +57,15 @@ const Login: React.FC = () => {
     completed: false,
     //email oben
     lastLogin: serverTimestamp(),
-    //peerReviewsWritten: 0,
+    peerReviewsWritten: 0,
     //reviewType: ReviewType.SelfReview,
     reviewType: ReviewType.PeerReview,
-    startDate: new Date(2022, 6, 25),
+    startDate: new Date(2022, 6, 10),
     week: group.g1,
     task: {
-      week1: group.g1[1],
-      week2: group.g1[0],
-      week3: group.g1[2],
+      week1: group.g1[0],
+      week2: group.g1[2],
+      week3: group.g1[1],
 
     }
   }
