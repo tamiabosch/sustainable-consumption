@@ -49,7 +49,7 @@ const TabProfile: React.FC = () => {
                             {userData?.reviewType === ReviewType.PeerReview &&
                                 <IonItem>
                                     <IonLabel>Feedback gegeben: </IonLabel>
-                                    <IonText>{userData?.reviewsWritten}</IonText>
+                                    <IonText>{userData?.peerReviewsWritten}</IonText>
                                 </IonItem>
                             }
 
@@ -67,20 +67,43 @@ const TabProfile: React.FC = () => {
                         <IonCardSubtitle className='my-4' >Start Datum Studie</IonCardSubtitle>
                         <IonItem>{userData?.startDate.toDate().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</IonItem>
                         <IonCardSubtitle className='my-4' >Welche Nachhaltigkeitsthemen stehen bevor? </IonCardSubtitle>
-                        {userData?.week?.map((topic, index) => {
-                            return (
-                                <IonItem key={index}>
-                                    <IonLabel>Woche {index + 1}:</IonLabel>
-                                    <IonText className='flex items-center'>{topic}
+                        {userData?.task &&
+                            <>
+                                <IonItem>
+                                    <IonLabel>Woche 1:</IonLabel>
+                                    <IonText className='flex items-center'>{userData.task.week1}
                                         {{
                                             [Task.CERTIFICATE]: <IonIcon icon={pricetagsOutline} className='ml-2' />,
                                             [Task.REGIONALITY]: <IonIcon icon={mapOutline} className='ml-2' />,
                                             [Task.SEASONALITY]: <IonIcon icon={contrastOutline} className='ml-2' />
-                                        }[topic]}
-
+                                        }[userData.task.week1]}
                                     </IonText>
-                                </IonItem>)
-                        })}
+                                </IonItem>
+
+                                <IonItem>
+                                    <IonLabel>Woche 2:</IonLabel>
+                                    <IonText className='flex items-center'>{userData.task.week2}
+                                        {{
+                                            [Task.CERTIFICATE]: <IonIcon icon={pricetagsOutline} className='ml-2' />,
+                                            [Task.REGIONALITY]: <IonIcon icon={mapOutline} className='ml-2' />,
+                                            [Task.SEASONALITY]: <IonIcon icon={contrastOutline} className='ml-2' />
+                                        }[userData.task.week2]}
+                                    </IonText>
+                                </IonItem>
+
+                                <IonItem>
+                                    <IonLabel>Woche 3:</IonLabel>
+                                    <IonText className='flex items-center'>{userData.task.week3}
+                                        {{
+                                            [Task.CERTIFICATE]: <IonIcon icon={pricetagsOutline} className='ml-2' />,
+                                            [Task.REGIONALITY]: <IonIcon icon={mapOutline} className='ml-2' />,
+                                            [Task.SEASONALITY]: <IonIcon icon={contrastOutline} className='ml-2' />
+                                        }[userData.task.week3]}
+                                    </IonText>
+                                </IonItem>
+                            </>
+                        }
+
                     </IonCardContent>
                 </IonCard>
                 <IonCard>

@@ -29,7 +29,7 @@ import { Task } from '../models/Task';
 import { Item } from '../models/Item';
 import Header from '../components/Header';
 import PurchaseItem from '../components/PurchaseItem';
-import { User } from '../models/User';
+import { User, Week } from '../models/User';
 import { ReviewType } from '../models/ReviewType';
 
 
@@ -72,22 +72,34 @@ const AddEntryPage: React.FC = () => {
     //check if week array matches
     //const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
     if (userData && userData?.reviewType === ReviewType.PeerReview) {
-      const usersRef = collection(db, 'users')
-      const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('week', '==', userData.week), orderBy('peerReviewsWritten', 'asc'));
-      const getPeerReviewers = async () => {
-        const userDocs = await getDocs(q);
-        setPeerReviewers(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        )
+
+
+      const currentTaskOfTheWeek = getTaskOfTheWeekQuery(userData);
+      if (!currentTaskOfTheWeek) {
+        console.log('currentTaskOfTheWeek: ', 'userData undefined oder außerhalb des Studienzeitraums');
+      } else {
+        //Individual query to find peerReviewers in same week and min peerReviewsWritten
+        const getPeerReviewers = async () => {
+          const userDocs = await getDocs(currentTaskOfTheWeek);
+          setPeerReviewers(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+          )
+        }
+        getPeerReviewers()
+
+        console.log('before ' + peerReviewers);
+
+
+        //CLEAN remove self from peerReviewers
+        const indexOfSelf = peerReviewers?.findIndex(object => {
+          return object.id === userId; //-1 if undefined
+        });
+        if (indexOfSelf !== -1 && indexOfSelf !== undefined) {
+          setPeerReviewers(peerReviewers?.splice(indexOfSelf, 1))
+        }
+        //set the first peerReviewer from the List
+        setPeerReviewerId(peerReviewers?.[0]?.id);
+        console.log(peerReviewers);
       }
-      getPeerReviewers()
-      //remove self from peerReviewers
-      const indexOfSelf = peerReviewers?.findIndex(object => {
-        return object.id === userId; //-1 if undefined
-      });
-      if (indexOfSelf !== -1 && indexOfSelf !== undefined) {
-        setPeerReviewers(peerReviewers?.splice(indexOfSelf, 1))
-      }
-      setPeerReviewerId(peerReviewers?.[0].id);
       // peerReviewers?.filter(object => { return object.email !== email; })
     }
   }, [email, userData, items]) //items keine edle Lösung, weil es bei jedem hinzufügen ne neue anfrage schickt.
@@ -268,3 +280,40 @@ const AddEntryPage: React.FC = () => {
 };
 
 export default AddEntryPage;
+
+export const getTaskOfTheWeekQuery = (userData: User) => {
+  if (userData !== undefined) {
+    var startDate = new Date(2022, 6, 3); //userData?.startDate.toDate()
+    const manuell = new Date(2022, 6, 27);
+    startDate = startDate ? startDate : manuell
+
+    const currentDate = new Date();
+    const secondWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
+    const thirdWeek = new Date(secondWeek.getFullYear(), secondWeek.getMonth(), secondWeek.getDate() + 7);
+    const end = new Date(thirdWeek.getFullYear(), thirdWeek.getMonth(), thirdWeek.getDate() + 7);
+    console.log('start: ' + startDate);
+    //firestore collection reference
+    const usersRef = collection(db, 'users')
+    if (userData.task !== undefined) {
+      if (startDate < currentDate && currentDate < secondWeek) {
+        const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('task.week1', '==', userData.task.week1), orderBy('peerReviewsWritten', 'asc'));
+        console.log('user: ' + userData.email + ' is in week 1');
+        return q;
+      } else if (secondWeek < currentDate && currentDate < thirdWeek) {
+        const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('task.week2', '==', userData.task.week2), orderBy('peerReviewsWritten', 'asc'));
+        console.log('user: ' + userData.email + ' is in week 2');
+        return q;
+      } else if (thirdWeek < currentDate && currentDate < end) {
+        const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('task.week3', '==', userData.task.week3), orderBy('peerReviewsWritten', 'asc'));
+        console.log('user: ' + userData.email + ' is in week 3');
+        return q;
+      }
+    } else {
+      return false
+    }
+  } else {
+    //console.log('getTaskOfTheWeekQuery(): userData is undefined');
+    return false
+
+  }
+}

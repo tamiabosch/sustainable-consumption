@@ -53,13 +53,20 @@ const Login: React.FC = () => {
     g1: ["Zertifikat", "Saisonalität", "Regionalität"],
   }
   const configPeerReview = {
+    alias: '',
+    completed: false,
+    //email oben
     lastLogin: serverTimestamp(),
+    //peerReviewsWritten: 0,
     reviewType: ReviewType.PeerReview,
     startDate: new Date(2022, 6, 25),
-    peerReviewsWritten: 0,
-    reviewsWritten: 0,
     week: group.g1,
-    completed: false
+    task: {
+      week1: group.g1[1],
+      week2: group.g1[1],
+      week3: group.g1[2],
+
+    }
   }
 
   function test() {
