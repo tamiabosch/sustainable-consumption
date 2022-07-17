@@ -1,13 +1,16 @@
 import { IonItem, IonIcon, IonLabel } from "@ionic/react";
 import { chatbox, pencilOutline } from 'ionicons/icons';
+import { format, parseISO } from "date-fns";
+
 
 interface NotificationItemProps {
     details: string;
+    date: string;
     link: string;
     reviewType: string;
 }
 
-const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, reviewType }) => {
+const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, reviewType, date }) => {
     //Review of own Purchase
     const Review = () => {
         return (
@@ -15,7 +18,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, revi
                 <IonIcon icon={pencilOutline} slot="start" />
                 <IonLabel>
                     <h2>Bewerte deinen Einkauf</h2>
-                    <p>{details}</p>
+                    <p>{details} vom {format(parseISO(date), 'd MMM, yyyy')}</p>
                 </IonLabel>
             </IonItem>
         );
@@ -27,7 +30,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({ details, link, revi
                 <IonIcon icon={chatbox} slot="start" />
                 <IonLabel>
                     <h2>Gib dein Feedback</h2>
-                    <p>zum Einkauf {details}</p>
+                    <p>zum Einkauf {details} vom {format(parseISO(date), 'd MMM, yyyy')}</p>
                 </IonLabel>
             </IonItem>
         );

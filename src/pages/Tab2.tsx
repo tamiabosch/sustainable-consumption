@@ -50,7 +50,7 @@ const Tab2: React.FC = () => {
           </IonCardHeader>
           {otherPurchases.map((purchase: PurchaseModel, index: number) => {
             if (!purchase.peerReviewed) {
-              return <Notification key={"notification-" + purchase.id} details={purchase.title} link={"/user/tab2/view/" + purchase.id} reviewType='peerReview' />
+              return <Notification key={"notification-" + purchase.id} details={purchase.title} date={purchase.date} link={"/user/tab2/view/" + purchase.id} reviewType='peerReview' />
             } else return true;
           })}
         </IonCard>

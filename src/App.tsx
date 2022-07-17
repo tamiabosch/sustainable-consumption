@@ -29,13 +29,18 @@ import './theme/variables.css';
 /* Routing */
 import { IonReactRouter } from '@ionic/react-router';
 import { Redirect, Route, Switch } from 'react-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 /* Custom Stuff */
 // import { AuthProvider } from './service/auth';
 import { AuthContext, useAuthInit } from './service/authFirebase';
 import NotFoundPage from './pages/NotFoundPage';
-import { PeerReview } from './routes/Authenticated'
+import { PeerReview, SelfReview } from './routes/LoggedInRoutes'
+import { BrowserRouter } from 'react-router-dom';
+import { User } from "./models/User";
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './service/firebaseConfig';
+import { ReviewType } from './models/ReviewType';
 
 setupIonicReact();
 
@@ -56,6 +61,20 @@ setupIonicReact();
 
 const App: React.FC = () => {
   const { loading, auth } = useAuthInit();
+  console.log('auth:', auth);
+  const [userData, setUserData] = useState<User>();
+
+  useEffect(() => {
+    if (auth?.userId) {
+      const userRef = doc(db, "users", auth.userId);
+      const getUserProfile = async () => {
+        const userDoc = await getDoc(userRef);
+        setUserData(userDoc.data() as User);
+      }
+      getUserProfile();
+    }
+  }, [auth])
+
   if (loading) {
     return <IonLoading isOpen />;
   }
@@ -69,12 +88,12 @@ const App: React.FC = () => {
               <Login />
             </Route>
             <Route path="/user">
-              <PeerReview />
+              {userData?.reviewType === ReviewType.PeerReview ? <PeerReview /> : <SelfReview />}
             </Route>
             <Redirect exact path="/" to="/user/tab1" />
             <Route path="/" >
               <NotFoundPage />
-              <PeerReview />
+              {userData?.reviewType === ReviewType.PeerReview ? <PeerReview /> : <SelfReview />}
             </Route>
           </Switch>
         </IonReactRouter>

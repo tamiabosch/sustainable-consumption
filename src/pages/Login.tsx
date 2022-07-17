@@ -58,12 +58,13 @@ const Login: React.FC = () => {
     //email oben
     lastLogin: serverTimestamp(),
     //peerReviewsWritten: 0,
+    //reviewType: ReviewType.SelfReview,
     reviewType: ReviewType.PeerReview,
     startDate: new Date(2022, 6, 25),
     week: group.g1,
     task: {
       week1: group.g1[1],
-      week2: group.g1[1],
+      week2: group.g1[0],
       week3: group.g1[2],
 
     }

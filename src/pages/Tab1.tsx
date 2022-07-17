@@ -72,7 +72,7 @@ const Tab1: React.FC = () => {
           </IonCardHeader>
           {purchases.map((purchase: PurchaseModel, index: number) => {
             if (!purchase.reviewed) {
-              return <Notification key={"notification-" + purchase.id} details={purchase.title} link={"/user/tab1/view/" + purchase.id} reviewType='review' />
+              return <Notification key={"notification-" + purchase.id} details={purchase.title} date={purchase.date} link={"/user/tab1/view/" + purchase.id} reviewType='review' />
             } else return true;
           })}
 
@@ -126,11 +126,11 @@ export const getTaskOfTheWeek = (userData: User | undefined) => {
   if (currentDate < startDate) {
     return "Studie startet am " + startDate.toLocaleDateString();
   } else if (startDate < currentDate && currentDate < secondWeek) {
-    return 'Thema der Woche: ' + userData?.week[0] || "Thema der Woche unter Profil einsehen";
+    return 'Thema der Woche: ' + userData?.task?.week1 || "Thema der Woche unter Profil einsehen";
   } else if (secondWeek < currentDate && currentDate < thirdWeek) {
-    return 'Thema der Woche: ' + userData?.week[1] || "Thema der Woche unter Profil einsehen";
+    return 'Thema der Woche: ' + userData?.task?.week2 || "Thema der Woche unter Profil einsehen";
   } else if (thirdWeek < currentDate && currentDate < end) {
-    return 'Thema der Woche: ' + userData?.week[2] || "Thema der Woche unter Profil einsehen";
+    return 'Thema der Woche: ' + userData?.task?.week3 || "Thema der Woche unter Profil einsehen";
   } else if (currentDate > end) {
     return "Studie beendet" + end.getDate() + "." + end.getMonth() + "." + end.getFullYear();
   } else {

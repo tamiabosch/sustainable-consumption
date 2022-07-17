@@ -117,8 +117,7 @@ const AddReview: React.FC = () => {
           await updateDoc(userDocRef, { peerReviewsWritten: increment(1) });
         } else {
           await updateDoc(purchaseDocRef, { reviewed: true });
-          await updateDoc(userDocRef, { peerReviewsWritten: increment(1) });
-
+          //await updateDoc(userDocRef, { peerReviewsWritten: increment(1) });
         }
       }
       saveReviewtoFB().then(() => {

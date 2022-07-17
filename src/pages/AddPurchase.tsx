@@ -86,6 +86,7 @@ const AddEntryPage: React.FC = () => {
         }
         //set the first peerReviewer from the List
         setPeerReviewerId(peerReviewers?.[0]?.id);
+        console.log('peerReviewers: ', peerReviewers);
       }
       // peerReviewers?.filter(object => { return object.email !== email; })
     }
@@ -107,7 +108,8 @@ const AddEntryPage: React.FC = () => {
   }
 
   const handleSave = async () => {
-    if (date && title && task && items.length < 2 && peerReviewerId) {
+    if (date && title && task && items.length > 1) {
+      console.log('save');
       const entriesRef = collection(db, 'purchases');
       //const peerId = "SCHuGu627XMMOoCl7KWVk49MZrY2" //tamia@test.de
       const entryData = {
@@ -139,10 +141,15 @@ const AddEntryPage: React.FC = () => {
       })
     } else if (items.length < 2) {
       setShowToastItems(true);
-
     } else {
-      setShowToast(true);
       console.log('missing data at handleSave method');
+      console.log('date: ', date);
+      console.log('title: ', title);
+      console.log('task: ', task);
+      console.log('items: ', items);
+      console.log('peerReviewerId: ', peerReviewerId);
+
+      setShowToast(true);
     }
   };
 
@@ -227,7 +234,7 @@ const AddEntryPage: React.FC = () => {
           <IonDatetime
             id="datetime"
             presentation="date"
-            min="2022-07-18"
+            min="2022-07-25"
             value={date}
             onIonChange={(event) => setDate(event.detail.value)}
           ></IonDatetime>

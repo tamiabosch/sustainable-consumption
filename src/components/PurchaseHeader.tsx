@@ -1,7 +1,6 @@
 import { IonCard, IonCardHeader, IonIcon, IonLabel, IonCardTitle, IonCardSubtitle, IonCardContent, IonChip } from "@ionic/react";
 import { format, parseISO } from "date-fns";
-import { cartOutline, checkmark, contractOutline, contrastOutline, mapOutline, pricetagsOutline, warningOutline } from "ionicons/icons";
-import { useState } from "react";
+import { cartOutline, checkmark, contrastOutline, mapOutline, pricetagsOutline, warningOutline } from "ionicons/icons";
 import { useHistory } from 'react-router';
 import { Purchase } from "../models/Purchase";
 import { ReviewType } from "../models/ReviewType";
