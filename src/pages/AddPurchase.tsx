@@ -257,21 +257,21 @@ const AddEntryPage: React.FC = () => {
               <IonInput
                 value={currentItem.title}
                 onIonChange={(e) => { setCurrentItem({ ...currentItem, title: e.detail.value } as Item); }}
-                placeholder="Einkaufsort" />
+                placeholder="Produktname" />
             </IonItem>
             <IonItem>
               <IonLabel position="stacked">Zertifikate</IonLabel>
               <IonInput
                 value={currentItem.certificate}
                 onIonChange={(e) => { setCurrentItem({ ...currentItem, certificate: e.detail.value } as Item); }}
-                placeholder="Demeter, Bioland ..." />
+                placeholder="Demeter, Bioland... oder - für keine" />
             </IonItem>
             <IonItem>
               <IonLabel position="stacked">Herkunft</IonLabel>
               <IonInput
                 value={currentItem.origin}
                 onIonChange={(e) => { setCurrentItem({ ...currentItem, origin: e.detail.value } as Item); }}
-                placeholder="Bayern, Deutschland ..." />
+                placeholder="Bayern, Deutschland..." />
             </IonItem>
           </IonList>
           <IonButton className='uppercase' expand="block" onClick={handleItemSave}>
