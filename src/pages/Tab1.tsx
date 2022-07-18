@@ -1,5 +1,5 @@
-import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle, IonRefresher, IonRefresherContent, RefresherEventDetail } from '@ionic/react';
-import { addCircleOutline, chevronDownCircleOutline, contractOutline, notifications, refresh } from 'ionicons/icons';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonViewWillEnter, useIonViewDidEnter } from '@ionic/react';
+import { addCircleOutline } from 'ionicons/icons';
 import { Purchase as PurchaseModel } from '../models/Purchase';
 import { useEffect, useState } from 'react';
 /*Components*/
@@ -21,7 +21,8 @@ const Tab1: React.FC = () => {
   const [currentTask, setCurrentTask] = useState<string>();
   const [refresh, setRefresh] = useState<boolean>(false);
 
-  useEffect(() => {
+  useIonViewWillEnter(() => {
+    console.log('ionViewWillEnter');
     const getPurchases = async () => {
       const q = query(purchaseRef, where("owner", "==", userId), orderBy("date", "desc"));
       const data = await getDocs(q);
@@ -30,7 +31,7 @@ const Tab1: React.FC = () => {
     getPurchases()
   }, [refresh]);
 
-  //get all Purchases which are not complety reviewed
+  //NOTIFIACTION get all Purchases which are not complety reviewed
   useEffect(() => {
     if (purchases) {
       var openForReviewPurchase = purchases.filter(function (el: { reviewed: boolean; }) {
@@ -41,8 +42,8 @@ const Tab1: React.FC = () => {
     }
   }, [purchases]);
 
+  //getUserData
   const [userData, setUserData] = useState<User>();
-
   useEffect(() => {
     const userRef = doc(db, "users", userId ? userId : '0');
     const getUserProfile = async () => {

@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonRefresher, IonRefresherContent, RefresherEventDetail, IonText } from '@ionic/react';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonViewWillEnter } from '@ionic/react';
 import Notification from '../components/NotificationItem';
 import Header from '../components/Header';
 import { useEffect, useState } from 'react';
@@ -18,7 +18,7 @@ const Tab2: React.FC = () => {
   const q = query(docRef, where("peerReviewer", "==", userId), orderBy("date", "desc"));
 
   //make async call FB to get purchases, which need to be reviewed
-  useEffect(() => {
+  useIonViewWillEnter(() => {
     const getOtherPurchases = async () => {
       const data = await getDocs(q);
       setOtherPurchases(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
@@ -59,7 +59,7 @@ const Tab2: React.FC = () => {
               <IonCardSubtitle>Notifications</IonCardSubtitle>
             </IonCardHeader>
             {notifications.map((notification: PurchaseModel) => {
-              return <Notification key={"notification-" + notification.id} details={notification.title} date={notification.date} link={"/user/tab1/view/" + notification.id} reviewType='review' />
+              return <Notification key={"notification-" + notification.id} details={notification.title} date={notification.date} link={"/user/tab2/view/" + notification.id} reviewType='review' />
             })}
           </IonCard>
         }

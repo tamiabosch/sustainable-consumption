@@ -109,7 +109,7 @@ const AddExperienceSampling: React.FC = () => {
         //   }
         //   history.replace(location)
         //  history.goBack();
-        task === ReviewType.SelfReview ? history.replace('/user/tab1') : history.replace('/user/tab2');
+        reviewType === ReviewType.SelfReview ? history.replace('/user/tab1') : history.replace('/user/tab2');
       }
 
     } else {
@@ -165,7 +165,7 @@ const AddExperienceSampling: React.FC = () => {
         <IonList className='ion-margin'>
           <IonRadioGroup value={selected_2} onIonChange={e => setSelected_2(e.detail.value)}>
             <IonListHeader>
-              <IonLabel className='text-base'>{questions.q2.question}</IonLabel>
+              <IonLabel className='text-base'>{questions.q2.question + ' (' + task + ')'}</IonLabel>
             </IonListHeader>
             <IonItem>
               <IonText className='py-2 text-sm'>{questions.q2.answers.a1}</IonText>
