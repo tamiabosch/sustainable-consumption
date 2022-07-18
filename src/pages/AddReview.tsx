@@ -122,7 +122,7 @@ const AddReview: React.FC = () => {
       }
       saveReviewtoFB().then(() => {
         const location = {
-          pathname: '/user/tab1/add/experienceSampling',
+          pathname: reviewType === ReviewType.SelfReview ? '/user/tab1/add/experienceSampling' : '/user/tab2/add/experienceSampling',
           state: {
             purchaseId: purchaseId,
             reviewId: reviewDocRef.id,

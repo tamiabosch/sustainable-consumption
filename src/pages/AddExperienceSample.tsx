@@ -14,7 +14,7 @@ import {
   IonTextarea,
   IonToast,
 } from '@ionic/react';
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router';
 import Header from '../components/Header';
 import Likert from 'react-likert-scale';
@@ -23,6 +23,7 @@ import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
 import { useHistory } from 'react-router';
+import { ReviewType } from '../models/ReviewType';
 
 
 
@@ -30,11 +31,14 @@ const AddExperienceSampling: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
 
-  const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: string }>();
+  const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: ReviewType }>();
   const purchaseId = location.state?.purchaseId;
-  const reviewId = useMemo(() => location.state?.reviewId, [location]);
-  const task = useMemo(() => location.state?.task, [location]);
-  const reviewType = useMemo(() => location.state?.reviewType, [location]);
+  const reviewId = location.state?.reviewId;
+  const task = location.state?.task;
+  const reviewType = location.state?.reviewType;
+
+  console.log('location: ' + location, location)
+  console.log('task: ' + task)
 
   const [selected_1, setSelected_1] = useState<string>('');
   const [selected_2, setSelected_2] = useState<string>('');
@@ -74,6 +78,7 @@ const AddExperienceSampling: React.FC = () => {
   };
   const handleSubmit = async () => {
     console.log('5: ', selected_1, freeText_1)
+    console.log('onsubmit: ', task, reviewType)
 
     if (selected_1 && selected_2 && ((selected_3 && selected_4 && selected_5) !== '-1')) {
       const textBug = freeText_1 ? freeText_1 : 'Sonstiges'
@@ -104,7 +109,7 @@ const AddExperienceSampling: React.FC = () => {
         //   }
         //   history.replace(location)
         //  history.goBack();
-        history.replace('/user/tab1');
+        task === ReviewType.SelfReview ? history.replace('/user/tab1') : history.replace('/user/tab2');
       }
 
     } else {

@@ -52,10 +52,7 @@ const TabProfile: React.FC = () => {
                                     <IonText>{userData?.peerReviewsWritten}</IonText>
                                 </IonItem>
                             }
-
                         </IonList>
-
-
                     </IonCardContent>
                 </IonCard>
                 <IonCard>

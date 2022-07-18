@@ -67,13 +67,8 @@ export const CertificateText = () => {
         Die Anforderungen an diese Zertifikate sind oft nicht einmal annähernd so hoch wie die der Öko-Verbände und dienen in erster Linie dem eigenen Image und höheren Gewinnen.
         In vielen Fällen erwecken sie nur den Anschein eines echten Bio-Produkts.
         <br />
-        Nutzen Sie diesen Link, um sich über Bio-Siegel zu informieren: <a href="https://www.bio-siegel.de/">https://www.bio-siegel.de/</a>
+        Nutzen Sie diesen Link, um sich über Bio-Siegel zu informieren: <a href="https://www.bio-siegel.de/" className='text-blue-500'>https://www.bio-siegel.de/</a>
       </p>
-      <h2 className='text-lg font-bold'>Links</h2>
-      <li>
-        <ul><a href="google.com" className="href" target='_blank'>Test</a></ul>
-        <ul><a href="google.com" className="href">Test</a></ul>
-      </li>
     </>
   )
 }
@@ -94,11 +89,6 @@ export const RegionalityText = () => {
         Hier noch ein paar Tipps für regionale Produkte: - Eiercode zeigt Bundesland - "Regionalfenster"
         (mehr: <a href='http://www.regionalfenster.de' target="_blank" rel="noreferrer" className='text-blue-500'>http://www.regionalfenster.de</a>) - Angabe des Erzeugers oder einer eindeutig identifizierbaren Region - geschützte Ursprungsbezeichnung (g.U.) - Siegel der Regionalinitiativen - Qualitätszeichen der Bundesländer
       </p>
-      <h2 className='text-lg font-bold'>Links</h2>
-      <li>
-        <ul><a href="google.com" className="href" target='_blank'>Test</a></ul>
-        <ul><a href="google.com" className="href">Test</a></ul>
-      </li>
     </>
   )
 }
@@ -117,11 +107,6 @@ export const SeasonalityText = () => {
         Mehr dazu erfahren Sie hier: <a href='https://www.regional-saisonal.de/saisonkalender' target='_blank' rel='noreferrer' className='text-blue-500' >https://www.regional-saisonal.de/saisonkalender</a>
         Außerdem lohnt sich immer ein Besuch auf dem örtlichen Bauernmarkt, denn dort verkaufen die Bauern meist nur ihre regionale Ernte und saisonale Produkte. So bekommen Sie Erdbeeren nur im Sommer, wenn sie frisch und reif sind. Die Erdbeeren, die Sie im Winter kaufen können, sind mit einem langen Transport oder hohem Ressourceneinsatz verbunden
       </p>
-      <h2 className='text-lg font-bold'>Links</h2>
-      <li>
-        <ul><a href="https://www.regional-saisonal.de/saisonkalender" target='_blank' rel='noreferrer'>Test</a></ul>
-        <ul><a href="https://www.regional-saisonal.de/saisonkalender" target='_blank' rel='noreferrer'>Test</a></ul>
-      </li>
     </>
   )
 }

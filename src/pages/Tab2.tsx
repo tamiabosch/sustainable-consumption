@@ -42,7 +42,6 @@ const Tab2: React.FC = () => {
     setTimeout(() => {
       console.log('Async operation has ended');
       event.detail.complete();
-
     }, 1000);
   }
   return (

@@ -44,10 +44,7 @@ const AddEntryPage: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
   const [showToastItems, setShowToastItems] = useState(false);
   const [currentItem, setCurrentItem] = useState<Item>({ title: '', certificate: '', origin: '' });
-  const [items, setItems] = useState<Item[]>([
-    { title: 'Milch', certificate: "Bio", origin: "Bayern" },
-    { title: 'Ei', certificate: "Bio", origin: "Bayern" },
-  ]);
+  const [items, setItems] = useState<Item[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [userData, setUserData] = useState<User>();
@@ -116,7 +113,7 @@ const AddEntryPage: React.FC = () => {
   }
 
   const handleSave = async () => {
-    if (date && title && task && items.length > 1) {
+    if (date && title && task && items.length > 2) {
       console.log('save');
       const entriesRef = collection(db, 'purchases');
       //vielleicht wenn man keine peer reviewer id hat, einfach tamia@test.de nehmen als reviewer?
@@ -148,7 +145,7 @@ const AddEntryPage: React.FC = () => {
       }, error => {
         console.log("oh no, an validation error?? " + error);
       })
-    } else if (items.length < 2) {
+    } else if (items.length <= 2) {
       setShowToastItems(true);
     } else {
       console.log('missing data at handleSave method');
