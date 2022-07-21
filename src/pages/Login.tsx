@@ -12,9 +12,9 @@ import {
 } from "@ionic/react";
 import { useAuth } from "../service/authFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../service/firebaseConfig";
+import { auth } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 import { ReviewType } from "../models/ReviewType";
 
 

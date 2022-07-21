@@ -41,6 +41,8 @@ import { User } from "./models/User";
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './service/firebaseConfig';
 import { ReviewType } from './models/ReviewType';
+import Notifications from './Notifications';
+
 
 setupIonicReact();
 
@@ -74,6 +76,9 @@ const App: React.FC = () => {
       getUserProfile();
     }
   }, [auth])
+
+  Notifications.schedule(1, 'Testnachricht', userData?.startDate.toDate() ?? new Date(2022, 6, 25));
+
 
   if (loading) {
     return <IonLoading isOpen />;

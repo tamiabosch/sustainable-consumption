@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonViewWillEnter, useIonViewDidEnter } from '@ionic/react';
+import { IonContent, IonPage, IonCard, IonCardHeader, IonCardSubtitle, IonIcon, IonFabButton, IonFab, IonToolbar, IonTitle, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonViewWillEnter, IonButton } from '@ionic/react';
 import { addCircleOutline } from 'ionicons/icons';
 import { Purchase as PurchaseModel } from '../models/Purchase';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import { db } from "../service/firebaseConfig";
 import { collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 import { User } from '../models/User';
+import Notifications from '../Notifications';
 
 
 const Tab1: React.FC = () => {
@@ -88,6 +89,11 @@ const Tab1: React.FC = () => {
             })}
           </IonCard>
         }
+        <div>
+          <IonButton color="tertiary" onClick={() => Notifications.schedule(1, "Text", new Date(2022, 6, 27))}>
+            Schedule Notification
+          </IonButton>
+        </div>
 
         {console.log('purchases:', purchases)}
         {/* Example Cart */}
