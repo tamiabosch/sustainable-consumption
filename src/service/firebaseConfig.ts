@@ -1,7 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { addDoc, collection, getFirestore, serverTimestamp } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, initializeAuth, indexedDBLocalPersistence } from "firebase/auth";
+
+import { Capacitor } from "@capacitor/core";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,7 +31,20 @@ const { getDatabase } = require('firebase/database');
 // Get a database reference to our blog
 export const realtimeDB = getDatabase();
 export const db = getFirestore();
-export const auth = getAuth(app);
+
+function whichAuth() {
+  let auth
+  if (Capacitor.isNativePlatform()) {
+    auth = initializeAuth(app, {
+      persistence: indexedDBLocalPersistence
+    })
+  } else {
+    auth = getAuth()
+  }
+  return auth
+}
+export const auth = whichAuth() //getAuth(app);
+
 export const provider = new GoogleAuthProvider();
 
 

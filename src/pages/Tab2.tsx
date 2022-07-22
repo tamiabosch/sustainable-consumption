@@ -46,7 +46,7 @@ const Tab2: React.FC = () => {
   }
   return (
     <IonPage>
-      <Header title="Feedback " showLogout={true} />
+      <Header title="Feedback für andere Einkäufe" />
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
           <IonRefresherContent></IonRefresherContent>
@@ -59,7 +59,7 @@ const Tab2: React.FC = () => {
               <IonCardSubtitle>Notifications</IonCardSubtitle>
             </IonCardHeader>
             {notifications.map((notification: PurchaseModel) => {
-              return <Notification key={"notification-" + notification.id} details={notification.title} date={notification.date} link={"/user/tab2/view/" + notification.id} reviewType='review' />
+              return <Notification key={"notification-" + notification.id} details={notification.title} date={notification.date} link={"/user/tab2/view/" + notification.id} reviewType='peerReview' />
             })}
           </IonCard>
         }

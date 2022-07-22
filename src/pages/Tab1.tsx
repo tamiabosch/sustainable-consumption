@@ -11,7 +11,7 @@ import { db } from "../service/firebaseConfig";
 import { collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 import { User } from '../models/User';
-import Notifications from '../Notifications';
+import Notifications from '../service/Notifications';
 
 
 const Tab1: React.FC = () => {
@@ -70,7 +70,7 @@ const Tab1: React.FC = () => {
 
   return (
     <IonPage>
-      <Header title='Meine Einkäufe' showLogout={true} />
+      <Header title='Meine Einkäufe' />
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
           <IonRefresherContent></IonRefresherContent>
@@ -90,7 +90,7 @@ const Tab1: React.FC = () => {
           </IonCard>
         }
         <div>
-          <IonButton color="tertiary" onClick={() => Notifications.schedule(1, "Text", new Date(2022, 6, 27))}>
+          <IonButton color="tertiary" onClick={() => Notifications.schedule(new Date(2022, 6, 27))}>
             Schedule Notification
           </IonButton>
         </div>

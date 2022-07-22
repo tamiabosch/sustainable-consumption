@@ -36,30 +36,14 @@ import React, { useEffect, useState } from 'react';
 import { AuthContext, useAuthInit } from './service/authFirebase';
 import NotFoundPage from './pages/NotFoundPage';
 import { PeerReview, SelfReview } from './routes/LoggedInRoutes'
-import { BrowserRouter } from 'react-router-dom';
 import { User } from "./models/User";
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './service/firebaseConfig';
 import { ReviewType } from './models/ReviewType';
-import Notifications from './Notifications';
+import Notifications from './service/Notifications';
 
 
 setupIonicReact();
-
-// interface RouteProps extends RouteProps {
-//   isAuth: boolean;
-//   component: any;
-//   path: string;
-// }
-// const Route: React.FC<RouteProps> = (
-//   props: RouteProps
-// ) => {
-//   return props.isAuth ? (
-//       <Route {...props} component={props.component} path={props.path} />
-//   ) : (
-//       <Redirect to={"/login"} />
-//   );
-// };
 
 const App: React.FC = () => {
   const { loading, auth } = useAuthInit();
@@ -77,7 +61,9 @@ const App: React.FC = () => {
     }
   }, [auth])
 
-  Notifications.schedule(1, 'Testnachricht', userData?.startDate.toDate() ?? new Date(2022, 6, 25));
+  useEffect(() => {
+    Notifications.schedule(userData?.startDate.toDate() ?? new Date(2022, 6, 21));
+  }, [])
 
 
   if (loading) {

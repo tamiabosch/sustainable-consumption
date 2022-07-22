@@ -47,7 +47,7 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
     console.debug('header')
 
     const peerReviewProps = {
-        task: "Feedback empfangen",
+        task: currentLocation.includes('/user/tab1') ? "Feedback empfangen" : "Feedback gegeben",
         taskFinished: "Feedback angefordert", //naming macht keinen sinn, ist eigentlich wenn der task noch offen ist
         open: peerReviewed,
         reviewType: ReviewType.PeerReview

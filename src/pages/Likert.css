@@ -11,3 +11,7 @@ fieldset.likertStyles .likertResponse {
 fieldset.disable .likertBand {
     pointer-events: none;  
 }
+
+.my-list {
+    list-style-type: disc;
+  }
