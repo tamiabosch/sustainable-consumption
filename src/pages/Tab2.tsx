@@ -46,7 +46,7 @@ const Tab2: React.FC = () => {
   }
   return (
     <IonPage>
-      <Header title="Feedback für andere Einkäufe" />
+      <Header title="Feedback für Andere" />
       <IonContent>
         <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
           <IonRefresherContent></IonRefresherContent>

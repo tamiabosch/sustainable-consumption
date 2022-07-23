@@ -12,9 +12,9 @@ import {
 } from "@ionic/react";
 import { useAuth } from "../service/authFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../service/firebaseConfig";
+import { auth, db } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
-import { serverTimestamp } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { ReviewType } from "../models/ReviewType";
 
 
@@ -50,18 +50,17 @@ const Login: React.FC = () => {
   };
 
   const group = {
-    g1: ["Zertifikat", "Saisonalität", "Regionalität"],
+    g1: ["Zertifizierung", "Saisonalität", "Regionalität"],
   }
   const configPeerReview = {
-    alias: '',
+    alias: 'test',
     completed: false,
     //email oben
     lastLogin: serverTimestamp(),
     peerReviewsWritten: 0,
     //reviewType: ReviewType.SelfReview,
     reviewType: ReviewType.PeerReview,
-    startDate: new Date(2022, 6, 10),
-    week: group.g1,
+    startDate: new Date(2022, 6, 18),
     task: {
       week1: group.g1[0],
       week2: group.g1[2],

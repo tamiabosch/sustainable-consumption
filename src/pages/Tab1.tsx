@@ -11,7 +11,6 @@ import { db } from "../service/firebaseConfig";
 import { collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { useAuth } from '../service/authFirebase';
 import { User } from '../models/User';
-import Notifications from '../service/Notifications';
 
 
 const Tab1: React.FC = () => {
@@ -89,11 +88,6 @@ const Tab1: React.FC = () => {
             })}
           </IonCard>
         }
-        <div>
-          <IonButton color="tertiary" onClick={() => Notifications.schedule(new Date(2022, 6, 27))}>
-            Schedule Notification
-          </IonButton>
-        </div>
 
         {console.log('purchases:', purchases)}
         {/* Example Cart */}
@@ -131,22 +125,20 @@ export default Tab1;
 
 export const getTaskOfTheWeek = (userData: User | undefined) => {
   var startDate = userData?.startDate.toDate()
-  const manuell = new Date(2022, 6, 27);
+  const manuell = new Date(2022, 6, 22); //month start with 0
   startDate = startDate ? startDate : manuell
 
   const currentDate = new Date();
   const secondWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
   const thirdWeek = new Date(secondWeek.getFullYear(), secondWeek.getMonth(), secondWeek.getDate() + 7);
   const end = new Date(thirdWeek.getFullYear(), thirdWeek.getMonth(), thirdWeek.getDate() + 7);
-  console.log('start: ' + startDate);
-  console.log('manuell: ' + manuell);
   if (currentDate < startDate) {
     return "Studie startet am " + startDate.toLocaleDateString();
-  } else if (startDate < currentDate && currentDate < secondWeek) {
+  } else if (startDate <= currentDate && currentDate < secondWeek) {
     return 'Thema der Woche: ' + userData?.task?.week1 || "Thema der Woche unter Profil einsehen";
-  } else if (secondWeek < currentDate && currentDate < thirdWeek) {
+  } else if (secondWeek <= currentDate && currentDate < thirdWeek) {
     return 'Thema der Woche: ' + userData?.task?.week2 || "Thema der Woche unter Profil einsehen";
-  } else if (thirdWeek < currentDate && currentDate < end) {
+  } else if (thirdWeek <= currentDate && currentDate < end) {
     return 'Thema der Woche: ' + userData?.task?.week3 || "Thema der Woche unter Profil einsehen";
   } else if (currentDate > end) {
     return "Studie beendet" + end.getDate() + "." + end.getMonth() + "." + end.getFullYear();

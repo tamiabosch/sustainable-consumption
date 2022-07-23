@@ -20,9 +20,10 @@ const AddReview: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
 
-  const location = useLocation<{ purchaseId: string, reviewType: ReviewType }>();
+  const location = useLocation<{ purchaseId: string, reviewType: ReviewType, reviewTypeUser: ReviewType }>();
   const purchaseId = location.state?.purchaseId;
   const reviewType = location.state?.reviewType;
+  const reviewTypeUser = location.state?.reviewTypeUser;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [showToast, setShowToast] = useState(false);
@@ -50,13 +51,13 @@ const AddReview: React.FC = () => {
 
   const likertOptions = {
     responses: [
-      { value: 0, text: "stimme gar nicht zu" },
-      { value: 1, text: "" },
-      { value: 2, text: "" },
-      { value: 3, text: "" },
-      { value: 4, text: "" },
-      { value: 5, text: "" },
-      { value: 6, text: "stimme voll und ganz zu" }
+      { value: 0, text: "0" },
+      { value: 1, text: "1" },
+      { value: 2, text: "2" },
+      { value: 3, text: "3" },
+      { value: 4, text: "4" },
+      { value: 5, text: "5" },
+      { value: 6, text: "6" }
     ],
     onChange: (val: any) => {
       console.log(val);
@@ -121,16 +122,21 @@ const AddReview: React.FC = () => {
         }
       }
       saveReviewtoFB().then(() => {
-        const location = {
-          pathname: reviewType === ReviewType.SelfReview ? '/user/tab1/add/experienceSampling' : '/user/tab2/add/experienceSampling',
-          state: {
-            purchaseId: purchaseId,
-            reviewId: reviewDocRef.id,
-            task: purchase?.task,
-            reviewType: reviewType
+        if (reviewType === ReviewType.SelfReview) {
+          const location = {
+            pathname: '/user/tab1/add/experienceSampling',
+            state: {
+              purchaseId: purchaseId,
+              reviewId: reviewDocRef.id,
+              task: purchase?.task,
+              reviewType: reviewType,
+              reviewTypeUser: reviewTypeUser
+            }
           }
+          history.replace(location)
+        } else {
+          history.replace('/user/tab2')
         }
-        history.replace(location)
       })
 
     } else {
@@ -147,16 +153,18 @@ const AddReview: React.FC = () => {
       <Header title='Review' />
       <IonContent>
         <IonItemDivider color='primary'>
-          <IonText className='text-left text-base my-4'>Deine Aufgabe ist es die ausgewählten Produkte bezüglich des Nachhaltigkeitsthemas <b>{purchase?.task ? purchase.task : "dieser Woche "}</b> zu  bewertet werden!
+          <IonText className='text-left text-base my-4'>Deine Aufgabe ist es, die ausgewählten Produkte bezüglich des Nachhaltigkeitsthemas <b>{purchase?.task ? purchase.task : "dieser Woche "}</b> zu  bewerten!
             <br /> Schreibe einen Kommentar, um das Rating auch zu einem späteren Zeitpunkt noch nachvollziehen zu können.
           </IonText>
         </IonItemDivider>
         {purchase ? (
           <>
             <PurchaseHeader id={purchase.id} title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} owner={purchase.owner} />
+            <p className='px-4 mt-4 text-sm'>Die Skala geht von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zu")</p>
+
             {purchase.items?.map((item: Item, index: number) => (
               <React.Fragment key={index}>
-                <IonItemDivider className='mt-10 mb-5' color='primary'>
+                <IonItemDivider className='mt-8 mb-5' color='primary'>
                   <IonLabel>
                     {index + 1}. Produkt
                   </IonLabel>

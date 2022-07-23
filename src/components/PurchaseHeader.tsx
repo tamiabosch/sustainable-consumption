@@ -81,11 +81,10 @@ const PurchaseHeader: React.FC<Purchase> = ({ id, title, date, task, description
             {description && <IonCardContent>{description}</IonCardContent>}
             {overview &&
                 <IonCardContent>
-                    <LabelStatus {...reviewProps} taskFinished={currentLocation.includes('/user/tab1') ? "Einkauf bewerten" : "Bewertung offen"} />
+                    {currentLocation.includes('/user/tab1') && <LabelStatus {...reviewProps} taskFinished="Einkauf bewerten" />}
                     {peerReviewer && //falls nicht, wird es den Single Review Leuten gar nicht erstn angezeigt
                         <LabelStatus {...peerReviewProps} taskFinished={currentLocation.includes('/user/tab2') ? "Feedback geben" : "Feedback angefordert"} />
                     }
-                    <p>{peerReviewer}</p>
                 </IonCardContent>
             }
         </IonCard>

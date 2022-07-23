@@ -1,5 +1,5 @@
 export enum Task {
-    CERTIFICATE = "Zertifikat",
+    CERTIFICATE = "Zertifizierung",
     SEASONALITY = "Saisonalität",
     REGIONALITY = "Regionalität",
 }

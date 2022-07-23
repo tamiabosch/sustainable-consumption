@@ -22,7 +22,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { useAuth } from '../service/authFirebase';
 import { db } from '../service/firebaseConfig';
-import { collection, doc, setDoc, serverTimestamp, where, query, getDoc, orderBy, getDocs } from 'firebase/firestore';
+import { getTaskOfTheWeekQuery } from '../service/userData';
+import { collection, doc, setDoc, serverTimestamp, getDoc, getDocs } from 'firebase/firestore';
 import { format, parseISO } from 'date-fns';
 import { addOutline, saveOutline } from 'ionicons/icons';
 import { Task } from '../models/Task';
@@ -128,7 +129,7 @@ const AddEntryPage: React.FC = () => {
         items: items.map(item => ({ title: item.title, certificate: item.certificate, origin: item.origin })),
         createdAt: serverTimestamp(),
         owner: userId,
-        peerReviewer: userData?.reviewType === ReviewType.PeerReview ? peerReviewerId : '0' //check if this purchase is peerReviewed //TODO do not set if Signle Review
+        peerReviewer: userData?.reviewType === ReviewType.PeerReview ? peerReviewerId : '' //check if this purchase is peerReviewed //TODO do not set if Signle Review
       };
 
       const docRef = doc(entriesRef);
@@ -139,7 +140,7 @@ const AddEntryPage: React.FC = () => {
       setPurchaseToFB().then(() => {
         const location = {
           pathname: '/user/tab1/add/review',
-          state: { purchaseId: docRef.id, reviewType: ReviewType.SelfReview } //send purchaseId to next view
+          state: { purchaseId: docRef.id, reviewType: ReviewType.SelfReview, reviewTypeUser: userData?.reviewType } //send purchaseId to next view
         }
         history.replace(location)
       }, error => {
@@ -159,12 +160,23 @@ const AddEntryPage: React.FC = () => {
     }
   };
 
+  //set Task of the week as value
+  useEffect(() => {
+    const currentTask: Task | boolean = getTaskOfTheWeek(userData)
+    if (currentTask === Task.CERTIFICATE) {
+      setTask(Task.CERTIFICATE);
+    } else if (currentTask === Task.REGIONALITY) {
+      setTask(Task.REGIONALITY);
+    } else if (currentTask === Task.SEASONALITY) {
+      setTask(Task.SEASONALITY);
+    }
+  }, [userData])
   return (
     <IonPage>
       <Header title='Neuer Einkauf' showBackBtn={true} />
       <IonContent fullscreen>
         <IonList>
-          <IonListHeader className='uppercase'>Einkauf Details</IonListHeader>
+          <IonListHeader className='uppercase'>Einkaufdetails</IonListHeader>
           <IonItem>
             <IonLabel position="stacked">Titel</IonLabel>
             <IonInput value={title} onIonChange={(event) => setTitle(event.detail.value as string)} placeholder="Einkaufsort" />
@@ -176,9 +188,9 @@ const AddEntryPage: React.FC = () => {
           <IonItem id="open-modal">
             <IonLabel className='text-lg' position="stacked" >Wöchentliches Thema</IonLabel>
             <IonSelect value={task} onIonChange={(event) => setTask(event.detail.value)}>
-              <IonSelectOption value={Task.CERTIFICATE}>Zertifikate</IonSelectOption>
-              <IonSelectOption value={Task.SEASONALITY}>Saisonalität</IonSelectOption>
-              <IonSelectOption value={Task.REGIONALITY}>Regionalität</IonSelectOption>
+              <IonSelectOption value={Task.CERTIFICATE}>{Task.CERTIFICATE}</IonSelectOption>
+              <IonSelectOption value={Task.SEASONALITY}>{Task.SEASONALITY}</IonSelectOption>
+              <IonSelectOption value={Task.REGIONALITY}>{Task.REGIONALITY}</IonSelectOption>
             </IonSelect>
           </IonItem>
           <IonItem>
@@ -193,7 +205,7 @@ const AddEntryPage: React.FC = () => {
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </div>
-          <IonNote className='px-5 mb-5'>Wählen sie passend zum Thema 3-5 Produkte aus.</IonNote><br />
+          <IonNote className='px-5 mb-5'>Wähle passend zum Thema 3-5 Produkte aus.</IonNote><br />
           {items.map((item: Item, index: number) => {
             return (
               <PurchaseItem key={index} item={item} onDelete={() => handleItemDelete(item)} editable={true} />
@@ -260,7 +272,7 @@ const AddEntryPage: React.FC = () => {
                 placeholder="Produktname" />
             </IonItem>
             <IonItem>
-              <IonLabel position="stacked">Zertifikate</IonLabel>
+              <IonLabel position="stacked">Zertifizierung</IonLabel>
               <IonInput
                 value={currentItem.certificate}
                 onIonChange={(e) => { setCurrentItem({ ...currentItem, certificate: e.detail.value } as Item); }}
@@ -286,39 +298,24 @@ const AddEntryPage: React.FC = () => {
 
 export default AddEntryPage;
 
-export const getTaskOfTheWeekQuery = (userData: User) => {
-  if (userData !== undefined) {
-    var startDate = userData?.startDate.toDate()
-    const manuell = new Date(2022, 6, 27);
-    startDate = startDate ? startDate : manuell
-
-    const currentDate = new Date();
-    const secondWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
-    const thirdWeek = new Date(secondWeek.getFullYear(), secondWeek.getMonth(), secondWeek.getDate() + 7);
-    const end = new Date(thirdWeek.getFullYear(), thirdWeek.getMonth(), thirdWeek.getDate() + 7);
-    console.log('start: ' + startDate);
-    //firestore collection reference
-    const usersRef = collection(db, 'users')
-    if (userData.task !== undefined) {
-      if (startDate < currentDate && currentDate < secondWeek) {
-        const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('task.week1', '==', userData.task.week1), orderBy('peerReviewsWritten', 'asc'));
-        console.log('user: ' + userData.email + ' is in week 1');
-        return q;
-      } else if (secondWeek < currentDate && currentDate < thirdWeek) {
-        const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('task.week2', '==', userData.task.week2), orderBy('peerReviewsWritten', 'asc'));
-        console.log('user: ' + userData.email + ' is in week 2');
-        return q;
-      } else if (thirdWeek < currentDate && currentDate < end) {
-        const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where('task.week3', '==', userData.task.week3), orderBy('peerReviewsWritten', 'asc'));
-        console.log('user: ' + userData.email + ' is in week 3');
-        return q;
-      }
+export const getTaskOfTheWeek = (userData: User | undefined) => {
+  var startDate = userData?.startDate.toDate()
+  const manuell = new Date(2022, 6, 25); //month start with 0
+  startDate = startDate ?? manuell
+  const currentDate = new Date();
+  const secondWeek = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + 7);
+  const thirdWeek = new Date(secondWeek.getFullYear(), secondWeek.getMonth(), secondWeek.getDate() + 7);
+  if (userData?.task !== undefined) {
+    if (currentDate < secondWeek) {
+      return userData?.task?.week1;
+    } else if (secondWeek <= currentDate && currentDate < thirdWeek) {
+      return userData?.task?.week2
+    } else if (thirdWeek <= currentDate) {
+      return userData?.task?.week3
     } else {
       return false
     }
   } else {
-    //console.log('getTaskOfTheWeekQuery(): userData is undefined');
     return false
-
   }
 }

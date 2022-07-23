@@ -1,6 +1,6 @@
 import { IonCard, IonCardContent, IonCardSubtitle, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonText } from '@ionic/react';
 import { User } from '../models/User';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, Timestamp } from 'firebase/firestore';
 import { contrastOutline, helpCircleOutline, mapOutline, personOutline, pricetagsOutline, readerOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
@@ -12,6 +12,19 @@ import { Task } from '../models/Task';
 const TabProfile: React.FC = () => {
     const { userId, email } = useAuth()
     const [userData, setUserData] = useState<User>();
+    const [startDate, setStartDate] = useState<Date>(new Date(2022, 6, 25));
+    const [endDate, setEndDate] = useState<Date>();
+
+    useEffect(() => {
+        if (userData) {
+            let start = userData.startDate.toDate();
+            console.log('start', start);
+            setStartDate(start);
+            let end = new Date(start);
+            end.setDate(end.getDate() + (3 * 7) - 1);
+            setEndDate(end);
+        }
+    }, [userData])
 
     useEffect(() => {
         const userRef = doc(db, "users", userId ? userId : '0');
@@ -30,7 +43,7 @@ const TabProfile: React.FC = () => {
                 <IonCard>
                     <IonItem className='mt-2'>
                         <IonIcon icon={personOutline} slot="start" />
-                        <IonLabel className='text-xl font-extrabold'>Profil Daten </IonLabel>
+                        <IonLabel className='text-xl font-extrabold'>Profildaten </IonLabel>
                     </IonItem>
                     <IonCardContent>
                         <IonList>
@@ -61,8 +74,9 @@ const TabProfile: React.FC = () => {
                         <IonLabel className='text-xl font-extrabold'>Aufgaben </IonLabel>
                     </IonItem>
                     <IonCardContent>
-                        <IonCardSubtitle className='my-4' >Start Datum Studie</IonCardSubtitle>
-                        <IonItem>{userData?.startDate.toDate().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</IonItem>
+                        <IonCardSubtitle className='my-4' >Zeitraum Studie (Dauer: 3 Wochen)</IonCardSubtitle>
+                        <IonItem>{startDate.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</IonItem>
+                        <IonItem>{endDate?.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</IonItem>
                         <IonCardSubtitle className='my-4' >Welche Nachhaltigkeitsthemen stehen bevor? </IonCardSubtitle>
                         {userData?.task &&
                             <>
@@ -109,7 +123,7 @@ const TabProfile: React.FC = () => {
                         <IonLabel className='text-xl font-extrabold'>Hilfe </IonLabel>
                     </IonItem>
                     <IonCardContent>
-                        Sollten irgendwelche Probleme oder Fragen auftreten, kannst du mich geren per Mail kontaktieren. <br />
+                        Sollten irgendwelche Probleme oder Fragen auftreten, kannst du mich gerne per Mail kontaktieren. <br />
                         <a href="mailto:t.bosch@campus.lmu.de" className='text-blue-500'>t.bosch@campus.lmu.de</a>
                     </IonCardContent>
                 </IonCard>

@@ -3,8 +3,6 @@ import {
   IonCardTitle,
   IonContent,
   IonIcon,
-  IonItem,
-  IonLabel,
   IonNote,
   IonPage,
   IonRefresher,
@@ -25,7 +23,7 @@ import { Review, ReviewItem } from '../models/Review';
 import { ReviewType } from '../models/ReviewType';
 import Likert from 'react-likert-scale';
 import './Likert.css'
-import { chevronDownCircleOutline, peopleOutline, personOutline, refresh } from 'ionicons/icons';
+import { chevronDownCircleOutline, peopleOutline, personOutline } from 'ionicons/icons';
 
 
 
@@ -91,7 +89,8 @@ const Purchase: React.FC = () => {
 
     }, 1000);
   }
-
+  const hrefSelf = '/user/tab1/view/'
+  const currentLocation = window.location.href;
   return (
     <IonPage>
       <Header title="Einkauf" showBackBtn={true} />
@@ -123,11 +122,11 @@ const Purchase: React.FC = () => {
               return (
                 <React.Fragment key={index}>
                   <PurchaseItem item={item} editable={false} />
-                  {purchase.reviewed &&
+                  {(purchase.reviewed && currentLocation.includes(hrefSelf)) &&
                     <IonCard className='ion-padding'>
                       <div className='flex flex-row items-center mb-2'>
                         <IonIcon icon={personOutline} slot="start" className='w-5 h-5 mr-2' />
-                        <IonCardTitle className='text-base'>Deine Bewertung </IonCardTitle>
+                        <IonCardTitle className='text-base'>Eigene Bewertung</IonCardTitle>
                       </div>
                       {(review[index]?.rating) ?
                         <Likert id={index + '-self-' + item.title}
@@ -144,7 +143,9 @@ const Purchase: React.FC = () => {
                             { value: 6, text: "6", checked: review[index].rating === 6 }
                           ]}
                         />
-                        : (<p>Skala konnte nicht geladen werden. <br />Rating: {review[index]?.rating}/7 Punkten</p>)
+                        : (<p>Skala konnte nicht geladen werden. <br />
+                          <br />
+                          <b>Rating: </b>{review[index]?.rating}/6 Punkten</p>)
                       }
                       {(review[index]?.comment) && <p><b>Kommentar:</b> <br />{review[index]?.comment}</p>}
                     </IonCard>
@@ -160,7 +161,7 @@ const Purchase: React.FC = () => {
                           <Likert id={index + '-peer-' + item.title}
                             className="likertStyles disable"
                             layout="stacked"
-                            question={"Feedback des Produkts zum " + purchase.task + '?'}
+                            question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '.'}
                             responses={[
                               { value: 0, text: "0", checked: peerReview[index].rating === 0 },
                               { value: 1, text: "1", checked: peerReview[index].rating === 1 },
@@ -171,7 +172,9 @@ const Purchase: React.FC = () => {
                               { value: 6, text: "6", checked: peerReview[index].rating === 6 }
                             ]}
                           />
-                          : (<p>Likert Scala konnte nicht geladen werden. <br /><b>Rating: {peerReview[index]?.rating}/6 Punkten</b></p>)
+                          : (<p>Skala konnte nicht geladen werden. <br />
+                            <br />
+                            <b>Rating: </b>{peerReview[index]?.rating}/6 Punkten</p>)
                         }
                         {(peerReview[index]?.comment) && <p><b>Kommentar:</b> <br />{peerReview[index]?.comment}</p>}
 

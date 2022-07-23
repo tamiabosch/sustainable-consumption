@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'lmu.ma.sustainable.consumption',
-  appName: 'sustainable-consumption',
+  appName: 'SuCo',
   webDir: 'build',
   bundledWebRuntime: false,
   plugins: {

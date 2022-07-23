@@ -31,11 +31,12 @@ const AddExperienceSampling: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
 
-  const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: ReviewType }>();
+  const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: ReviewType, reviewTypeUser: ReviewType }>();
   const purchaseId = location.state?.purchaseId;
   const reviewId = location.state?.reviewId;
   const task = location.state?.task;
   const reviewType = location.state?.reviewType;
+  const reviewTypeUser = location.state?.reviewTypeUser;
 
   console.log('location: ' + location, location)
   console.log('task: ' + task)
@@ -57,13 +58,13 @@ const AddExperienceSampling: React.FC = () => {
     }
   }
   const responses = [
-    { value: 0, text: "stimme gar nicht zu" },
-    { value: 1, text: "" },
-    { value: 2, text: "" },
-    { value: 3, text: "" },
-    { value: 4, text: "" },
-    { value: 5, text: "" },
-    { value: 6, text: "stimme voll und ganz zu" }
+    { value: 0, text: "0" },
+    { value: 1, text: "1" },
+    { value: 2, text: "2" },
+    { value: 3, text: "3" },
+    { value: 4, text: "4" },
+    { value: 5, text: "5" },
+    { value: 6, text: "6" }
   ]
   const likertOptions = {
     responses: responses,
@@ -93,7 +94,8 @@ const AddExperienceSampling: React.FC = () => {
         q5: { question: questions.q5.question, answer: selected_5 },
         review: reviewId,
         task,
-        reviewType,
+        reviewTypeUser
+        //reviewType,
         //TODO add timer
       }
       const entriesRef = collection(db, 'experienceSamples');
@@ -131,7 +133,7 @@ const AddExperienceSampling: React.FC = () => {
       <IonContent>
         <IonItemDivider color='primary'>
           <IonText className='text-left text-base my-4'>
-            Folgende Fragen helfen die vorherige Review besser in Kontext zu bringen.
+            Folgende Fragen helfen die vorherige Bewertung besser in Kontext zu bringen.
           </IonText>
         </IonItemDivider>
         {/* Frage 1 */}
@@ -185,8 +187,10 @@ const AddExperienceSampling: React.FC = () => {
             </IonItem>
           </IonRadioGroup>
         </IonList>
-        {/* Frage 3 */}
 
+        <p className='px-4 my-5 text-sm'>Die Skala geht von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zu")</p>
+
+        {/* Frage 3 */}
         <Likert id="likert-3" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q3.question} onChange={(e: any) => setSelected_3(e.value)} />
         {/* Frage 4 */}
         <Likert id="likert-4" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q4.question} onChange={(e: any) => setSelected_4(e.value)} />

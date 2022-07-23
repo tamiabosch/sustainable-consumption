@@ -37,7 +37,7 @@ import { AuthContext, useAuthInit } from './service/authFirebase';
 import NotFoundPage from './pages/NotFoundPage';
 import { PeerReview, SelfReview } from './routes/LoggedInRoutes'
 import { User } from "./models/User";
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from './service/firebaseConfig';
 import { ReviewType } from './models/ReviewType';
 import Notifications from './service/Notifications';
@@ -58,12 +58,27 @@ const App: React.FC = () => {
         setUserData(userDoc.data() as User);
       }
       getUserProfile();
+      //set LastLogin on Server
     }
   }, [auth])
 
   useEffect(() => {
-    Notifications.schedule(userData?.startDate.toDate() ?? new Date(2022, 6, 21));
-  }, [])
+    //only set lastLogin if it's on a new day, to minimize db updates
+    //userData?.lastLogin.toDate().getDate() !== new Date().getDate()
+    if (userData?.id !== undefined) {
+      const userDoc = doc(db, 'users', "" + userData?.id);
+      updateDoc(userDoc, { lastLogin: new Date() })
+      console.log('last:', userData?.lastLogin);
+      console.log('lastLoginSet:', new Date());
+    }
+  }, [userData])
+
+  useEffect(() => {
+    if (userData?.startDate !== undefined) {
+      //schedule according to start date, and shoe extra notification for peer feedback reminder
+      Notifications.schedule(userData?.startDate.toDate(), userData?.reviewType === ReviewType.PeerReview ? true : false);
+    }
+  }, [userData])
 
 
   if (loading) {

@@ -30,9 +30,9 @@ const Tab3: React.FC = () => {
       <IonContent fullscreen className='ion-padding'>
         <IonToolbar class='mb-4'>
           <IonSegment value={segment} onIonChange={(e) => setSegment(e.detail.value as Task)}>
-            <IonSegmentButton value={Task.CERTIFICATE}>{Task.CERTIFICATE}</IonSegmentButton>
-            <IonSegmentButton value={Task.REGIONALITY}>{Task.REGIONALITY}</IonSegmentButton>
-            <IonSegmentButton value={Task.SEASONALITY}>{Task.SEASONALITY}</IonSegmentButton>
+            <IonSegmentButton className="text-xs" value={Task.CERTIFICATE}>{Task.CERTIFICATE}</IonSegmentButton>
+            <IonSegmentButton className="text-xs" value={Task.REGIONALITY}>{Task.REGIONALITY}</IonSegmentButton>
+            <IonSegmentButton className="text-xs" value={Task.SEASONALITY}>{Task.SEASONALITY}</IonSegmentButton>
           </IonSegment>
         </IonToolbar>
         {{
@@ -54,7 +54,7 @@ export const CertificateText = () => {
         <IonIcon icon={pricetagsOutline} className="text-white text-4xl mr-4" />
         <h2 className="text-center text-2xl text-white font-bold">{Task.CERTIFICATE}</h2>
       </div>
-      <h2 className='text-lg font-bold'>Allgeimeine Infos</h2>
+      <h2 className='text-lg font-bold'>Allgemeine Infos</h2>
       <p>
         Ein Bio-Siegel ist ein Qualitäts- und Zertifizierungszeichen, mit dem Erzeugnisse aus ökologischem Landbau gekennzeichnet werden. Die Berechtigung zur Verwendung eines Siegels wird durch den Herausgeber geregelt und ist an die Einhaltung bestimmter Standards und Bedingungen geknüpft. In der Landwirtschaft umfassen die Anforderungen an die Hersteller sowohl die Tierhaltung als auch den Pflanzenschutz.
       </p>
@@ -86,7 +86,7 @@ export const RegionalityText = () => {
         <IonIcon icon={mapOutline} className="text-white text-4xl mr-4" />
         <h2 className="text-center text-2xl text-white font-bold">{Task.REGIONALITY}</h2>
       </div>
-      <h2 className='text-lg font-bold'>Allgeimeine Infos</h2>
+      <h2 className='text-lg font-bold'>Allgemeine Infos</h2>
       <p>Ein regionales Produkt wird in einem bestimmten geografischen Gebiet erzeugt, verarbeitet und vermarktet. Es ist also aus der Region - für die Region. Doch wie ist der Begriff "regional" definiert? Viele Menschen verstehen unter ihrer Region das große Gebiet um ihren Wohnort, zum Beispiel ihren Landkreis, ihr Bundesland oder bestimmte Naturräume wie die Bayerischen Alpen oder die Eifel.</p>
       <br />
       <p>Viele Menschen kaufen regionale Lebensmittel, weil sie die lokalen Erzeuger und Landwirte unterstützen wollen. Außerdem schätzen sie den Geschmack und die Frische von Obst und Gemüse, das in der Saison reif geerntet wird. Die Lebensmittel werden auf kurzen Transportwegen zu den Verbrauchern gebracht. Dies bietet den Kunden die Möglichkeit, klimafreundlich einzukaufen. Es ist daher ratsam, auf den Etiketten oder Websites der Hersteller nachzusehen, woher die Produkte stammen. Es lohnt sich auch, Wochenmärkte und Verkaufsstände zu besuchen, denn dort werden meist regionale und saisonale Produkte angeboten. Doch Vorsicht! Viele Produkte sind von hier oder aus der Region gekennzeichnet. Das kann auch regionaler Kaffee sein, denn er wird in der Nähe geröstet - die Kaffeebohnen kommen aber aus Übersee.</p>
@@ -122,7 +122,7 @@ export const SeasonalityText = () => {
         <IonIcon icon={contrastOutline} className="text-white text-4xl mr-4" />
         <h2 className="text-center text-2xl text-white font-bold">{Task.SEASONALITY}</h2>
       </div>
-      <h2 className='text-lg font-bold'>Allgeimeine Infos</h2>
+      <h2 className='text-lg font-bold'>Allgemeine Infos</h2>
       <p>Saisonalität bezieht sich auf die natürlichen, saisonalen Bedingungen in der Landwirtschaft. Dazu gehören z. B. klimatische Bedingungen wie Temperaturen und Niederschläge. Diese Bedingungen bestimmen, welche Pflanzen zu welcher Zeit wachsen können. Obst und Gemüse, das aufgrund der vorherrschenden Klimabedingungen angebaut und geerntet wird, wird im Allgemeinen als saisonal bezeichnet. Das bedeutet aber auch, dass je nach Region der Welt unterschiedliche Produkte saisonal verfügbar sind.</p>
       <br />
       <p>
@@ -134,7 +134,7 @@ export const SeasonalityText = () => {
       </p>
       <br />
       <p>
-        Außerdem lohnt sich immer ein Besuch auf dem örtlichen Bauernmarkt, denn dort verkaufen die Bauern meist nur ihre regionale Ernte und saisonale Produkte. So bekommen Sie Erdbeeren nur im Sommer, wenn diese frisch und reif sind. Die Erdbeeren, die Sie im Winter kaufen können, sind mit einem langen Transport oder hohem Ressourceneinsatz verbunden.
+        Außerdem lohnt sich immer ein Besuch auf dem örtlichen Bauernmarkt, denn dort verkaufen die Bauern meist nur ihre regionale Ernte und saisonale Produkte. So bekommst du Erdbeeren nur im Sommer, wenn diese frisch und reif sind. Die Erdbeeren, die im Winter gekauft werden können, sind mit einem langen Transport oder hohem Ressourceneinsatz verbunden.
       </p>
       <br />
       <h2 className='text-lg font-bold'>Weiterführende Links</h2>

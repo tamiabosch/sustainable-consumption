@@ -6,7 +6,7 @@ export interface User {
     alias: string;  
     email: string;
     completed: boolean;
-    lastLogin: number;
+    lastLogin: Timestamp;
     reviewType: ReviewType;
     peerReviewsWritten: number;
     startDate: Timestamp;
