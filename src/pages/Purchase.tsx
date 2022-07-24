@@ -117,7 +117,6 @@ const Purchase: React.FC = () => {
               owner={purchase.owner}
               peerReviewer={purchase.peerReviewer}
             />
-            <p className='px-5 mb-5'>Die Skala geht von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zu")</p>
             {purchase.items?.map((item: Item, index: number) => {
               return (
                 <React.Fragment key={index}>
@@ -132,7 +131,7 @@ const Purchase: React.FC = () => {
                         <Likert id={index + '-self-' + item.title}
                           className="likertStyles disable"
                           layout="stacked"
-                          question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '.'}
+                          question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '. \n (0 = stimme überhaupt nicht zu, 6 = stimme voll und ganz zu)'}
                           responses={[
                             { value: 0, text: "0", checked: review[index].rating === 0 },
                             { value: 1, text: "1", checked: review[index].rating === 1 },
@@ -161,7 +160,7 @@ const Purchase: React.FC = () => {
                           <Likert id={index + '-peer-' + item.title}
                             className="likertStyles disable"
                             layout="stacked"
-                            question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '.'}
+                            question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '. \n (0 = stimme überhaupt nicht zu, 6 = stimme voll und ganz zu)'}
                             responses={[
                               { value: 0, text: "0", checked: peerReview[index].rating === 0 },
                               { value: 1, text: "1", checked: peerReview[index].rating === 1 },

@@ -140,7 +140,7 @@ const AddEntryPage: React.FC = () => {
       setPurchaseToFB().then(() => {
         const location = {
           pathname: '/user/tab1/add/review',
-          state: { purchaseId: docRef.id, reviewType: ReviewType.SelfReview, reviewTypeUser: userData?.reviewType } //send purchaseId to next view
+          state: { purchaseId: docRef.id, reviewType: ReviewType.SelfReview} //send purchaseId to next view
         }
         history.replace(location)
       }, error => {
@@ -176,7 +176,7 @@ const AddEntryPage: React.FC = () => {
       <Header title='Neuer Einkauf' showBackBtn={true} />
       <IonContent fullscreen>
         <IonList>
-          <IonListHeader className='uppercase'>Einkaufdetails</IonListHeader>
+          <IonListHeader className='uppercase'>Einkaufsdetails</IonListHeader>
           <IonItem>
             <IonLabel position="stacked">Titel</IonLabel>
             <IonInput value={title} onIonChange={(event) => setTitle(event.detail.value as string)} placeholder="Einkaufsort" />
@@ -205,7 +205,9 @@ const AddEntryPage: React.FC = () => {
               <IonIcon slot="icon-only" icon={addOutline} />
             </IonButton>
           </div>
-          <IonNote className='px-5 mb-5'>Wähle passend zum Thema 3-5 Produkte aus.</IonNote><br />
+          <IonNote className='px-5 mb-5'>Wähle 3-5 Produkte passend zum Thema. </IonNote>
+          <br />
+          <br />
           {items.map((item: Item, index: number) => {
             return (
               <PurchaseItem key={index} item={item} onDelete={() => handleItemDelete(item)} editable={true} />

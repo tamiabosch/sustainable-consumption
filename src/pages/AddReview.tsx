@@ -20,10 +20,9 @@ const AddReview: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
 
-  const location = useLocation<{ purchaseId: string, reviewType: ReviewType, reviewTypeUser: ReviewType }>();
+  const location = useLocation<{ purchaseId: string, reviewType: ReviewType }>();
   const purchaseId = location.state?.purchaseId;
   const reviewType = location.state?.reviewType;
-  const reviewTypeUser = location.state?.reviewTypeUser;
   const [purchase, setPurchase] = useState<PurchaseModel>();
   const [review, setReview] = useState<ReviewItem[]>([]);
   const [showToast, setShowToast] = useState(false);
@@ -130,7 +129,6 @@ const AddReview: React.FC = () => {
               reviewId: reviewDocRef.id,
               task: purchase?.task,
               reviewType: reviewType,
-              reviewTypeUser: reviewTypeUser
             }
           }
           history.replace(location)
@@ -152,16 +150,14 @@ const AddReview: React.FC = () => {
     <IonPage>
       <Header title='Review' />
       <IonContent>
-        <IonItemDivider color='primary'>
+        <IonItemDivider color='primary' className='mb-2'>
           <IonText className='text-left text-base my-4'>Deine Aufgabe ist es, die ausgewählten Produkte bezüglich des Nachhaltigkeitsthemas <b>{purchase?.task ? purchase.task : "dieser Woche "}</b> zu  bewerten!
-            <br /> Schreibe einen Kommentar, um das Rating auch zu einem späteren Zeitpunkt noch nachvollziehen zu können.
+            <br /> Schreibe einen Kommentar, damit das Rating besser nachvollziehbar ist.
           </IonText>
         </IonItemDivider>
         {purchase ? (
           <>
             <PurchaseHeader id={purchase.id} title={purchase.title} date={purchase.date} task={purchase.task} description={purchase.description} owner={purchase.owner} />
-            <p className='px-4 mt-4 text-sm'>Die Skala geht von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zu")</p>
-
             {purchase.items?.map((item: Item, index: number) => (
               <React.Fragment key={index}>
                 <IonItemDivider className='mt-8 mb-5' color='primary'>
@@ -170,7 +166,7 @@ const AddReview: React.FC = () => {
                   </IonLabel>
                 </IonItemDivider>
                 <PurchaseItem item={item} editable={false} />
-                <Likert id={index + '-' + item.title} className="likertStyles mx-3 my-5" {...likertOptions} question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '.'} onChange={(e: any) => handleLikertChange(index, e)} />
+                <Likert id={index + '-' + item.title} className="likertStyles mx-3 my-5 question" {...likertOptions} question={"Das Produkt erfüllt das angegebene Nachhaltigkeitsthema " + purchase.task + '. \n (0 = stimme überhaupt nicht zu, 6=stimme voll und ganz zu)'} onChange={(e: any) => handleLikertChange(index, e)} />
                 <IonItem>
                   <IonLabel position="stacked">Kommentar</IonLabel>
                   <IonTextarea placeholder="Bewertung genauer beschreiben..." value={review[index]?.comment ? review[index].comment : ""} onIonChange={(e) => handleCommentChange(e, index)} />
@@ -182,7 +178,7 @@ const AddReview: React.FC = () => {
           <IonNote>Einkauf konnte nicht geladen werden.</IonNote>
         )}
         <IonButton className='uppercase mt-10' onClick={handleReviewSubmit} expand="block">
-          <IonIcon slot="start" icon={saveOutline} /> Einkauf speichern
+          <IonIcon slot="start" icon={saveOutline} /> Review speichern
         </IonButton>
         <IonToast
           isOpen={showToast}

@@ -31,12 +31,11 @@ const AddExperienceSampling: React.FC = () => {
   const { userId } = useAuth();
   const history = useHistory();
 
-  const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: ReviewType, reviewTypeUser: ReviewType }>();
+  const location = useLocation<{ purchaseId: string, reviewId: string, task: string, reviewType: ReviewType }>();
   const purchaseId = location.state?.purchaseId;
   const reviewId = location.state?.reviewId;
   const task = location.state?.task;
   const reviewType = location.state?.reviewType;
-  const reviewTypeUser = location.state?.reviewTypeUser;
 
   console.log('location: ' + location, location)
   console.log('task: ' + task)
@@ -94,7 +93,6 @@ const AddExperienceSampling: React.FC = () => {
         q5: { question: questions.q5.question, answer: selected_5 },
         review: reviewId,
         task,
-        reviewTypeUser
         //reviewType,
         //TODO add timer
       }
@@ -133,7 +131,7 @@ const AddExperienceSampling: React.FC = () => {
       <IonContent>
         <IonItemDivider color='primary'>
           <IonText className='text-left text-base my-4'>
-            Folgende Fragen helfen die vorherige Bewertung besser in Kontext zu bringen.
+            Folgende Fragen helfen, die vorherige Bewertung besser in Kontext zu bringen.
           </IonText>
         </IonItemDivider>
         {/* Frage 1 */}
@@ -187,15 +185,12 @@ const AddExperienceSampling: React.FC = () => {
             </IonItem>
           </IonRadioGroup>
         </IonList>
-
-        <p className='px-4 my-5 text-sm'>Die Skala geht von 0 ("stimme überhaupt nicht zu") bis 6 ("stimme voll und ganz zu")</p>
-
         {/* Frage 3 */}
-        <Likert id="likert-3" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q3.question} onChange={(e: any) => setSelected_3(e.value)} />
+        <Likert id="likert-3" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q3.question + ' \n (0 = stimme überhaupt nicht zu, 6 = stimme voll und ganz zu)'} onChange={(e: any) => setSelected_3(e.value)} />
         {/* Frage 4 */}
-        <Likert id="likert-4" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q4.question} onChange={(e: any) => setSelected_4(e.value)} />
+        <Likert id="likert-4" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q4.question + ' \n (0 = stimme überhaupt nicht zu, 6 = stimme voll und ganz zu)'} onChange={(e: any) => setSelected_4(e.value)} />
         {/* Frage 5 */}
-        <Likert id="likert-5" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q5.question} onChange={(e: any) => setSelected_5(e.value)} />
+        <Likert id="likert-5" className="likertStyles mx-3 my-8" {...likertOptions} question={questions.q5.question + ' \n (0 = stimme überhaupt nicht zu, 6 = stimme voll und ganz zu)'} onChange={(e: any) => setSelected_5(e.value)} />
         <IonButton className='uppercase mt-10' onClick={handleSubmit} expand="block">
           <IonIcon slot="start" icon={sendOutline} /> Fragebogen abschicken
         </IonButton>
