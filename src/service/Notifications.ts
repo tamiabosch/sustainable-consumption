@@ -1,4 +1,4 @@
-import { LocalNotifications, LocalNotificationSchema, ScheduleOptions } from '@capacitor/local-notifications'
+import { LocalNotifications, LocalNotificationSchema } from '@capacitor/local-notifications'
 
 
 class Notifications {

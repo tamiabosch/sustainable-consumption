@@ -37,10 +37,11 @@ import { AuthContext, useAuthInit } from './service/authFirebase';
 import NotFoundPage from './pages/NotFoundPage';
 import { PeerReview, SelfReview } from './routes/LoggedInRoutes'
 import { User } from "./models/User";
-import { doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from './service/firebaseConfig';
 import { ReviewType } from './models/ReviewType';
 import Notifications from './service/Notifications';
+import Config from './pages/Config';
 
 
 setupIonicReact();
@@ -92,6 +93,9 @@ const App: React.FC = () => {
           <Switch>
             <Route exact path="/login">
               <Login />
+            </Route>
+            <Route exact path="/config">
+              <Config />
             </Route>
             <Route path="/user">
               {userData?.reviewType === ReviewType.PeerReview ? <PeerReview /> : <SelfReview />}

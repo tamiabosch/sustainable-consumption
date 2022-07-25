@@ -12,10 +12,9 @@ import {
 } from "@ionic/react";
 import { useAuth } from "../service/authFirebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../service/firebaseConfig";
+import { auth } from "../service/firebaseConfig";
 import { Redirect } from "react-router";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { ReviewType } from "../models/ReviewType";
+
 
 
 //Use one which works fine for you 
@@ -40,42 +39,12 @@ const Login: React.FC = () => {
     try {
       setStatus({ loading: true, error: false });
       const data = (await signInWithEmailAndPassword(auth, mail, password)).user;
-      //const userDoc = doc(db, 'users', data.uid);
-      //data ? await setDoc(userDoc, { ...configPeerReview, email: data.email }) : console.log("error");
       console.log('handleLogin user:', data);
     } catch (error) {
       setStatus({ loading: false, error: true });
       console.log('error:', error);
     }
   };
-
-  const group = {
-    g1: ["Zertifizierung", "Saisonalität", "Regionalität"],
-  }
-  const configPeerReview = {
-    alias: 'test',
-    completed: false,
-    //email oben
-    lastLogin: serverTimestamp(),
-    peerReviewsWritten: 0,
-    //reviewType: ReviewType.SelfReview,
-    reviewType: ReviewType.PeerReview,
-    startDate: new Date(2022, 6, 18),
-    task: {
-      week1: group.g1[0],
-      week2: group.g1[2],
-      week3: group.g1[1],
-
-    }
-  }
-
-  function test() {
-    const data = auth.currentUser
-    console.log("data: " + data?.uid);
-    console.log("loggedIn: " + loggedIn);
-    console.log('currentUser: ' + auth?.currentUser);
-    // createGroceryList("LIDL");
-  }
 
   if (loggedIn) {
     return <Redirect to="/user/tab1" />;

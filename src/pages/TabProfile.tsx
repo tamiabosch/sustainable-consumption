@@ -1,6 +1,6 @@
 import { IonCard, IonCardContent, IonCardSubtitle, IonContent, IonIcon, IonItem, IonLabel, IonList, IonPage, IonText } from '@ionic/react';
 import { User } from '../models/User';
-import { doc, getDoc, Timestamp } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { contrastOutline, helpCircleOutline, mapOutline, personOutline, pricetagsOutline, readerOutline } from 'ionicons/icons';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
@@ -57,7 +57,7 @@ const TabProfile: React.FC = () => {
                             </IonItem>
                             <IonItem>
                                 <IonLabel>Alias: </IonLabel>
-                                <IonText>{email?.split('@', 1)}</IonText>
+                                <IonText className='uppercase'>{email?.split('@', 1)}</IonText>
                             </IonItem>
                             {userData?.reviewType === ReviewType.PeerReview &&
                                 <IonItem>

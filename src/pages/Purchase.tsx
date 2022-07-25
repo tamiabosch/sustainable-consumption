@@ -78,6 +78,7 @@ const Purchase: React.FC = () => {
       }
       getPeerReview();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [purchase, refresh]);
 
   function doRefresh(event: CustomEvent<RefresherEventDetail>) {
