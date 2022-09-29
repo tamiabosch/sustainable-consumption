@@ -7,7 +7,8 @@ import {
     IonLabel,
     IonPage,
 } from '@ionic/react';
-import { doc, setDoc } from 'firebase/firestore';
+import { format, parseISO } from 'date-fns';
+import { collection, doc, getDocs, orderBy, query, setDoc, where } from 'firebase/firestore';
 import { saveOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { ReviewType } from '../models/ReviewType';
@@ -92,9 +93,9 @@ const Config: React.FC = () => {
         completed: false,
         lastLogin: new Date(), //TESTEN
         peerReviewsWritten: 0,
-        reviewType: ReviewType.SelfReview,
-        //reviewType: ReviewType.PeerReview,
-        startDate: new Date(2022, 6, 25),
+        //reviewType: ReviewType.SelfReview,
+        reviewType: ReviewType.PeerReview,
+        startDate: new Date(2022, 8, 5),
     }
     const saveUser = () => {
         if (uid && email && userGroup) {
@@ -117,6 +118,59 @@ const Config: React.FC = () => {
             alert('Please fill out all fields')
         }
     }
+    const [peerReviewers, setPeerReviewers] = useState<any[]>();
+    //AUSFÜLLEN
+    // Zertifizierung, Saisonalität, Regionalität
+    //Woche 1 25.7. - 31.7.
+    //Woche 2 1.8. - 7.8.
+    //Woche 3 8.8. - 14.8.
+    const currentTask = Task.REGIONALITY;
+    const currentWeek = 'task.week3'
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const usersRef = collection(db, 'users')
+            const q = query(usersRef, where('reviewType', '==', ReviewType.PeerReview), where(currentWeek, '==', currentTask), orderBy('peerReviewsWritten', 'asc'));
+            const userDocs = await getDocs(q);
+            setPeerReviewers(userDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+        }
+        fetchUsers()
+        console.log(peerReviewers)
+    }, [])
+
+    const [openPurchases, setOpenPurchases] = useState<any[]>();
+    const [sorted, setSorted] = useState<any[]>();
+    useEffect(() => {
+        const fetchOpenPurchases = async () => {
+            const purchaseRef = collection(db, 'purchases')
+            const q = query(purchaseRef, where('peerReviewer', '!=', ''), where('peerReviewed', '==', false), where('task', '==', currentTask));
+            const purchaseDocs = await getDocs(q);
+            const data = purchaseDocs.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+            setOpenPurchases(data)
+        }
+        fetchOpenPurchases()
+        console.log(openPurchases)
+    }, [currentTask])
+
+    // useEffect(() => {
+    //     if (openPurchases) {
+    //         const sortedAsc = openPurchases?.sort(
+    //             (objA, objB) => {
+    //                 console.log(JSON.stringify(objA.date))
+    //                 return Number(objA.date) as any - Number(objB.date) as any
+    //             }
+    //         );
+
+    //         // 👇️ {id: 3, date: Thu Feb 24 2022,
+    //         //     id: 2, date: Fri Feb 24 2023
+    //         //     id: 5, date: Wed Feb 24 2027}
+    //         console.log(sortedAsc);
+    //         setSorted(sortedAsc)
+    //         console.log('Sorted:' + sorted)
+    //     }
+    // }, [openPurchases])
+
+
 
     return (
         <IonPage>
@@ -130,6 +184,33 @@ const Config: React.FC = () => {
                 <IonButton className='uppercase' onClick={() => saveUser()} expand="block">
                     <IonIcon slot="start" icon={saveOutline} /> User anlegen
                 </IonButton>
+                {/* sort peerReviewers */}
+                <div className='flex flex-row justify-between'>
+                    <div className='flex flex-col'>
+                        <h2 className='text-lg font-medium mt-5 '>{currentWeek}:  {currentTask}</h2>
+                        <p></p>
+                        {peerReviewers?.map((peerReviewer) => (
+                            <div key={peerReviewer.id} className="my-4">
+                                <p>{peerReviewer.id}</p>
+                                <p>{peerReviewer.alias} </p>
+                                <p>Peer Reviews Written: {peerReviewer.peerReviewsWritten}</p>
+                            </div>
+                        ))}
+                    </div>
+                    {/* Map all openPurchases */}
+                    <div className='flex flex-col'>
+                        <h2 className='mt-5 text-lg font-medium'>Open Purchases {openPurchases?.length}</h2>
+                        {openPurchases?.map((openPurchase) => (
+                            <div key={openPurchase.id} className="my-4">
+                                <p><b>{openPurchase.title}: {format(parseISO(openPurchase.date), 'd MMM, yyyy')}</b> </p>
+                                <p><b>PurchaseId:</b> {openPurchase.id}</p>
+                                <p><b>Owner:</b> {openPurchase.owner}</p>
+                                <p><b>PeerReviewer:</b> {openPurchase.peerReviewer}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
             </IonContent>
         </IonPage>
     );

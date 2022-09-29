@@ -66,13 +66,12 @@ const App: React.FC = () => {
   useEffect(() => {
     //only set lastLogin if it's on a new day, to minimize db updates
     //userData?.lastLogin.toDate().getDate() !== new Date().getDate()
-    if (userData?.id !== undefined) {
-      const userDoc = doc(db, 'users', "" + userData?.id);
+    if (auth !== undefined) {
+      const userDoc = doc(db, 'users', "" + auth?.userId);
       updateDoc(userDoc, { lastLogin: new Date() })
       console.log('last:', userData?.lastLogin);
-      console.log('lastLoginSet:', new Date());
     }
-  }, [userData])
+  }, [auth])
 
   useEffect(() => {
     if (userData?.startDate !== undefined) {

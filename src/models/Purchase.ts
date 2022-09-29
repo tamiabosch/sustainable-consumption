@@ -1,5 +1,5 @@
 
-import { FieldValue, Timestamp } from 'firebase/firestore';
+import { FieldValue } from 'firebase/firestore';
 import { Item } from './Item';
 import { Task } from './Task';
 export interface Purchase {
